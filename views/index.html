@@ -9,41 +9,43 @@
 </head>
 <body>
     <header id="nav-bar"></header>
-    <div id="world-map">
-        <label>getElementById('world-map')</label>
-        <div id="profile-pic">
-            <div>Profile Pic</div>
+    <div class="container">
+    <div id="grid-container">
+            <section id="world-map">
+                <label>getElementById('world-map')</label>
+                <div id="profile-pic">
+                    <div>Profile Pic</div>
+                </div>
+                <div id="profile-stats">
+                    <div>Number of trips: X</div>
+                    <div>Number of countries: X</div>
+                    <div>Achievements: X</div>
+                </div>
+            </section>
+            <section id="side-panel">
+                <label>getElementById('side-panel')</label>
+                <div>Option1</div>
+                <div>Option2</div>
+                <div>Option3</div>
+            </section>
+            <section id="badges">
+                <label>getElementById('badges')</label>
+                <div id="badgepanel">
+                    <div>Badge1</div>
+                    <div>Badge2</div>
+                    <div>Badge3</div>
+                </div>
+            </section>
+            <section id="page">
+                <label>getElementById('page')</label>
+                <div id="page-container">
+                    <label>getElementById('page-container')</label>
+                    <div>Trip1</div>
+                    <div>Trip2</div>
+                    <div>Trip3</div>
+                </div>
+            </section>
         </div>
-        <div id="profile-stats">
-            <div>Number of trips: X</div>
-            <div>Number of countries: X</div>
-            <div>Achievements: X</div>
-        </div>
-    </div>
-    <div class="grid-container">
-        <section id="side-panel">
-            <label>getElementById('side-panel')</label>
-            <div>Option1</div>
-            <div>Option2</div>
-            <div>Option3</div>
-        </section>
-        <section id="badges">
-            <label>getElementById('badges')</label>
-            <div id="badgepanel">
-                <div>Badge1</div>
-                <div>Badge2</div>
-                <div>Badge3</div>
-            </div>
-        </section>
-        <section id="page">
-            <label>getElementById('page')</label>
-            <div id="page-container">
-                <label>getElementById('page-container')</label>
-                <div>Trip1</div>
-                <div>Trip2</div>
-                <div>Trip3</div>
-            </div>
-        </section>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="js/index.js" type="module"></script>

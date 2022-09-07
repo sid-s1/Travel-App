@@ -1,3 +1,4 @@
+import { renderLogin } from './login.js'
 
 // Render top navigation bar
 export const renderNavBar = () => {
@@ -48,6 +49,7 @@ export const renderNavBar = () => {
     loginButton.style.backgroundColor = 'red' // **remove once functionality added
     loginButton.addEventListener('click', () => {
         // Log user in + create session
+        renderLogin()
     });
     navList.appendChild(loginButton);
 
