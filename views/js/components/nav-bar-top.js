@@ -1,4 +1,5 @@
 import { renderLogin } from './login.js'
+import { renderSignup } from './signup.js';
 
 // Render top navigation bar
 export const renderNavBar = () => {
@@ -39,7 +40,7 @@ export const renderNavBar = () => {
     signupButton.textContent = 'Sign Up';
     signupButton.style.backgroundColor = 'red' // **remove once functionality added
     signupButton.addEventListener('click', () => {
-        // Render sign up form
+        renderSignup();
     });
     navList.appendChild(signupButton);
 
@@ -49,7 +50,7 @@ export const renderNavBar = () => {
     loginButton.style.backgroundColor = 'red' // **remove once functionality added
     loginButton.addEventListener('click', () => {
         // Log user in + create session
-        renderLogin()
+        renderLogin();
     });
     navList.appendChild(loginButton);
 

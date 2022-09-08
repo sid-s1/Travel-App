@@ -11,5 +11,12 @@ export const layout = {
         badges.style.display = 'none';
         sidePanel.style.display = 'none';  
         page.style.gridArea = '1/1/3/3';     
+    },
+    signup: () => {
+        worldMap.style.display = 'none';
+        badges.style.display = 'none';
+        sidePanel.style.display = 'none';  
+        page.style.gridArea = '1/1/3/3';
+        pageContainer.innerHTML = '';
     }
 }
