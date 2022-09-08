@@ -1,4 +1,5 @@
 import { layout } from "./layout.js";
+import { renderLogin } from "./login.js";
 
 const securityQuestions = {
     1: 'What city were you born in?',
@@ -115,11 +116,11 @@ export const renderSignup = () => {
             username: formData.get('username'),
             email: formData.get('email'),
             password: formData.get('confirm-password'),
-            email: formData.get('email'),
             securityQuestion: formData.get('security-question'),
             securityAnswer: formData.get('security-answer')
         };
         axios.post('/user/session/signup', data).then(() => {
+            console.log('signup successful');
             renderLogin();
         }).catch((err) => {
             if(err.response.status === 500) {
