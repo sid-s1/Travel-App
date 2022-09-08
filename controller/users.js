@@ -52,7 +52,7 @@ router.post('/signup', (request, response) => {
     .then(dbRes => {
         if(dbRes.rowCount === 0) {
             const hashedPassword = generateHash(password);
-            const hashedSecurityAnswer = generateHash(securityAnswer)
+            const hashedSecurityAnswer = generateHash(securityAnswer);
             return User.addNewUser(username, email, hashedPassword, securityQuestion, hashedSecurityAnswer)
             .then(dbRes => {
                 return response.json({});
