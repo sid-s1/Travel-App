@@ -10,8 +10,10 @@ const viewTrip = (id) => {
         .catch(error => { })
     axios.get(`/tripDetails/tripCities/${id}`)
         .then(response => {
-            // tripHeader.textContent += response.data.city_name;
+            console.log('here', response);
+            tripHeader.textContent += ` - ${response.data.city_name}`;
         })
+        .catch(error => { })
     pageContainer.appendChild(tripHeader);
 };
 

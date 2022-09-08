@@ -15,15 +15,23 @@ const Trip = {
                     return { city_id: dbRes.rows[0].city_id }
                 }
                 else {
-
+                    return dbRes.rows
                 }
             })
             .catch(err => err)
     },
-    cityNames: (id) => {
+    cityName: (id) => {
         const sql = 'SELECT city_name FROM cities WHERE id = $1';
         return db.query(sql, [id])
             .then(dbRes => dbRes)
+            .catch(err => console.log(err))
+    },
+    cityNames: (ids) => {
+        console.log(ids);
+        const sql = 'SELECT city_name FROM cities WHERE id in ($1)';
+        return db.query(sql, [ids])
+            .then(dbRes => dbRes)
+            .catch(err => console.log(err))
     }
 }
 
