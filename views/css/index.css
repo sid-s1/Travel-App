@@ -30,7 +30,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 12px;
-    border-bottom: 6px solid;
+    border-bottom: 8px solid;
     border-image-slice: 1;
     animation: nav-bar-border-animation 5s ease-in infinite;
     background-color: rgb(38, 38, 39);
@@ -113,9 +113,14 @@ body {
     align-items: center;    
     padding: 100px 0 50px 0;
 }
-#page, #page-container {
+#page {
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+}
+#page-container {
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
 }
 #side-panel {
