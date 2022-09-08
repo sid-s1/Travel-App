@@ -29,7 +29,6 @@ router.get('/tripCities/:tripId', (request, response) => {
             else {
                 Trip.cityName(dbRes.city_id)
                     .then(dbRes2 => {
-                        console.log(dbRes2);
                         return response.json(dbRes2.rows[0].city_name)
                     })
             }

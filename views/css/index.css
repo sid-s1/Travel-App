@@ -172,4 +172,20 @@ body {
     overflow: hidden;
     background-color: transparent;
 }
+.trip-page-cover-pic {
+    width: 50%;
+    height: auto;
+}
+.itinerary-row {
+    display: flex;
+}
+.itinerary-item-details {
+    display: flex;
+    flex-direction: column;
+}
+.trip-addon-icon {
+    width: 5%;
+    height: auto;
+    margin: 1rem;
+}
 /* --NEXT SECTION HERE-- */
