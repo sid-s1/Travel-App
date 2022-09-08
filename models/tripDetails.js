@@ -27,9 +27,19 @@ const Trip = {
             .catch(err => console.log(err))
     },
     cityNames: (ids) => {
-        console.log(ids);
-        const sql = 'SELECT city_name FROM cities WHERE id in ($1)';
-        return db.query(sql, [ids])
+        let placeHolder = '';
+        let iterator = 0;
+        while (iterator !== ids.length) {
+            iterator += 1;
+            if ((iterator + 1) > ids.length) {
+                placeHolder += `$${iterator}`;
+            }
+            else {
+                placeHolder += `$${iterator},`;
+            }
+        }
+        const sql = `SELECT city_name FROM cities WHERE id in (${placeHolder})`;
+        return db.query(sql, [...ids])
             .then(dbRes => dbRes)
             .catch(err => console.log(err))
     }

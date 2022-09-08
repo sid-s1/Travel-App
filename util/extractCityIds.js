@@ -1,9 +1,11 @@
-const cityIds = (arr) => {
-    const cityIdsArr = [];
+const extractValuesFromArrObjects = (arr) => {
+    const valueArr = [];
     for (const entry of arr) {
-        cityIdsArr.push(parseInt(entry.city_id));
+        for (const key of Object.keys(entry)) {
+            valueArr.push(entry[key]);
+        }
     }
-    return cityIdsArr;
+    return valueArr;
 };
 
-module.exports = cityIds;
+module.exports = extractValuesFromArrObjects;

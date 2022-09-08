@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Trip = require('../models/tripDetails');
-const extractCityIds = require('../util/extractCityIds');
+const extractValuesFromArrObjects = require('../util/extractCityIds');
 
 router.get('/tripName/:tripId', (request, response) => {
     const tripId = request.params.tripId;
@@ -16,27 +16,22 @@ router.get('/tripCities/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.cityId(tripId)
         .then(dbRes => {
-            // console.log(dbRes.city_id);
-            // const tripCitiesObj = dbRes.rows[0];
-            // return response.json(tripCitiesObj);
-            console.log(dbRes);
 
             if (dbRes.length > 1) {
-                const cityIdArr = extractCityIds(dbRes);
+                const cityIdArr = extractValuesFromArrObjects(dbRes);
                 Trip.cityNames(cityIdArr)
                     .then(dbRes => {
-                        console.log(dbRes.rows);
-                        return response.json(dbRes.rows)
+                        const cityNames = extractValuesFromArrObjects(dbRes.rows);
+                        return response.json(cityNames)
                     })
             }
 
             else {
                 Trip.cityName(dbRes.city_id)
-                    .then(dbRes => {
-                        console.log(dbRes.rows[0].city_name);
-                        return response.json(dbRes.rows[0])
+                    .then(dbRes2 => {
+                        console.log(dbRes2);
+                        return response.json(dbRes2.rows[0].city_name)
                     })
-
             }
 
         })
