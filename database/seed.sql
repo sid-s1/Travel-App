@@ -1,13 +1,14 @@
 -- after inserting the schema into the db, insert this file by navigating to the project folder in the CLI 
 -- and using the following command:
 -- 'psql tript < database/seed.sql'
+-- Note: passwords for users are same as usernames
 
 TRUNCATE users restart identity cascade;
-INSERT INTO users(username, email, password, secret_qn, admin) VALUES
-('chris', 'chris@ga.com', 'chris', 'What is my name?', 't'),
-('sid', 'sid@ga.com', 'sid', 'What is my name?', 't'),
-('dave', 'dave@ga.com', 'dave', 'What is my name?', 't'),
-('sam', 'sam@ga.com', 'sam', 'What is my name?', 'f');
+INSERT INTO users(username, email, password, security_qn, security_ans, admin) VALUES
+('chris', 'chris@ga.com', '$2b$10$wc..uujGo3b3ceXnN80tzOYaWuPXQKu.0GoEWdc2jKVi47g91xDAi', 1, 'test', 't'),
+('sid', 'sid@ga.com', '$2b$10$dhxz25GjwVgV2YkgJxBK8eWPxoSjOJywSdnRXfbz78WYXvlj7el6S', 2,'test', 't'),
+('dave', 'dave@ga.com', '$2b$10$ng..DJ0BE9VdUvUTk3.dqunsplnc673tHnT9I/g3tY4aD7LgWzCnK', 3,'test', 't'),
+('sam', 'sam@ga.com', '$2b$10$kfi/.jZLiYM6hBWEagFvgeaN/IKSJFFdNuop0IhTbyGHYOMGZxY6G', 4,'test', 'f');
 
 TRUNCATE trips restart identity cascade;
 INSERT INTO trips(user_id, trip_name, trip_type, trip_status, trip_start_date, trip_end_date, hero_image_url, description, key_takeaway) VALUES
