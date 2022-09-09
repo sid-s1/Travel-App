@@ -119,7 +119,6 @@ body {
     align-items: center;
 }
 #page-container {
-    position: relative;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
