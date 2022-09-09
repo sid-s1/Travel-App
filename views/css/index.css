@@ -179,6 +179,10 @@ body {
 .itinerary-row {
     display: flex;
 }
+.itinerary-column {
+    display: flex;
+    flex-direction: column;
+}
 .itinerary-item-details {
     display: flex;
     flex-direction: column;

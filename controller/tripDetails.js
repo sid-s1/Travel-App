@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Trip = require('../models/tripDetails');
-const extractValuesFromArrObjects = require('../util/extractCityIds');
+const extractValuesFromArrObjects = require('../util/extractValuesFromObjects');
 
 router.get('/tripName/:tripId', (request, response) => {
     const tripId = request.params.tripId;
@@ -16,7 +16,6 @@ router.get('/tripCities/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.cityId(tripId)
         .then(dbRes => {
-
             if (dbRes.length > 1) {
                 const cityIdArr = extractValuesFromArrObjects(dbRes);
                 Trip.cityNames(cityIdArr)
@@ -25,15 +24,19 @@ router.get('/tripCities/:tripId', (request, response) => {
                         return response.json(cityNames)
                     })
             }
-
             else {
                 Trip.cityName(dbRes.city_id)
                     .then(dbRes2 => {
                         return response.json(dbRes2.rows[0].city_name)
                     })
             }
-
         })
+});
+
+router.get('/tripActivites/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    Trip.activities(tripId)
+        .then(dbRes => response.json(dbRes.rows))
 });
 
 module.exports = router;
