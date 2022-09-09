@@ -5,18 +5,18 @@ import { logout } from './logout.js'
 
 // Render top navigation bar
 export const renderNavBar = () => {
+    const navBar = document.getElementById('nav-bar');
+    navBar.innerHTML = '';        
+    const h1 = document.createElement('h1');
+    h1.id = 'logo';
+    h1.textContent = 'TRIPT';
+    navBar.appendChild(h1);
+    const navList = document.createElement('ul');
+    navList.id = 'navlist';
+
     axios.get('/user/session')
     .then(dbRes => {
-        if (dbRes) {
-            const navBar = document.getElementById('nav-bar');
-            navBar.innerHTML = '';        
-            const h1 = document.createElement('h1');
-            h1.id = 'logo';
-            h1.textContent = 'TRIPT';
-            navBar.appendChild(h1);
-            const navList = document.createElement('ul');
-            navList.id = 'navlist';
-            
+        if (dbRes) {            
             // ** The following are placeholder buttons that will eventually only render under certain situations (eg. logged in / not logged in)
             // ** or we can store them into a hamburger menu? (maybe when user screen size is < a certain size)
 
@@ -52,15 +52,7 @@ export const renderNavBar = () => {
                 alert('An unknown error occured. Please refresh your page')
             } else {
                 // NOT LOGGED IN
-                const navBar = document.getElementById('nav-bar');
-                navBar.innerHTML = '';        
-                const h1 = document.createElement('h1');
-                h1.id = 'logo';
-                h1.textContent = 'TRIPT';
-                navBar.appendChild(h1);
-                const navList = document.createElement('ul');
-                navList.id = 'navlist';
-
+ 
                 // Button - Sign Up
                 const signupButton = document.createElement('li');
                 signupButton.textContent = 'Sign Up';
