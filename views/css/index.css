@@ -64,7 +64,7 @@ body {
     border-radius: 3px;
 }
 #navlist > li:hover {
-    background-color: white;
+    background-color: aqua;
     box-sizing: border-box;
     cursor: pointer;
 }
