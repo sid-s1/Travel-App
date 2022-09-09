@@ -174,30 +174,3 @@ body {
     background-color: transparent;
 }
 /* --NEXT SECTION HERE-- */
-
-/* Trip Details Section */
-.trip-page-cover-pic {
-    width: 50%;
-    height: auto;
-}
-.draft-marker {
-    position: absolute;
-    top: 0rem;
-    right: 1rem;
-}
-.itinerary-row {
-    display: flex;
-}
-.itinerary-column {
-    display: flex;
-    flex-direction: column;
-}
-.itinerary-item-details {
-    display: flex;
-    flex-direction: column;
-}
-.trip-addon-icon {
-    width: 5%;
-    height: auto;
-    margin: 1rem;
-}
