@@ -1,6 +1,7 @@
 import { renderLogin } from './login.js'
 import { renderSignup } from './signup.js';
-import { logout } from './logout.js'
+import { renderProfile } from './profile.js';
+import { logout } from './logout.js';
 
 
 // Render top navigation bar
@@ -17,15 +18,15 @@ export const renderNavBar = () => {
     axios.get('/user/session')
     .then(dbRes => {
         if (dbRes) {            
-            // ** The following are placeholder buttons that will eventually only render under certain situations (eg. logged in / not logged in)
-            // ** or we can store them into a hamburger menu? (maybe when user screen size is < a certain size)
+            // LOGGED IN:
+            renderProfile()
 
             // Button - My Profile
             const profileButton = document.createElement('li');
             profileButton.textContent = 'My Profile';
             profileButton.style.backgroundColor = 'red' // **remove once functionality added
             profileButton.addEventListener('click', () => {
-                // Render user profile
+                renderProfile()
             });
             navList.appendChild(profileButton);
 
@@ -51,12 +52,12 @@ export const renderNavBar = () => {
             if (err.response.status === 500) {
                 alert('An unknown error occured. Please refresh your page')
             } else {
-                // NOT LOGGED IN
- 
+                // NOT LOGGED IN:
+                // >> Render Dave's landing page function here? <<
+
                 // Button - Sign Up
                 const signupButton = document.createElement('li');
                 signupButton.textContent = 'Sign Up';
-                signupButton.style.backgroundColor = 'red' // **remove once functionality added
                 signupButton.addEventListener('click', () => {
                     renderSignup();
                 });
