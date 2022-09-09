@@ -104,6 +104,7 @@ body {
 }
 #side-panel, #page, #page-container, #world-map {
     display: flex;
+    position: relative;
     padding: 50px 20px;
 }
 #badges {    
@@ -172,9 +173,17 @@ body {
     overflow: hidden;
     background-color: transparent;
 }
+/* --NEXT SECTION HERE-- */
+
+/* Trip Details Section */
 .trip-page-cover-pic {
     width: 50%;
     height: auto;
+}
+.draft-marker {
+    position: absolute;
+    top: 0rem;
+    right: 1rem;
 }
 .itinerary-row {
     display: flex;
@@ -192,4 +201,3 @@ body {
     height: auto;
     margin: 1rem;
 }
-/* --NEXT SECTION HERE-- */

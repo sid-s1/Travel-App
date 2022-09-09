@@ -11,7 +11,7 @@ INSERT INTO users(username, email, password, secret_qn, admin) VALUES
 
 TRUNCATE trips restart identity cascade;
 INSERT INTO trips(user_id, trip_name, trip_type, trip_status, trip_start_date, trip_end_date, hero_image_url, description, key_takeaway) VALUES
-(1, 'My Ski Adventure', 'active', 'draft', '2019-01-24', '2019-02-12', 'https://images.unsplash.com/photo-1465220183275-1faa863377e3', 'This trip was so awesome, we skiied night and day.','Skiing is fun.'),
+(1, 'My Ski Adventure', 'active', 'posted', '2019-01-24', '2019-02-12', 'https://images.unsplash.com/photo-1465220183275-1faa863377e3', 'This trip was so awesome, we skiied night and day.','Skiing is fun.'),
 (2, 'European summer escape', 'leisure', 'draft', '2021-06-22', '2021-07-03', 'https://images.unsplash.com/photo-1595704313515-e345a1cbdaa2', 'Summer in Italy and France.','I like Gelato.'),
 (3, 'Eurovision trip', 'weekender', 'posted', '2018-05-19', '2018-05-21', 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3', 'Eurovision 2018! A great weekend away.','Switzerland was robbed!');
 
