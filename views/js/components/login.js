@@ -1,4 +1,6 @@
 import { layout } from './layout.js';
+import { renderNavBar } from './nav-bar-top.js';
+import { renderProfile } from './profile.js';
 
 export const renderLogin = () => {
     // set view
@@ -60,11 +62,14 @@ const createLoginForm = () => {
             password: formData.get('password')
         };
         axios.post('/user/session', data)
-        .then(() => {
+        .then((dbRes) => {
+            
             message.textContent = 'Success - Logging in...'
             form.replaceChildren(message);
             setTimeout(() => {
-            location.href = '/' 
+                const userId = dbRes.data.id;
+                renderNavBar();
+                renderProfile(userId);
             }, 2000)        
         })
         .catch((err) => {
