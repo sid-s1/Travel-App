@@ -105,6 +105,7 @@ body {
 #side-panel, #page, #page-container, #world-map {
     display: flex;
     padding: 20px 10px 0 0;
+    position: relative;
 }
 #badges {    
     display: flex;
