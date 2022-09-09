@@ -24,7 +24,6 @@ export const renderNavBar = () => {
             // Button - My Profile
             const profileButton = document.createElement('li');
             profileButton.textContent = 'My Profile';
-            profileButton.style.backgroundColor = 'red' // **remove once functionality added
             profileButton.addEventListener('click', () => {
                 renderProfile()
             });
