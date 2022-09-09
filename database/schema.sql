@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT,
     security_qn INT,
     security_ans TEXT,
+    profile_pic TEXT,
     admin BOOLEAN
 );
 
