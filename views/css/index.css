@@ -104,7 +104,6 @@ body {
 }
 #side-panel, #page, #page-container, #world-map {
     display: flex;
-    position: relative;
     padding: 50px 20px;
 }
 #badges {    
@@ -120,6 +119,7 @@ body {
     align-items: center;
 }
 #page-container {
+    position: relative;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
