@@ -61,7 +61,8 @@ const createLoginForm = () => {
         };
         axios.post('/user/session', data)
         .then(() => {
-            form.replaceChildren('Success - Logging in...');
+            message.textContent = 'Success - Logging in...'
+            form.replaceChildren(message);
             setTimeout(() => {
             location.href = '/' 
             }, 2000)        
