@@ -20,7 +20,7 @@ router.post('/', (request, response) => {
             request.session.email = email;
             return response.json({})
         } 
-        return response.status(400).json({message: '[REQUIRE HASHED PW IN DB FROM SIGNUP FUNCTIONALITY] The username and/or password you have entered is incorrect.'})
+        return response.status(400).json({message: 'The username and/or password you have entered is incorrect.'})
     })
     .catch(() => response.sendStatus(500))
 })
