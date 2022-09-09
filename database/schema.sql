@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT UNIQUE,
     email TEXT UNIQUE,
     password TEXT,
-    secret_qn TEXT,
+    security_qn INT,
+    security_ans TEXT,
     admin BOOLEAN
 );
 
