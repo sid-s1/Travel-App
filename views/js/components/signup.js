@@ -71,7 +71,7 @@ export const renderSignup = () => {
     securityQuestionInput.id = 'security-question';
     securityQuestionInput.name = 'security-question';
     securityQuestionInput.className = 'signup-input';
-    
+
     for(const [key, question] of Object.entries(securityQuestions)) {
         const option = document.createElement('option');
         option.value = key;
@@ -110,30 +110,35 @@ export const renderSignup = () => {
 
     signupForm.addEventListener('submit', event => {
         event.preventDefault();
-        console.log('this runs')
         const formData = new FormData(signupForm);
         const data = {
             username: formData.get('username'),
             email: formData.get('email'),
-            password: formData.get('confirm-password'),
+            confirmedPassword: formData.get('confirm-password'),
             securityQuestion: formData.get('security-question'),
             securityAnswer: formData.get('security-answer')
         };
-        axios.post('/user/session/signup', data).then(() => {
-            console.log('signup successful');
-            renderLogin();
-        }).catch((err) => {
-            if(err.response.status === 500) {
-                alert('Sign up failed. Please try again.');
-            } else {
-                alert(err.response.data.message);
-            }
-        })
+        const password = formData.get('password');
+        if (password != data.confirmedPassword) {
+            alert('Passwords do not match');
+        } else {
+            axios.post('/user/session/signup', data)
+            .then(() => {
+                console.log('signup successful');
+                renderLogin();
+            })
+            .catch((err) => {
+                if(err.response.status === 500) {
+                    alert('Sign up failed. Please try again.');
+                } else {
+                    alert(err.response.data.message);
+                }
+            })
+        }
     })
 
     signupContainer.appendChild(signupHeading);
     signupContainer.appendChild(signupForm);
 
     pageContainer.appendChild(signupContainer);
-    console.log('signup');
 }
