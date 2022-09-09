@@ -62,11 +62,12 @@ body {
     margin-right: 10px;
     background-color: white;
     border-radius: 3px;
+    transition: 0.5s ease all;
 }
 #navlist > li:hover {
     background-color: aqua;
     box-sizing: border-box;
-    cursor: pointer;
+    cursor: pointer;    
 }
 /* GRID AREA */
 #grid-container {
@@ -80,10 +81,9 @@ body {
     background-color: rgb(225, 186, 9);
 }
 #side-panel {
-    /* row-start, column-start, row-end, column-end */
     grid-area: 2/1/4/2;
     border: dashed 2px rgb(20, 122, 130);
-    background-color: rgb(146, 199, 194);
+    background-color: rgb(59, 56, 56);
 }
 #badges {
     grid-area: 2/2/2/3; 
@@ -104,7 +104,7 @@ body {
 }
 #side-panel, #page, #page-container, #world-map {
     display: flex;
-    padding: 50px 20px;
+    padding: 20px 10px 0 0;
 }
 #badges {    
     display: flex;
@@ -115,7 +115,7 @@ body {
 }
 #page {
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
 }
 #page-container {
@@ -127,12 +127,15 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     align-items: left;
+    min-width: 160px;
 }
 #page-container {
+    margin: 0 auto;
     width: 90%;
-    height: 100%;
+    height: auto;
+    border-radius: 10px;
     overflow-x: auto;
-    background-color: orange;
+    background-color: white;
 }
 #world-map {
     justify-content: center;
