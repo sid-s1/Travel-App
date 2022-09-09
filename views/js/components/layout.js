@@ -22,13 +22,28 @@ export const layout = {
         worldMap.style.display = 'none';
         badges.style.display = 'none';
         sidePanel.style.display = 'none';  
+        page.style.display = 'flex';
         page.style.gridArea = '1/1/3/3';     
     },
     signup: () => {
         worldMap.style.display = 'none';
         badges.style.display = 'none';
         sidePanel.style.display = 'none';  
+        page.style.display = 'flex';
         page.style.gridArea = '1/1/3/3';
         pageContainer.innerHTML = '';
+    },
+    profile: () => {
+        worldMap.style.display = 'flex';        
+        badges.style.display = 'flex';        
+        sidePanel.style.display = 'flex';         
+        page.style.display = 'flex';
+        worldMap.style.gridArea = '1/1/1/3';
+        badges.style.gridArea = '2/2/2/3';
+        sidePanel.style.gridArea = '2/1/4/2';
+        page.style.gridArea = '3/2/3/3';
+        badges.innerHTML = '';
+        sidePanel.innerHTML = '';
+        pageContainer.innerHTML = 'PROFILE VIEW / LOGGED IN';
     }
 }
