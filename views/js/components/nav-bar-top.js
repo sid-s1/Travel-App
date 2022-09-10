@@ -23,13 +23,13 @@ export const renderNavBar = () => {
     .then(dbRes => {
         if (dbRes) {
             // LOGGED IN:
-            renderProfile()
+            renderProfile();
 
             // Button - My Profile
             const profileButton = document.createElement('li');
             profileButton.textContent = 'My Profile';
             profileButton.addEventListener('click', () => {
-                renderProfile()
+                renderProfile();
             });
             navList.appendChild(profileButton);
 
@@ -70,7 +70,7 @@ export const renderNavBar = () => {
                 const loginButton = document.createElement('li');
                 loginButton.textContent = 'Login';
                 loginButton.addEventListener('click', () => {
-                    renderLogin()
+                    renderLogin();
                 });
                 navList.appendChild(loginButton);
                 navBar.appendChild(navList);

@@ -1,0 +1,14 @@
+.results {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.user-result {
+grid-column: 1/2;
+display: grid;
+border: 1px solid black;
+margin: 20px;
+padding: 20px;
+cursor: pointer;
+}
