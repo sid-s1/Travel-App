@@ -10,7 +10,7 @@
 }
 .side-panel-options {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     height: 30px;
@@ -28,7 +28,7 @@
     cursor: copy;
 }
 .side-panel-focus {
-    background-color: rgb(88, 84, 84); 
+    background-color: rgb(88, 84, 84);
 }
 .side-panel-icon {
     height: 25px;
