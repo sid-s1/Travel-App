@@ -19,7 +19,7 @@ const viewTrip = (id) => {
 
     // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
     let p = new Promise((resolve, reject) => {
-        axios.get(`/tripDetails/${id}`)
+        axios.get(`/user/trips/${id}`)
             .then(response => {
                 // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
                 const tripDetails = response.data;
@@ -64,7 +64,7 @@ const viewTrip = (id) => {
             })
             .catch(error => { })
 
-        axios.get(`/tripDetails/tripActivites/${id}`)
+        axios.get(`/user/trips/activities/${id}`)
             .then(response => {
                 const activities = response.data;
                 for (const activity of activities) {

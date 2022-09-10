@@ -59,8 +59,8 @@ export const renderProfile = (userId) => {
         // Render page-container to display existing trips
         // -- insert function --
         console.log(e.target)
-        changeSidePanelFocus(tripFrame);
-    })
+        changeSidePanelFocus(tripFrame);        
+    });
     sidePanelOptions.appendChild(tripFrame);
 
     // Bookmarks frame
