@@ -22,9 +22,9 @@ export const renderProfile = (userId) => {
 
     const statsDiv = document.createElement('div');
     statsDiv.innerHTML = `
-                     <div>Number of trips: <span id="total-trips">X </span></div>
-                    <div>Number of countries: <span id="total-countries">X </span></div>
-                    <div>Achievements: <span id="total-achievements">X </span></div>
+                     <div>Number of trips: <span id="total-trips"></span></div>
+                    <div>Number of countries: <span id="total-countries"></span></div>
+                    <div>Achievements: <span id="total-achievements"></span></div>
                     `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
     userStats(userId);
