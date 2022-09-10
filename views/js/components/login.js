@@ -49,7 +49,7 @@ const createLoginForm = () => {
 
     const message = document.createElement('p');
     message.className = 'login-message';
-    form.appendChild(message)
+    form.appendChild(message);
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -60,14 +60,17 @@ const createLoginForm = () => {
         };
         axios.post('/user/session', data)
             .then((dbRes) => {
-
-                message.textContent = 'Success - Logging in...'
-                form.replaceChildren(message);
+                const loading = document.createElement('img');
+                loading.src = 'https://media1.giphy.com/media/5AtXMjjrTMwvK/200w.webp?cid=ecf05e47j17yxlz64soc3pnluiirarma32n9f89qzmsz25o2&rid=200w.webp&ct=s';
+                loading.alt = 'Loading...';
+                loading.style.height = '100px';
+                message.textContent = 'Success - Logging in...';
+                form.replaceChildren(loading, message);
                 setTimeout(() => {
                     const userId = dbRes.data.id;
                     renderNavBar();
                     renderProfile(userId);
-                }, 2000)
+                }, 3000)
             })
             .catch((err) => {
                 if (err.response.status === 500) {
