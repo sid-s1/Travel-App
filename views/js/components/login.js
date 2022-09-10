@@ -4,11 +4,8 @@ import { renderProfile } from './profile.js';
 
 export const renderLogin = () => {
     // set view
+    layout.reset();
     layout.login();
-
-    // target page container and reset it before adding new items
-    const pageContainer = document.getElementById('page-container');
-    pageContainer.innerHTML = '';
 
     const form = createLoginForm()
     const wrapped = layout.wrap([form], 'form-container');

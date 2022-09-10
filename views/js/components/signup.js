@@ -11,6 +11,7 @@ const securityQuestions = {
 };
 
 export const renderSignup = () => {
+    layout.reset();
     layout.signup();
     const pageContainer = document.getElementById('page-container');
 
