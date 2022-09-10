@@ -1,4 +1,4 @@
-import { dateExtractor } from './dateExtractor.js';
+import { dateExtractor } from './date-extractor.js';
 
 const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');

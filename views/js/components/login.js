@@ -1,4 +1,4 @@
-import { layout } from './layout.js';
+import { layout, pageContainer } from './layout.js';
 import { renderNavBar } from './nav-bar-top.js';
 import { renderProfile } from './profile.js';
 
@@ -11,10 +11,10 @@ export const renderLogin = () => {
     const wrapped = layout.wrap([form], 'form-container');
     pageContainer.appendChild(wrapped);
 }
- 
+
 const createLoginForm = () => {
-    const form = document.createElement('form'); 
-    form.className = 'login-form'   
+    const form = document.createElement('form');
+    form.className = 'login-form'
 
     const heading = document.createElement('h2');
     heading.textContent = '- LOG IN -';
@@ -28,7 +28,7 @@ const createLoginForm = () => {
     const iconEmail = document.createElement('img');
     iconEmail.src = '../../assets/user_icon.png'
     iconEmail.className = 'login-icon'
-    let wrapped = layout.wrap([iconEmail, inputEmail], 'login-frame');    
+    let wrapped = layout.wrap([iconEmail, inputEmail], 'login-frame');
     form.appendChild(wrapped);
 
     let inputPassword = document.createElement('input');
@@ -59,25 +59,25 @@ const createLoginForm = () => {
             password: formData.get('password')
         };
         axios.post('/user/session', data)
-        .then((dbRes) => {
-            
-            message.textContent = 'Success - Logging in...'
-            form.replaceChildren(message);
-            setTimeout(() => {
-                const userId = dbRes.data.id;
-                renderNavBar();
-                renderProfile(userId);
-            }, 2000)        
-        })
-        .catch((err) => {
-            if (err.response.status === 500) {
-                alert('Something went wrong. Please try again.');
-            } else {
-                message.textContent = err.response.data.message;
-                inputEmail.focus();
-                inputEmail.select();
-            }
-        });
+            .then((dbRes) => {
+
+                message.textContent = 'Success - Logging in...'
+                form.replaceChildren(message);
+                setTimeout(() => {
+                    const userId = dbRes.data.id;
+                    renderNavBar();
+                    renderProfile(userId);
+                }, 2000)
+            })
+            .catch((err) => {
+                if (err.response.status === 500) {
+                    alert('Something went wrong. Please try again.');
+                } else {
+                    message.textContent = err.response.data.message;
+                    inputEmail.focus();
+                    inputEmail.select();
+                }
+            });
     });
     return form;
 }

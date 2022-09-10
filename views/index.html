@@ -22,9 +22,9 @@
                     <div>Profile Pic</div>
                 </div>
                 <div id="profile-stats">
-                    <div>Number of trips: X</div>
-                    <div>Number of countries: X</div>
-                    <div>Achievements: X</div>
+                    <div>Number of trips: <span id="total-trips">X </span></div>
+                    <div>Number of countries: <span id="total-countries">X </span></div>
+                    <div>Achievements: <span id="total-achievements">X </span></div>
                 </div>
             </section>
             <section id="side-panel">
@@ -57,5 +57,6 @@
     <script src="js/index.js" type="module"></script>
     <!-- adding view trip js file here for now and loading it as a module; this is until we make other pages call our view-trip function based on what the user clicks -->
     <script src="js/components/view-trip.js" type="module"></script>
+    <script src="js/components/user-stats.js"></script>
 </body>
 </html>
