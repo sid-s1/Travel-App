@@ -2,18 +2,24 @@
 .new-trip-icon {
     height: 50px;
     width: 50px;
-    margin-left: 20px;
-    padding: 5px;
+    padding: 8px;
     cursor: copy;
     border: solid black 1px;
+    border-radius: 10px;
+    background-color: white;
+    transition: 0.3s ease all;
 }
 .new-trip-options {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     width: 80%;
-    margin: 20px 0;
     padding: 5px;
     border: solid black 1px;
-    background-color: yellow;
+    border-radius: 10px;
+    background-color: grey;
+}
+.new-trip-icon:hover {
+    background-color: rgb(189, 245, 245);
+    box-sizing: border-box;
 }
