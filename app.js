@@ -10,8 +10,8 @@ const db = require('./database/db')
 // Controllers
 const { expressSession, pgSession } = require('./controller/session');
 const usersController = require('./controller/users');
-const googleController = require('./controller/googleDetails');
-const tripController = require('./controller/trips');
+const googleController = require('./controller/google-details');
+const tripController = require('./controller/trip-details');
 const statsController = require('./controller/user-stats');
 
 // Middleware
@@ -33,8 +33,8 @@ app.use(
 // Routing
 app.use('/user/session', usersController);
 app.use('/user/trips', tripController);
+app.use('/user/stats', statsController);
 app.use('/placeDetails', googleController);
-app.use('/userStats', statsController);
 
 
 app.listen(port, () => {
