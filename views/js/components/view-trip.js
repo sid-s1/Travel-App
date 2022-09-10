@@ -1,4 +1,4 @@
-import { dateExtractor } from './dateExtractor.js';
+import { dateExtractor } from './date-extractor.js';
 
 const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
@@ -115,6 +115,6 @@ setTimeout(() => {
 
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
-    viewTrip(1);
+    // viewTrip(1);
     // viewTrip(2);
 }, 1000);

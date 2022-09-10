@@ -1,14 +1,15 @@
 import { layout, sidePanel, worldMap } from "./layout.js";
 import { renderNewTrip } from './new-trip.js';
+import { userStats } from "./user-stats.js";
 
 export const renderProfile = (userId) => {
     // Set view
     layout.reset();
     layout.profile();
-    
+
     // Render stats
     // -- insert function --
-    
+
     // Render badges
     // -- insert function --
 
@@ -18,31 +19,32 @@ export const renderProfile = (userId) => {
     profileDiv.textContent = 'Profile Pic';
     const profilePic = layout.wrap([profileDiv], 'profile-pic', 'id');
     worldMap.appendChild(profilePic);
-    
+
     const statsDiv = document.createElement('div');
     statsDiv.innerHTML = `
-                     <div>Number of trips: <span id="total-trips">X </span></div>
-                    <div>Number of countries: <span id="total-countries">X </span></div>
-                    <div>Achievements: <span id="total-achievements">X </span></div>
+                     <div>Number of trips: <span id="total-trips"></span></div>
+                    <div>Number of countries: <span id="total-countries"></span></div>
+                    <div>Achievements: <span id="total-achievements"></span></div>
                     `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
+    userStats(userId);
     worldMap.appendChild(profileStats);
 
 
     // Render side panel
     const sidePanelOptions = document.createElement('ul');
     sidePanelOptions.className = 'side-panel-list';
-    
-    // Home frame
+
+    // Home framew
     const home = document.createElement('li');
     home.textContent = 'Home';
     const homeIcon = document.createElement('img');
     homeIcon.src = '../../assets/home_icon.png';
     homeIcon.className = 'side-panel-icon';
     const homeFrame = layout.wrap([homeIcon, home], 'side-panel-options');
-    
+
     homeFrame.addEventListener('click', () => {
-        renderProfile();
+        renderProfile(userId);
     })
     sidePanelOptions.appendChild(homeFrame);
 
@@ -63,7 +65,7 @@ export const renderProfile = (userId) => {
 
     // Bookmarks frame
     const bookmarks = document.createElement('li');
-    bookmarks.textContent = 'Bookmarks';    
+    bookmarks.textContent = 'Bookmarks';
     const bookmarksIcon = document.createElement('img');
     bookmarksIcon.src = '../../assets/bookmarks_icon.png';
     bookmarksIcon.className = 'side-panel-icon';
@@ -78,7 +80,7 @@ export const renderProfile = (userId) => {
 
     // Explore frame
     const explore = document.createElement('li');
-    explore.textContent = 'Explore';       
+    explore.textContent = 'Explore';
     const exploreIcon = document.createElement('img');
     exploreIcon.src = '../../assets/explore_icon.png'
     exploreIcon.className = 'side-panel-icon';
@@ -87,12 +89,12 @@ export const renderProfile = (userId) => {
         // Render explore 
         // -- insert function --
         changeSidePanelFocus(exploreFrame);
-    }) 
+    })
     sidePanelOptions.appendChild(exploreFrame);
 
     // Add Trip frame
     const addTrip = document.createElement('li');
-    addTrip.textContent = '+ Add Trip';  
+    addTrip.textContent = '+ Add Trip';
     const addTripIcon = document.createElement('img');
     addTripIcon.src = '../../assets/newtrip_icon.png';
     addTripIcon.className = 'side-panel-icon';
@@ -113,7 +115,7 @@ export const renderProfile = (userId) => {
 const changeSidePanelFocus = (focus) => {
     const sidePanelOptions = document.getElementsByClassName('side-panel-options');
     for (const panel of sidePanelOptions) {
-        if (panel !== focus) {              
+        if (panel !== focus) {
             panel.classList.remove('side-panel-focus');
         } else {
             panel.classList.add('side-panel-focus');

@@ -20,38 +20,43 @@ export const renderNavBar = () => {
     navList.id = 'navlist';
 
     axios.get('/user/session')
-    .then(dbRes => {
-        if (dbRes) {
-            // LOGGED IN:
-            renderProfile()
+        .then(response => {
+            if (response) {
+                const userId = response.data.rows[0].id;
+                const userName = response.data.rows[0].username;
 
-            // Button - My Profile
-            const profileButton = document.createElement('li');
-            profileButton.textContent = 'My Profile';
-            profileButton.addEventListener('click', () => {
-                renderProfile()
-            });
-            navList.appendChild(profileButton);
+                h1.textContent = `TRIPT - ${userName}`;
 
-            // Button - Settings
-            const settingsButton = document.createElement('li');
-            settingsButton.textContent = 'Settings';
-            settingsButton.style.backgroundColor = 'red' // **remove once functionality added
-            settingsButton.addEventListener('click', () => {
-                // Render user settings (modal?)
-            });
-            navList.appendChild(settingsButton);
+                // LOGGED IN:
+                renderProfile(userId);
 
-            // Button - Logout
-            const logoutButton = document.createElement('li');
-            logoutButton.textContent = 'Logout';
-            logoutButton.addEventListener('click', () => {
-                logout();
-            });
-            navList.appendChild(logoutButton);
-            navBar.appendChild(navList);
-        }
-    }).catch(err => {
+                // Button - My Profile
+                const profileButton = document.createElement('li');
+                profileButton.textContent = 'My Profile';
+                profileButton.addEventListener('click', () => {
+                    renderProfile(userId);
+                });
+                navList.appendChild(profileButton);
+
+                // Button - Settings
+                const settingsButton = document.createElement('li');
+                settingsButton.textContent = 'Settings';
+                settingsButton.style.backgroundColor = 'red' // **remove once functionality added
+                settingsButton.addEventListener('click', () => {
+                    // Render user settings (modal?)
+                });
+                navList.appendChild(settingsButton);
+
+                // Button - Logout
+                const logoutButton = document.createElement('li');
+                logoutButton.textContent = 'Logout';
+                logoutButton.addEventListener('click', () => {
+                    logout();
+                });
+                navList.appendChild(logoutButton);
+                navBar.appendChild(navList);
+            }
+        }).catch(err => {
             if (err.response.status === 500) {
                 alert('An unknown error occured. Please refresh your page')
             } else {
@@ -70,10 +75,10 @@ export const renderNavBar = () => {
                 const loginButton = document.createElement('li');
                 loginButton.textContent = 'Login';
                 loginButton.addEventListener('click', () => {
-                    renderLogin()
+                    renderLogin();
                 });
                 navList.appendChild(loginButton);
                 navBar.appendChild(navList);
             }
-    });
+        });
 }

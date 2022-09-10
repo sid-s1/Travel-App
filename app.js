@@ -12,6 +12,7 @@ const { expressSession, pgSession } = require('./controller/session');
 const usersController = require('./controller/users');
 const googleController = require('./controller/googleDetails');
 const tripController = require('./controller/trips');
+const statsController = require('./controller/user-stats');
 
 // Middleware
 app.use((request, response, next) => {
@@ -33,6 +34,8 @@ app.use(
 app.use('/user/session', usersController);
 app.use('/user/trips', tripController);
 app.use('/placeDetails', googleController);
+app.use('/userStats', statsController);
+
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
