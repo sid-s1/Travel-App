@@ -3,7 +3,7 @@ import { layout, worldMap, page, pageContainer } from "./layout.js";
 export const renderPublicHomepage = () => {
     layout.publicHomepage();
 
-    const searchDiv = document.createElement('div');
+
 
     const searchBar =  document.createElement('input');
     searchBar.setAttribute("placeholder", "Search for trips...");
@@ -16,9 +16,8 @@ export const renderPublicHomepage = () => {
 
     });
     searchButton.style.cursor = 'pointer';
-    searchDiv.appendChild(searchBar);
-    searchDiv.appendChild(searchButton);
 
+    const searchDiv = layout.wrap([searchBar,searchButton], 'search-div');
     searchDiv.style.display = 'flex';
     searchDiv.style.justifyContent = 'space-between';
     searchDiv.style.columnGap = '20px';
