@@ -48,7 +48,7 @@ export const renderProfile = (userId) => {
 
     // My Trips frame
     const trips = document.createElement('li');
-    trips.textContent = 'My Trips';  
+    trips.textContent = 'My Trips';
     const tripsIcon = document.createElement('img');
     tripsIcon.src = '../../assets/trips_icon.png';
     tripsIcon.className = 'side-panel-icon';
@@ -57,8 +57,8 @@ export const renderProfile = (userId) => {
         // Render page-container to display existing trips
         // -- insert function --
         console.log(e.target)
-        changeSidePanelFocus(tripFrame);
-    })  
+        changeSidePanelFocus(tripFrame);        
+    });
     sidePanelOptions.appendChild(tripFrame);
 
     // Bookmarks frame
