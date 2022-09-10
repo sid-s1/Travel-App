@@ -1,4 +1,5 @@
-import { layout } from "./layout.js"
+import { layout, sidePanel, worldMap } from "./layout.js";
+import { renderNewTrip } from './new-trip.js';
 
 export const renderProfile = (userId) => {
     // Set view
@@ -11,88 +12,111 @@ export const renderProfile = (userId) => {
     // Render badges
     // -- insert function --
 
+    // Render world map
+    worldMap.innerHTML = '';
+    const profileDiv = document.createElement('div');
+    profileDiv.textContent = 'Profile Pic';
+    const profilePic = layout.wrap([profileDiv], 'profile-pic', 'id');
+    worldMap.appendChild(profilePic);
+    
+    const statsDiv = document.createElement('div');
+    statsDiv.innerHTML = `
+                     <div>Number of trips: <span id="total-trips">X </span></div>
+                    <div>Number of countries: <span id="total-countries">X </span></div>
+                    <div>Achievements: <span id="total-achievements">X </span></div>
+                    `;
+    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
+    worldMap.appendChild(profileStats);
+
+
     // Render side panel
-    const sidePanel = document.getElementById('side-panel');
     const sidePanelOptions = document.createElement('ul');
     sidePanelOptions.className = 'side-panel-list';
     
+    // Home frame
     const home = document.createElement('li');
-    home.textContent = 'Home'; 
-    home.addEventListener('click', () => {
-        // Render home
-        // -- insert function --
-        changeSidePanelFocus(home)
-    })
+    home.textContent = 'Home';
     const homeIcon = document.createElement('img');
     homeIcon.src = '../../assets/home_icon.png';
     homeIcon.className = 'side-panel-icon';
-    let wrapper = layout.wrap([homeIcon, home], 'side-panel-options');
-    sidePanelOptions.appendChild(wrapper);
+    const homeFrame = layout.wrap([homeIcon, home], 'side-panel-options');
+    
+    homeFrame.addEventListener('click', () => {
+        renderProfile();
+    })
+    sidePanelOptions.appendChild(homeFrame);
 
+    // My Trips frame
     const trips = document.createElement('li');
-    trips.textContent = 'My Trips';
-    trips.addEventListener('click', () => {
-        // Render page-container to display existing trips
-        // -- insert function --
-        changeSidePanelFocus(trips);
-    })  
+    trips.textContent = 'My Trips';  
     const tripsIcon = document.createElement('img');
     tripsIcon.src = '../../assets/trips_icon.png';
     tripsIcon.className = 'side-panel-icon';
-    wrapper = layout.wrap([tripsIcon, trips], 'side-panel-options');
-    sidePanelOptions.appendChild(wrapper);
-
-    const bookmarks = document.createElement('li');
-    bookmarks.textContent = 'Bookmarks';
-    bookmarks.addEventListener('click', () => {
-        // Render page-container to display existing bookmarks
+    const tripFrame = layout.wrap([tripsIcon, trips], 'side-panel-options');
+    tripFrame.addEventListener('click', (e) => {
+        // Render page-container to display existing trips
         // -- insert function --
-        changeSidePanelFocus(bookmarks);
-    })
+        console.log(e.target)
+        changeSidePanelFocus(tripFrame);
+    })  
+    sidePanelOptions.appendChild(tripFrame);
+
+    // Bookmarks frame
+    const bookmarks = document.createElement('li');
+    bookmarks.textContent = 'Bookmarks';    
     const bookmarksIcon = document.createElement('img');
     bookmarksIcon.src = '../../assets/bookmarks_icon.png';
     bookmarksIcon.className = 'side-panel-icon';
-    wrapper = layout.wrap([bookmarksIcon, bookmarks], 'side-panel-options');
-    sidePanelOptions.appendChild(wrapper);
-
-    const explore = document.createElement('li');
-    explore.textContent = 'Explore';
-    explore.addEventListener('click', () => {
-        // Render explore 
+    const bookmarkFrame = layout.wrap([bookmarksIcon, bookmarks], 'side-panel-options');
+    bookmarkFrame.addEventListener('click', (e) => {
+        // Render page-container to display existing bookmarks
         // -- insert function --
-        changeSidePanelFocus(explore);
-    })    
+        console.log(e)
+        changeSidePanelFocus(bookmarkFrame);
+    })
+    sidePanelOptions.appendChild(bookmarkFrame);
+
+    // Explore frame
+    const explore = document.createElement('li');
+    explore.textContent = 'Explore';       
     const exploreIcon = document.createElement('img');
     exploreIcon.src = '../../assets/explore_icon.png'
     exploreIcon.className = 'side-panel-icon';
-    wrapper = layout.wrap([exploreIcon, explore], 'side-panel-options');
-    sidePanelOptions.appendChild(wrapper);
-
-    const addTrip = document.createElement('li');
-    addTrip.textContent = '+ Add Trip'; 
-    addTrip.addEventListener('click', () => {
-        // Render page-container to add new trip
+    const exploreFrame = layout.wrap([exploreIcon, explore], 'side-panel-options');
+    exploreFrame.addEventListener('click', () => {
+        // Render explore 
         // -- insert function --
-        changeSidePanelFocus(addTrip);
-    })
+        changeSidePanelFocus(exploreFrame);
+    }) 
+    sidePanelOptions.appendChild(exploreFrame);
+
+    // Add Trip frame
+    const addTrip = document.createElement('li');
+    addTrip.textContent = '+ Add Trip';  
     const addTripIcon = document.createElement('img');
     addTripIcon.src = '../../assets/newtrip_icon.png';
     addTripIcon.className = 'side-panel-icon';
-    wrapper = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
-    sidePanelOptions.appendChild(wrapper);
+    const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
+    addTripFrame.addEventListener('click', () => {
+        // Render page-container to add new trip
+        // -- insert function --
+        changeSidePanelFocus(addTripFrame);
+        renderNewTrip();
+    })
+    sidePanelOptions.appendChild(addTripFrame);
 
     sidePanel.appendChild(sidePanelOptions);
-    changeSidePanelFocus(home);
+    changeSidePanelFocus(homeFrame);
 }
 
 // Change background of focus tab being viewed
 const changeSidePanelFocus = (focus) => {
     const sidePanelOptions = document.getElementsByClassName('side-panel-options');
     for (const panel of sidePanelOptions) {
-        if (panel !== focus.parentElement) {              
-            panel.classList.remove('side-panel-focus');    
+        if (panel !== focus) {              
+            panel.classList.remove('side-panel-focus');
         } else {
             panel.classList.add('side-panel-focus');
-        }
-    }     
-}
+        };
+    };
+};
