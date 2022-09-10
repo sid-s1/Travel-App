@@ -1,6 +1,6 @@
 const db = require('../database/db');
 
-const User = {
+const UserStats = {
     tripNumber: (id) => {
         const sql = 'SELECT DISTINCT users.id,users.username,(SELECT COUNT(*) AS trip_count FROM trips WHERE trips.user_id = users.id) FROM USERS INNER JOIN trips ON trips.user_id = users.id WHERE users.id = $1';
         return db.query(sql, [id])
@@ -21,4 +21,4 @@ const User = {
     }
 };
 
-module.exports = User;
+module.exports = UserStats;
