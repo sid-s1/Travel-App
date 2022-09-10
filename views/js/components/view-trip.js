@@ -13,9 +13,19 @@ const viewTrip = (id) => {
     const keyTakeaway = document.createElement('p');
     const activitiesContainer = document.createElement('div');
 
+    const modifyTripContainer = document.createElement('div');
+    const editTripButton = document.createElement('li');
+    const deleteTripButton = document.createElement('li');
+
+    editTripButton.textContent = 'Edit Trip';
+    deleteTripButton.textContent = 'Delete Trip';
+
     // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
     coverPhoto.className = 'trip-page-cover-pic';
     activitiesContainer.className = 'itinerary-column';
+    modifyTripContainer.id = 'modify-trip';
+    editTripButton.id = 'edit-trip';
+    deleteTripButton.id = 'delete-trip';
 
     // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
     let p = new Promise((resolve, reject) => {
@@ -39,8 +49,7 @@ const viewTrip = (id) => {
                 if (tripDetails[0].trip_status === 'draft') {
                     const draftStatus = document.createElement('h2');
                     draftStatus.textContent = 'DRAFT';
-                    draftStatus.className = 'draft-marker';
-                    pageContainer.appendChild(draftStatus);
+                    modifyTripContainer.append(draftStatus, editTripButton, deleteTripButton);
                 }
 
                 descriptionContent.innerHTML = `
@@ -61,6 +70,7 @@ const viewTrip = (id) => {
                     }
                 }
                 tripHeader.appendChild(citiesForHeader);
+                pageContainer.appendChild(modifyTripContainer);
             })
             .catch(error => { })
 
@@ -116,5 +126,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    // viewTrip(2);
+    viewTrip(2);
 }, 1000);
