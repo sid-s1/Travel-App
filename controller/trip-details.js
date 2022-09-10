@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Trip = require('../models/tripDetails');
+const Trip = require('../models/trip-details');
 
 router.get('/:tripId', (request, response) => {
     const tripId = request.params.tripId;
