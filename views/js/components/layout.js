@@ -1,9 +1,9 @@
 const gridContainer = document.getElementById('grid-container');
-const worldMap = document.getElementById('world-map');
+export const worldMap = document.getElementById('world-map');
 const sidePanel = document.getElementById('side-panel');
 const badges = document.getElementById('badges');
-const page = document.getElementById('page');
-const pageContainer = document.getElementById('page-container');
+export const page = document.getElementById('page');
+export const pageContainer = document.getElementById('page-container');
 
 export const layout = {
     // wrap content in an outer div. Assign class name, if required.
@@ -39,12 +39,22 @@ export const layout = {
         pageContainer.innerHTML = '';
     },
     profile: () => {
-        worldMap.style.display = 'flex';        
-        badges.style.display = 'flex';        
-        sidePanel.style.display = 'flex';         
+        worldMap.style.display = 'flex';
+        badges.style.display = 'flex';
+        sidePanel.style.display = 'flex';
         page.style.display = 'flex';
         badges.innerHTML = '';
         sidePanel.innerHTML = '';
         pageContainer.innerHTML = 'PROFILE VIEW / LOGGED IN';
+    },
+    publicHomepage: () => {
+        worldMap.style.display = 'flex';
+        worldMap.style.gridArea = '1/1/1/3';
+        worldMap.innerHTML = '';
+        badges.style.display = 'none';
+        sidePanel.style.display = 'none';
+        page.style.display = 'flex';
+        page.style.gridArea = '2/1/3/3';
+        pageContainer.innerHTML = '';
     }
 }

@@ -2,22 +2,26 @@ import { renderLogin } from './login.js'
 import { renderSignup } from './signup.js';
 import { renderProfile } from './profile.js';
 import { logout } from './logout.js';
-
+import { renderPublicHomepage } from './public-homepage.js'
 
 // Render top navigation bar
 export const renderNavBar = () => {
     const navBar = document.getElementById('nav-bar');
-    navBar.innerHTML = '';        
+    navBar.innerHTML = '';
     const h1 = document.createElement('h1');
     h1.id = 'logo';
     h1.textContent = 'TRIPT';
+    h1.addEventListener('click', () => {
+        window.location = '/';
+    })
+    h1.style.cursor = 'pointer';
     navBar.appendChild(h1);
     const navList = document.createElement('ul');
     navList.id = 'navlist';
 
     axios.get('/user/session')
     .then(dbRes => {
-        if (dbRes) {            
+        if (dbRes) {
             // LOGGED IN:
             renderProfile()
 
@@ -36,13 +40,13 @@ export const renderNavBar = () => {
             settingsButton.addEventListener('click', () => {
                 // Render user settings (modal?)
             });
-            navList.appendChild(settingsButton); 
+            navList.appendChild(settingsButton);
 
             // Button - Logout
             const logoutButton = document.createElement('li');
             logoutButton.textContent = 'Logout';
             logoutButton.addEventListener('click', () => {
-                logout();          
+                logout();
             });
             navList.appendChild(logoutButton);
             navBar.appendChild(navList);
@@ -52,7 +56,7 @@ export const renderNavBar = () => {
                 alert('An unknown error occured. Please refresh your page')
             } else {
                 // NOT LOGGED IN:
-                // >> Render Dave's landing page function here? <<
+                renderPublicHomepage();
 
                 // Button - Sign Up
                 const signupButton = document.createElement('li');
