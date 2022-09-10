@@ -79,8 +79,8 @@ INSERT INTO trip_locations(trip_id, city_id, city_start_date, city_end_date) VAL
 (1, 3,'2019-01-28','2019-01-29'),
 (2, 5,'2020-01-29','2020-02-04'),
 (3, 2,'2018-05-19','2018-05-21'),
-(4, 3,'2021-12-01','2021-12-31'),
-(5, 6,'2050-01-11','2055-05-29');
+(4, 6,'2021-12-01','2021-12-31'),
+(5, 9,'2050-01-11','2055-05-29');
 
 TRUNCATE user_countries restart identity cascade;
 INSERT INTO user_countries(user_id, country_id) VALUES
