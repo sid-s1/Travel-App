@@ -1,3 +1,4 @@
+// Global page containers
 export const gridContainer = document.getElementById('grid-container');
 export const worldMap = document.getElementById('world-map');
 export const sidePanel = document.getElementById('side-panel');
@@ -6,7 +7,7 @@ export const page = document.getElementById('page');
 export const pageContainer = document.getElementById('page-container');
 
 export const layout = {
-    // wrap content in an outer div. Assign class name, if required.
+    // wrap content in an outer div. Assign class name, or id, if required.
     wrap: (items, itemName, assignId) => {
         const div = document.createElement('div');
         if (assignId) {
