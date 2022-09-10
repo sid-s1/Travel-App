@@ -1,0 +1,19 @@
+
+.new-trip-icon {
+    height: 50px;
+    width: 50px;
+    margin-left: 20px;
+    padding: 5px;
+    cursor: copy;
+    border: solid black 1px;
+}
+.new-trip-options {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 80%;
+    margin: 20px 0;
+    padding: 5px;
+    border: solid black 1px;
+    background-color: yellow;
+}
