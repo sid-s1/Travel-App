@@ -13,6 +13,7 @@ const usersController = require('./controller/users');
 const googleController = require('./controller/google-details');
 const tripController = require('./controller/trip-details');
 const statsController = require('./controller/user-stats');
+const modifyTripController = require('./controller/modify-trip');
 
 // Middleware
 app.use((request, response, next) => {
@@ -35,6 +36,7 @@ app.use('/user/session', usersController);
 app.use('/placeDetails', googleController);
 app.use('/tripDetails', tripController);
 app.use('/userStats', statsController);
+app.use('/modifyTrip', modifyTripController);
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);

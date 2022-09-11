@@ -1,4 +1,5 @@
 import { dateExtractor } from './date-extractor.js';
+import { deleteTripListener } from './delete-trip.js';
 
 const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
@@ -70,7 +71,6 @@ const viewTrip = (id) => {
                     }
                 }
                 tripHeader.appendChild(citiesForHeader);
-                pageContainer.appendChild(modifyTripContainer);
             })
             .catch(error => { })
 
@@ -113,7 +113,8 @@ const viewTrip = (id) => {
     });
     p.then(() => {
         descriptionContainer.appendChild(descriptionContent);
-        pageContainer.append(tripHeader, coverPhoto, descriptionContainer, keyTakeaway, activitiesContainer);
+        pageContainer.append(tripHeader, modifyTripContainer, coverPhoto, descriptionContainer, keyTakeaway, activitiesContainer);
+        deleteTripListener(id);
     })
         .catch(err => console.log(err))
 };
@@ -127,4 +128,4 @@ setTimeout(() => {
 
     // viewTrip(1);
     viewTrip(2);
-}, 1000);
+}, 200);
