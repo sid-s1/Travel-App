@@ -4,7 +4,7 @@
     grid-template-columns: auto;
 }
 
-.user-result {
+.user-result, .trip-result, .activity-result {
 grid-column: 1/2;
 display: grid;
 border: 1px solid black;

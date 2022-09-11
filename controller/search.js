@@ -12,7 +12,6 @@ router.post('/', (request, response) => {
         Search.searchUsers(searchLowerCase)
         .then(dbRes => response.json(dbRes.rows));
     } else if (searchType === 'city') {
-        let tripDetails = [];
         Search.searchCities(searchLowerCase)
         .then((dbRes) => {
             const tripIdArr = [];
