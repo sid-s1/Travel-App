@@ -27,7 +27,15 @@ export const renderProfile = (userId) => {
                     <div>Achievements: <span id="total-achievements"></span></div>
                     `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    userStats(userId);
+    // userStats(userId);
+
+    // get user ID and display stats if it is the same as the user who's profile is being displayed
+    axios.get('/user/session')
+        .then(response => {
+            const result = response.data.rows[0];
+            const loggedInUserId = result.id;
+            userStats(loggedInUserId);
+        })
     worldMap.appendChild(profileStats);
 
 

@@ -64,7 +64,7 @@ const viewTrip = (id) => {
                             .catch(err => console.log(err))
 
                         // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
-                        renderProfile(id);
+                        renderProfile(2);
                     }
 
                     else {
@@ -159,5 +159,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    viewTrip(7);
+    viewTrip(8);
 }, 500);
