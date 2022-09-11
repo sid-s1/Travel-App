@@ -1,4 +1,4 @@
--- after inserting the schema into the db, insert this file by navigating to the project folder in the CLI 
+-- after inserting the schema into the db, insert this file by navigating to the project folder in the CLI
 -- and using the following command:
 -- 'psql tript < database/seed.sql'
 -- Note: passwords for users are same as usernames
@@ -14,7 +14,8 @@ TRUNCATE trips restart identity cascade;
 INSERT INTO trips(user_id, trip_name, trip_type, trip_status, trip_start_date, trip_end_date, hero_image_url, description, key_takeaway) VALUES
 (1, 'My Ski Adventure', 'active', 'posted', '2019-01-24', '2019-02-12', 'https://images.unsplash.com/photo-1465220183275-1faa863377e3', 'This trip was so awesome, we skiied night and day.','Skiing is fun.'),
 (2, 'European summer escape', 'leisure', 'draft', '2021-06-22', '2021-07-03', 'https://images.unsplash.com/photo-1595704313515-e345a1cbdaa2', 'Summer in Italy and France.','I like Gelato.'),
-(3, 'Eurovision trip', 'weekender', 'posted', '2018-05-19', '2018-05-21', 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3', 'Eurovision 2018! A great weekend away.','Switzerland was robbed!');
+(3, 'Eurovision trip', 'weekender', 'posted', '2018-05-19', '2018-05-21', 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3', 'Eurovision 2018! A great weekend away.','Switzerland was robbed!'),
+(1, 'French exploring', 'weekender', 'posted', '2022-06-01', '2022-06-03', 'https://images.unsplash.com/photo-1573031522107-b9447e67479c', 'A beautiful sojourn into the French countryside.','French bread is amazing.');
 
 TRUNCATE votes restart identity cascade;
 INSERT INTO votes(user_id, trip_id, liked) VALUES
@@ -35,7 +36,8 @@ INSERT INTO user_achievements(user_id, achievement_id) VALUES
 TRUNCATE countries restart identity cascade;
 INSERT INTO countries(country_name, flag_img_file, language, currency) VALUES
 ('Australia', 'aussie_flag.img', 'English', 'AUD'),
-('Switzerland', 'swiss_flag.img', 'German', 'CHF');
+('Switzerland', 'swiss_flag.img', 'German', 'CHF'),
+('France', 'french_flag.img', 'French', 'EUR');
 
 TRUNCATE cities restart identity cascade;
 INSERT INTO cities(country_id, gm_api_city_id, city_name) VALUES
@@ -43,14 +45,18 @@ INSERT INTO cities(country_id, gm_api_city_id, city_name) VALUES
 (1, 'gm_code_brisbane', 'Brisbane'),
 (1,'gm_code_melbourne','Melbourne'),
 (1,'gm_code_adelaide','Adelaide'),
-(2,'gm_code_geneva','Geneva');
+(2,'gm_code_geneva','Geneva'),
+(3,'gm_code_paris','Paris'),
+(3,'gm_code_nice','Nice');
 
 TRUNCATE trip_locations restart identity cascade;
 INSERT INTO trip_locations(trip_id, city_id, city_start_date, city_end_date) VALUES
 (1, 1, '2019-01-24', '2019-01-25'),
 (1, 2,'2019-01-26','2019-01-27'),
 (1, 3,'2019-01-28','2019-01-29'),
-(2, 5,'2020-01-29','2020-02-04');
+(2, 5,'2020-01-29','2020-02-04'),
+(4, 6,'2022-06-01','2022-06-02'),
+(4, 7,'2022-06-02','2022-06-03');
 
 TRUNCATE user_countries restart identity cascade;
 INSERT INTO user_countries(user_id, country_id) VALUES

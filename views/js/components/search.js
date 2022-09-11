@@ -1,5 +1,6 @@
 import { layout, worldMap, page, pageContainer } from "./layout.js";
 import { renderProfile } from "./profile.js"
+import { dateExtractor } from "./dateExtractor.js"
 
 export const renderSearch = () => {
 
@@ -36,6 +37,17 @@ export const renderSearch = () => {
     searchByCity.value = 'city';
     searchByCity.checked = false;
 
+    const searchByActivityLabel = document.createElement('label');
+    searchByActivityLabel.setAttribute('for', 'activity');
+    searchByActivityLabel.textContent = 'Activity';
+
+    const searchByActivity = document.createElement('input');
+    searchByActivity.type = 'radio';
+    searchByActivity.name = 'search-type';
+    searchByActivity.id = 'activity';
+    searchByActivity.value = 'activity';
+    searchByActivity.checked = false;
+
     const searchByCountryLabel = document.createElement('label');
     searchByCountryLabel.setAttribute('for', 'country');
     searchByCountryLabel.textContent = 'Country';
@@ -47,7 +59,7 @@ export const renderSearch = () => {
     searchByCountry.value = 'country';
     searchByCountry.checked = false;
 
-    const searchTabs = layout.wrap([searchByAll, searchByAllLabel, searchByUser, searchByUserLabel, searchByCity, searchByCityLabel, searchByCountry, searchByCountryLabel],'search-tabs')
+    const searchTabs = layout.wrap([searchByAll, searchByAllLabel, searchByUser, searchByUserLabel, searchByCity, searchByCityLabel, searchByActivity, searchByActivityLabel, searchByCountry, searchByCountryLabel],'search-tabs')
 
     const form = document.createElement('form');
     form.id = 'search-form';
@@ -95,7 +107,6 @@ const executeSearch = (form) => {
       };
     axios.post('/search', data)
     .then((dbRes) => {
-        console.log(dbRes.data);
         renderSearchResults(dbRes.data);
     })
     .catch((err) => {
@@ -103,34 +114,144 @@ const executeSearch = (form) => {
     })
 }
 
+const renderTrips = (data) => {
+    const resultsContainer = document.createElement('div');
+    resultsContainer.className = 'results'
+
+    console.log(data);
+
+    const tripArr = []
+    for (let i=0; i < data.length; i++) {
+        const idCheck = (trip) => trip.trip_id === data[i].id;
+        if (!tripArr.some(idCheck)) {
+            const obj = {
+                trip_id: data[i].id,
+                trip_name: data[i].trip_name,
+                trip_descr: data[i].description,
+                trip_status: data[i].trip_status,
+                trip_start_date: data[i].trip_start_date,
+                trip_end_date: data[i].trip_end_date,
+            }
+        tripArr.push(obj);
+        }
+    }
+
+    for (let i=0; i < data.length; i++) {
+        const trip = tripArr.find(item => item.trip_id === data[i].id);
+        if (trip.trip_cities) {
+            trip.trip_cities.push(data[i].city_name)
+        } else {
+            trip.trip_cities = [data[i].city_name]
+        }
+    }
+
+    for (let i=0; i < data.length; i++) {
+        const trip = tripArr.find(item => item.trip_id === data[i].id);
+        if (trip.trip_countries) {
+            if (trip.trip_countries != data[i].country_name) {
+                trip.trip_countries.push(data[i].country_name)
+            }
+        } else {
+            trip.trip_countries = [data[i].country_name]
+        }
+    }
+
+        console.log(tripArr);
+        tripArr.forEach(row => {
+            if (row.trip_status === 'posted') {
+                const tripContainer = document.createElement('div');
+                tripContainer.className = 'trip-result';
+                const cityConversion = row.trip_cities.toString();
+                const countryConversion = row.trip_countries.toString();
+                const cities = cityConversion.replace(/,/g, ', ');
+                const countries = countryConversion.replace(/,/g, ', ');
+                const startDate = dateExtractor.formatDate(row.trip_start_date);
+                const endDate = dateExtractor.formatDate(row.trip_end_date);
+                tripContainer.innerHTML = `
+                <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
+                <h3>${cities}</h3>
+                <h3>${startDate} to ${endDate}</h3>
+                <p>${row.trip_descr}</p>
+                `
+                tripContainer.addEventListener('click', () => {
+                    console.log(`Trip id '${row.trip_id}' clicked`);
+                })
+                tripContainer.id = `trip${row.trip_id}`;
+                resultsContainer.appendChild(tripContainer);
+            }
+        });
+        return resultsContainer;
+}
+
+const renderUsers = (data) => {
+    const resultsContainer = document.createElement('div');
+    resultsContainer.className = 'results'
+    data.forEach(row => {
+        const userContainer = document.createElement('div');
+        userContainer.className = 'user-result';
+        userContainer.innerHTML = `
+        <h2><i class="fa-light fa-user"></i>  ${row.username}</h2>
+        <p>Trips: ${row.trip_count}</p>
+        <p>Countries: ${row.country_count}</p>
+        <p>Achievements: ${row.achievement_count}</p>
+        `
+        userContainer.addEventListener('click', () => {
+            console.log(`${row.username} clicked`);
+            renderProfile(`${row.user_id}`);
+        })
+        resultsContainer.appendChild(userContainer);
+    });
+    return resultsContainer;
+}
+
+const renderActivities = (data) => {
+    const resultsContainer = document.createElement('div');
+    resultsContainer.className = 'results'
+    data.forEach(row => {
+        let icon = ''
+        switch (row.gm_type) {
+            case 'Flight':
+                icon = '<i class="fa-light fa-plane-departure"></i>'
+                break;
+            case 'Hotel':
+                icon = '<i class="fa-light fa-hotel"></i>'
+                break;
+            case 'Business':
+                icon = '<i class="fa-regular fa-calendar-star"></i>'
+                break;
+            default:
+                break;
+        }
+        const activityContainer = document.createElement('div');
+        activityContainer.className = 'activity-result';
+        activityContainer.innerHTML = `
+        <h2>${icon}  ${row.activity_name}</h2>
+        <p>Activity details</p>
+        `
+        activityContainer.addEventListener('click', () => {
+            console.log(`activity ${row.activity_name} clicked`);
+        })
+        resultsContainer.appendChild(activityContainer);
+    });
+    return resultsContainer;
+}
+
 const renderSearchResults = (data) => {
     const searchType = document.querySelector('input[name="search-type"]:checked').value;
     pageContainer.innerHTML = '';
-    const resultsContainer = document.createElement('div');
-    resultsContainer.className = 'results'
     if (searchType === 'user') {
-        data.forEach(row => {
-            const userContainer = document.createElement('div');
-            userContainer.className = 'user-result';
-            userContainer.innerHTML = `
-            <h2><i class="fa-light fa-user"></i>  ${row.username}</h2>
-            <p>Trips: ${row.trip_count}</p>
-            <p>Countries: ${row.country_count}</p>
-            <p>Achievements: ${row.achievement_count}</p>
-            `
-            userContainer.addEventListener('click', () => {
-                console.log(`${row.username} clicked`);
-                renderProfile(`${row.user_id}`);
-            })
-            resultsContainer.appendChild(userContainer);
-        });
+        pageContainer.appendChild(renderUsers(data));
     } else if (searchType === 'city') {
-        resultsContainer.innerHTML = 'city';
+        pageContainer.appendChild(renderTrips(data));
     } else if (searchType === 'country') {
-        resultsContainer.innerHTML = 'country';
+        pageContainer.appendChild(renderTrips(data));
+    } else if (searchType === 'activity') {
+        console.log(data);
+        pageContainer.appendChild(renderActivities(data));
     } else if (searchType === 'all') {
-        resultsContainer.innerHTML = 'all';
+        console.log(data);
+        pageContainer.appendChild(renderUsers(data.users));
+        pageContainer.appendChild(renderTrips(data.trips));
+        pageContainer.appendChild(renderActivities(data.activites));
     }
-    pageContainer.appendChild(resultsContainer);
-
 }
