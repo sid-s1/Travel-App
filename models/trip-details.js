@@ -2,7 +2,7 @@ const db = require('../database/db');
 
 const Trip = {
     details: (id) => {
-        const sql = 'SELECT trips.trip_name,trips.trip_status,trips.trip_start_date,trips.trip_end_date,trips.hero_image_url,trips.description,trips.key_takeaway,cities.city_name FROM trips INNER JOIN trip_locations ON trips.id = trip_locations.trip_id INNER JOIN cities ON trip_locations.city_id = cities.id WHERE trip_id = $1';
+        const sql = 'SELECT trips.trip_name,trips.user_id,trips.trip_status,trips.trip_start_date,trips.trip_end_date,trips.hero_image_url,trips.description,trips.key_takeaway,cities.city_name FROM trips INNER JOIN trip_locations ON trips.id = trip_locations.trip_id INNER JOIN cities ON trip_locations.city_id = cities.id WHERE trip_id = $1';
         return db.query(sql, [id])
             .then(dbRes => dbRes)
             .catch(err => console.log(err))

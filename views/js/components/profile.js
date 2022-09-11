@@ -7,9 +7,6 @@ export const renderProfile = (userId) => {
     layout.reset();
     layout.profile();
 
-    // Render stats
-    // -- insert function --
-
     // Render badges
     // -- insert function --
 
@@ -20,24 +17,23 @@ export const renderProfile = (userId) => {
     const profilePic = layout.wrap([profileDiv], 'profile-pic', 'id');
     worldMap.appendChild(profilePic);
 
-    const statsDiv = document.createElement('div');
-    statsDiv.innerHTML = `
-                     <div>Number of trips: <span id="total-trips"></span></div>
-                    <div>Number of countries: <span id="total-countries"></span></div>
-                    <div>Achievements: <span id="total-achievements"></span></div>
-                    `;
-    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    // userStats(userId);
-
     // get user ID and display stats if it is the same as the user who's profile is being displayed
     axios.get('/user/session')
         .then(response => {
             const result = response.data.rows[0];
             const loggedInUserId = result.id;
-            userStats(loggedInUserId);
-        })
-    worldMap.appendChild(profileStats);
+            const statsDiv = document.createElement('div');
 
+            statsDiv.innerHTML = `
+                     <div>Number of trips: <span id="total-trips"></span></div>
+                    <div>Number of countries: <span id="total-countries"></span></div>
+                    <div>Achievements: <span id="total-achievements"></span></div>
+                    `;
+            const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
+
+            userStats(loggedInUserId);
+            worldMap.appendChild(profileStats);
+        })
 
     // Render side panel
     const sidePanelOptions = document.createElement('ul');

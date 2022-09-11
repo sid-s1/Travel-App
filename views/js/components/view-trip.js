@@ -53,7 +53,16 @@ const viewTrip = (id) => {
                     modifyTripContainer.appendChild(draftStatus);
                 }
 
-                modifyTripContainer.append(editTripButton, deleteTripButton);
+                axios.get('/user/session')
+                    .then(response => {
+                        const result = response.data.rows[0];
+                        const loggedInUserId = result.id;
+                        const userIdForTrip = tripDetails[0].user_id;
+                        if (loggedInUserId === userIdForTrip) {
+                            modifyTripContainer.append(editTripButton, deleteTripButton);
+                        }
+                    })
+
 
                 let deleteConfirmation = false;
                 deleteTripButton.addEventListener('click', () => {
@@ -159,5 +168,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    viewTrip(8);
+    viewTrip(6);
 }, 500);
