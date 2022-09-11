@@ -159,5 +159,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    viewTrip(2);
+    viewTrip(7);
 }, 500);
