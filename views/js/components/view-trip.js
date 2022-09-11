@@ -1,5 +1,5 @@
 import { dateExtractor } from './date-extractor.js';
-import { deleteTripListener } from './delete-trip.js';
+import { renderProfile } from './profile.js';
 
 const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
@@ -15,8 +15,8 @@ const viewTrip = (id) => {
     const activitiesContainer = document.createElement('div');
 
     const modifyTripContainer = document.createElement('div');
-    const editTripButton = document.createElement('li');
-    const deleteTripButton = document.createElement('li');
+    const editTripButton = document.createElement('button');
+    const deleteTripButton = document.createElement('button');
 
     editTripButton.textContent = 'Edit Trip';
     deleteTripButton.textContent = 'Delete Trip';
@@ -50,8 +50,41 @@ const viewTrip = (id) => {
                 if (tripDetails[0].trip_status === 'draft') {
                     const draftStatus = document.createElement('h2');
                     draftStatus.textContent = 'DRAFT';
-                    modifyTripContainer.append(draftStatus, editTripButton, deleteTripButton);
+                    modifyTripContainer.appendChild(draftStatus);
                 }
+
+                modifyTripContainer.append(editTripButton, deleteTripButton);
+
+                let deleteConfirmation = false;
+                deleteTripButton.addEventListener('click', () => {
+
+                    if (deleteConfirmation) {
+                        axios.delete(`/modifyTrip/deleteTrip/${id}`)
+                            .then(response => console.log(response.data))
+                            .catch(err => console.log(err))
+
+                        // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
+                        renderProfile(id);
+                    }
+
+                    else {
+                        deleteConfirmation = true;
+                        deleteTripButton.disabled = 'true';
+                        deleteTripButton.textContent = 'Confirm delete?';
+                        let startInterval = 5;
+
+                        let confirmDeleteInterval = setInterval(() => {
+                            deleteTripButton.textContent = `Confirm delete? ${startInterval}${'.'.repeat(startInterval)}`;
+                            startInterval--;
+                        }, 1000);
+
+                        setTimeout(() => {
+                            clearInterval(confirmDeleteInterval);
+                            deleteTripButton.textContent = 'Confirm delete?';
+                            deleteTripButton.removeAttribute('disabled');
+                        }, 6000);
+                    }
+                });
 
                 descriptionContent.innerHTML = `
                 <h4>Description</h4>
@@ -114,7 +147,6 @@ const viewTrip = (id) => {
     p.then(() => {
         descriptionContainer.appendChild(descriptionContent);
         pageContainer.append(tripHeader, modifyTripContainer, coverPhoto, descriptionContainer, keyTakeaway, activitiesContainer);
-        deleteTripListener(id);
     })
         .catch(err => console.log(err))
 };
@@ -128,4 +160,4 @@ setTimeout(() => {
 
     // viewTrip(1);
     viewTrip(2);
-}, 200);
+}, 500);
