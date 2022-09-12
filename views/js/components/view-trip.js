@@ -1,7 +1,7 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 
-const viewTrip = (id) => {
+export const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
     // emptying container to remove old content
     pageContainer.innerHTML = '';
@@ -168,5 +168,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    viewTrip(6);
+    // viewTrip(6);
 }, 500);

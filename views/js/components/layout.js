@@ -22,19 +22,28 @@ export const layout = {
     },
     // login view
     reset: () => {
-        worldMap.style.display = 'none';        
-        badges.style.display = 'none';        
-        sidePanel.style.display = 'none';         
+        worldMap.style.display = 'none';
+        badges.style.display = 'none';
+        sidePanel.style.display = 'none';
         page.style.display = 'none';
         worldMap.style.gridArea = '1/1/1/3';
         badges.style.gridArea = '2/2/2/3';
         sidePanel.style.gridArea = '2/1/4/2';
         page.style.gridArea = '3/2/3/3';
+        worldMap.innerHTML = `<label>getElementById('world-map')</label>
+        <div id="profile-pic">
+            <div>Profile Pic</div>
+        </div>
+        <div id="profile-stats">
+            <div>Number of trips: X</div>
+            <div>Number of countries: X</div>
+            <div>Achievements: X</div>
+        </div>`
     },
     login: () => {
-        page.style.display = 'flex';  
+        page.style.display = 'flex';
         page.style.gridArea = '1/1/3/3';
-        pageContainer.innerHTML = '';     
+        pageContainer.innerHTML = '';
     },
     signup: () => {
         page.style.display = 'flex';
@@ -52,12 +61,16 @@ export const layout = {
     },
     publicHomepage: () => {
         worldMap.style.display = 'flex';
-        worldMap.style.gridArea = '1/1/1/3';
-        worldMap.innerHTML = '';
-        badges.style.display = 'none';
-        sidePanel.style.display = 'none';
         page.style.display = 'flex';
+        worldMap.style.gridArea = '1/1/1/3';
         page.style.gridArea = '2/1/3/3';
+        worldMap.innerHTML = '';
+        pageContainer.innerHTML = '';
+    },
+    exploreSearch: ()  => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
         pageContainer.innerHTML = '';
     },
     newtrip: () => {

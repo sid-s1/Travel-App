@@ -1,4 +1,4 @@
--- after inserting the schema into the db, insert this file by navigating to the project folder in the CLI 
+-- after inserting the schema into the db, insert this file by navigating to the project folder in the CLI
 -- and using the following command:
 -- 'psql tript < database/seed.sql'
 -- Note: passwords for users are same as usernames
@@ -15,6 +15,7 @@ INSERT INTO trips(user_id, trip_name, trip_type, trip_status, trip_start_date, t
 (1, 'My Ski Adventure', 'active', 'posted', '2019-01-24', '2019-02-12', 'https://images.unsplash.com/photo-1465220183275-1faa863377e3', 'This trip was so awesome, we skiied night and day.','Skiing is fun.'),
 (2, 'European summer escape', 'leisure', 'draft', '2021-06-22', '2021-07-03', 'https://images.unsplash.com/photo-1595704313515-e345a1cbdaa2', 'Summer in Italy and France.','I like Gelato.'),
 (3, 'Eurovision trip', 'weekender', 'posted', '2018-05-19', '2018-05-21', 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3', 'Eurovision 2018! A great weekend away.','Switzerland was robbed!'),
+(1, 'French exploring', 'weekender', 'posted', '2022-06-01', '2022-06-03', 'https://images.unsplash.com/photo-1573031522107-b9447e67479c', 'A beautiful sojourn into the French countryside.','French bread is amazing.'),
 (2, 'A taste of the East', 'exploratory', 'posted', '2021-12-01', '2021-12-31', 'https://www.1800flowers.com/blog/wp-content/uploads/2021/07/Japanese-feature.jpg', 'The Japanese culture never fails to impress; the aura of mysticism and the grace of their ways is truly something to witness.','Excuse me - why was switzerland robbed?'),
 (2, 'Spaced out', 'weekender', 'posted', '2050-01-11', '2055-05-29', 'https://cdn.mos.cms.futurecdn.net/LNAm66BstSr7n6HsLPN7Bk-1200-80.jpg', 'A great weekender! Highly recommend! It felt amazing to visit our Andromedian relatives and eat Fish Bowl with them','There are no aliens - wait, who was I eating with then?'),
 (2, 'Trip to Delete 1', 'exploratory', 'posted', '2021-12-01', '2021-12-31', 'https://www.1800flowers.com/blog/wp-content/uploads/2021/07/Japanese-feature.jpg', 'The Japanese culture never fails to impress; the aura of mysticism and the grace of their ways is truly something to witness.','Excuse me - why was switzerland robbed?'),
@@ -64,7 +65,8 @@ INSERT INTO countries(country_name, flag_img_file, language, currency) VALUES
 ('Japan', 'japanese_flag.img', 'Japanese', 'JPY'),
 ('India', 'indian_flag.img', 'Hindi', 'INR'),
 ('Iceland', 'icelandic_flag.img', 'Icelandic', 'ISK'),
-('Andromeda', 'andromedise_flag.img', 'GorgorIDK', 'IDK');
+('Andromeda', 'andromedise_flag.img', 'GorgorIDK', 'IDK'),
+('France', 'french_flag.img', 'French', 'EUR');
 
 TRUNCATE cities restart identity cascade;
 INSERT INTO cities(country_id, gm_api_city_id, city_name) VALUES
@@ -76,7 +78,9 @@ INSERT INTO cities(country_id, gm_api_city_id, city_name) VALUES
 (3,'gm_code_tokyo','Tokyo'),
 (4,'gm_code_shimla','Shimla'),
 (5,'gm_code_reykjavik','Reykjavik'),
-(6,'gm_code_mirach','Mirach');
+(6,'gm_code_mirach','Mirach'),
+(3,'gm_code_paris','Paris'),
+(3,'gm_code_nice','Nice');
 
 TRUNCATE trip_locations restart identity cascade;
 INSERT INTO trip_locations(trip_id, city_id, city_start_date, city_end_date) VALUES
