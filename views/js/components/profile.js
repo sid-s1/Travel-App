@@ -103,17 +103,19 @@ export const renderProfile = (userId) => {
     addTripIcon.src = '../../assets/newtrip_icon.png';
     addTripIcon.className = 'side-panel-icon';
     const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
-    addTripFrame.addEventListener('click', () => {
-        // Render page-container to add new trip
-        // -- insert function --
-        changeSidePanelFocus(addTripFrame);
-        renderNewTrip();
+    let clicked = false;
+    addTripFrame.addEventListener('click', () => {        
+        if (!clicked) {
+            clicked = true;
+            changeSidePanelFocus(addTripFrame);
+            renderNewTrip(); 
+        }        
     })
     sidePanelOptions.appendChild(addTripFrame);
 
     sidePanel.appendChild(sidePanelOptions);
     changeSidePanelFocus(homeFrame);
-}
+};
 
 // Change background of focus tab being viewed
 const changeSidePanelFocus = (focus) => {

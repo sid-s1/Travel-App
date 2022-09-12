@@ -56,9 +56,11 @@
     background-color: rgb(224, 187, 179);
 }
 .new-trip-form-frame {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    /* display: flex; */
+    /* flex-direction: row;
+    justify-content: space-around; */
     margin-bottom: 30px;
     width: 100%;
     background-color: yellow;

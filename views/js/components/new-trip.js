@@ -1,4 +1,5 @@
 import { layout, page, pageContainer} from './layout.js';
+import { airlines } from './airlines.js';
 
 export const renderNewTrip = () => {
     // set view
@@ -6,15 +7,29 @@ export const renderNewTrip = () => {
     layout.newtrip();
     
     // render options bar
-    if (page.childElementCount <= 2) {
-        renderOptionsBar();        
+    if (page.childElementCount <= 2) {            
         const header = document.createElement('h1');
         header.textContent = '- ADD NEW TRIP -'
-        pageContainer.insertBefore(header, pageContainer.lastChild)
-    }    
+        pageContainer.appendChild(header)
+        renderOptionsBar();    
+    };
+
+    // get user id, then create a new trip row in db, returning tripId value
+    axios.get('/user/session') 
+        .then(dbRes => {
+            const userId = dbRes.data.rows[0].id;
+        // create new trip row in db and return trip id 
+        axios.put(`user/trips/${userId}`)
+            .then(dbRes => {
+                const tripId = dbRes.data.rows[0].id;
+                pageContainer.name = tripId;
+                console.log(`pageContainer TRIP ID CREATED: ${tripId}`)
+            }).catch(err => err)
+    }).catch(err => err)
 }
 
 const renderOptionsBar = () => {
+    // options buttons to control adding of items to itinerary
     const data = [
         {
             type: 'airline',
@@ -63,8 +78,7 @@ const createContainer = (data, parentClass) => {
             if (type === 'airline' || type === 'hotel' || type === 'activity') {
                 const deleteButton = createFloatingElement(form, 'X', 'new-trip-icon-float float-delete');
                  deleteButton.addEventListener('click', () => {
-                    const formInput = deleteButton.previousSibling;
-                    if (formInput.id) {
+                    if (pageContainer.id) {
                         console.log('itinerary id is present?')
                         // (?) Note to self: once the form blur adds to DB, attach itinerary id to form?
                         // As we'll then need to do a call to remove from itinerary_items if form deleted.
@@ -162,6 +176,14 @@ const generateForm = (dataType, icon) => {
                     inputName: 'start-date',
                     inputClass: 'new-trip-input',
                     required: true
+                },
+                {
+                    element: 'input',
+                    type: 'number',
+                    placeholder: 'Enter rating between 0 - 10',
+                    inputName: 'rating',
+                    inputClass: 'new-trip-input',
+                    required: true
                 }
             ]
         }
@@ -170,9 +192,12 @@ const generateForm = (dataType, icon) => {
     const form = document.createElement('form'); 
     
     const fetchData = data.filter(item => item.type === dataType)[0];
-    form.className = fetchData.formClass;  
-    const items = fetchData.items;   
+    const itineraryType = fetchData.type;
+    form.className = fetchData.formClass;
 
+
+
+    const items = fetchData.items;
     for (const i in items) {
         const { element, type, placeholder, inputName, inputClass, required } = items[i];
         const newElement = document.createElement(element);
@@ -182,32 +207,54 @@ const generateForm = (dataType, icon) => {
         if (inputClass) newElement.className = inputClass;
         if (required) newElement.required = true;
 
+        if (itineraryType === 'airline') {
+            // @SID - Please work on the autocomplete referencing airlines.js array
+            newElement.addEventListener('keyup', (e) => {
+                const userInput = e.target.value.toLowerCase();
+                console.log(userInput);
+                let test = airlines.filter(element => airlines.includes(element));
+                console.log(test);
+            })
+        }
+
         newElement.addEventListener('change', () => {
-            console.log('change detected');
+            console.log('Input CHANGE detected');
             newElement.addEventListener('blur', (event) => {
                 event.preventDefault();
-                console.log('blur detected')
-                axios.get('/user/session')
-                    .then(dbRes => {
-                        const { id, username } = dbRes.data.rows[0];
-                        console.log(`logged in users id: ${id}`)
-                        console.log(`logged in users username: ${username}`)
-                        // (?) Note to self: troubleshoot with the guys thoughts on determining if a trip_id already exists?
-                    })
-                    .catch((err) => {
-                        if (err.response.status === 500) {
-                            alert('Something went wrong. Please try again.');
-                        } else {
-                            alert('save me jeebus')
-                        }
-                    });
-            newElement.removeEventListener('blur', () => {});
-           });
+                console.log('Input BLUR detected')
+                
+                const formData = new FormData(form)
+                const data = {
+                    type: type,
+                    name: formData.get(inputName),
+                    startDate: formData.get('start-date'),
+                    endDate: formData.get('end-date'),
+                    rating: formData.get('rating')
+                };
+
+                console.log(data)
+
+                const tripId = pageContainer.name;
+
+                // axios.put(`/user/trips/${tripId}`, data)
+                // .then(() => {
+                //         console.log('added to DB')
+                //         // visual green tick, or in/out color affect on the input?
+                //         setTimeout(renderChallenges, 2000);
+                //     } 
+                // )
+                // .catch(err => {
+                //     if (err.response.status === 500) {
+                //         alert('An unknown error occured. Please try again')
+                //     } else {
+                //         alert(err.response.data.message)
+                //     }
+                // });
+            });
         });
-            
+
         form.appendChild(newElement)
     }
     
-    const wrapForm = layout.wrap([icon, form], 'new-trip-form-frame')
-    return wrapForm;
+    return layout.wrap([icon, form], 'new-trip-form-frame')
 }

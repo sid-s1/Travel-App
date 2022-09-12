@@ -14,4 +14,13 @@ router.get('/activites/:tripId', (request, response) => {
         .then(dbRes => response.json(dbRes.rows))
 });
 
+router.put('/:userId', (request, response) => {
+    const userId = request.params.userId;
+    Trip.createTripId(userId)
+        .then(dbRes => {
+            response.json(dbRes)
+        })
+        .catch(err => console.log(err))
+});
+
 module.exports = router;
