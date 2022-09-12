@@ -1,9 +1,12 @@
 import { renderSearch } from "./search.js"
-import { layout } from "./layout.js";
+import { layout, pageContainer, worldMap } from "./layout.js";
 
 
 export const renderPublicHomepage = () => {
     layout.reset();
     layout.publicHomepage();
-    renderSearch();
+    const resultsContainer = document.createElement('div');
+    resultsContainer.id = 'results';
+    pageContainer.appendChild(resultsContainer);
+    renderSearch(worldMap);
 }

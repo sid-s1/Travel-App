@@ -69,10 +69,8 @@ export const layout = {
     },
     exploreSearch: ()  => {
         worldMap.style.display = 'flex';
-        badges.style.display = 'flex';
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
-        worldMap.innerHTML = '';
         pageContainer.innerHTML = '';
     },
     newtrip: () => {

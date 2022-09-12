@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Search = require('../models/search.js');
-const Trip = require('../models/tripDetails.js');
+const Trip = require('../models/trips.js');
 
 router.post('/', (request, response) => {
     const searchString = request.body.searchString;

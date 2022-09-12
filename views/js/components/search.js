@@ -1,8 +1,9 @@
 import { layout, worldMap, page, pageContainer } from "./layout.js";
 import { renderProfile } from "./profile.js"
-import { dateExtractor } from "./dateExtractor.js"
+import { dateExtractor } from "./date-extractor.js"
+import { viewTrip } from "./view-trip.js"
 
-export const renderSearch = () => {
+export const renderSearch = (targetContainer) => {
 
     const searchByAllLabel = document.createElement('label');
     searchByAllLabel.setAttribute('for', 'all');
@@ -95,7 +96,7 @@ export const renderSearch = () => {
     const searchDiv = layout.wrap([form], 'search-div');
 
 
-    worldMap.appendChild(searchDiv);
+    targetContainer.appendChild(searchDiv);
 }
 
 
@@ -107,19 +108,62 @@ const executeSearch = (form) => {
       };
     axios.post('/search', data)
     .then((dbRes) => {
-        renderSearchResults(dbRes.data);
+        renderSearchResults(dbRes.data, data.searchString);
     })
     .catch((err) => {
         console.log(err);
     })
 }
 
+const renderSearchResults = (data, searchString) => {
+    const searchType = document.querySelector('input[name="search-type"]:checked').value;
+    console.log(searchType);
+    const resultsContainer = document.getElementById('results');
+    console.log(resultsContainer);
+    resultsContainer.innerHTML = '';
+    const searchHeading = document.createElement('h2');
+    searchHeading.id = 'search-heading';
+    const searchCount = document.createElement('p');
+    searchCount.id = 'search-count';
+    resultsContainer.appendChild(searchHeading);
+    resultsContainer.appendChild(searchCount);
+    if (searchType === 'user') {
+        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Users:`;
+        document.getElementById('search-count').textContent = `${data.length} results found`;
+        renderUsers(data);
+    } else if (searchType === 'city') {
+        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Cities:`;
+        if (data.length === 0) {
+            document.getElementById('search-count').textContent = '0 results found';
+        } else {
+            renderTrips(data);
+        }
+    } else if (searchType === 'country') {
+        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Countries:`;
+        if (data.length === 0) {
+            document.getElementById('search-count').textContent = '0 results found';
+        } else {
+            renderTrips(data);
+        }
+    } else if (searchType === 'activity') {
+        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Activies:`;
+        document.getElementById('search-count').textContent = `${data.length} results found`;
+        renderActivities(data);
+    } else if (searchType === 'all') {
+        const searchResultsLength = data.users.length + data.trips.length + data.activites.length;
+        console.log(`user: ${data.users.length}`);
+        console.log(`trips: ${data.trips.length}`);
+        console.log(`activites: ${data.activites.length}`);
+        document.getElementById('search-heading').textContent = `Search for '${searchString}' in all categories:`;
+        renderUsers(data.users);
+        renderTrips(data.trips);
+        renderActivities(data.activites);
+        document.getElementById('search-count').textContent = `${searchResultsLength} results found`;
+    }
+}
+
 const renderTrips = (data) => {
-    const resultsContainer = document.createElement('div');
-    resultsContainer.className = 'results'
-
-    console.log(data);
-
+    const resultsDiv = document.getElementById('results');
     const tripArr = []
     for (let i=0; i < data.length; i++) {
         const idCheck = (trip) => trip.trip_id === data[i].id;
@@ -157,6 +201,7 @@ const renderTrips = (data) => {
     }
 
         console.log(tripArr);
+        document.getElementById('search-count').textContent = `${tripArr.length} results found`;
         tripArr.forEach(row => {
             if (row.trip_status === 'posted') {
                 const tripContainer = document.createElement('div');
@@ -175,17 +220,17 @@ const renderTrips = (data) => {
                 `
                 tripContainer.addEventListener('click', () => {
                     console.log(`Trip id '${row.trip_id}' clicked`);
+                    viewTrip(row.trip_id);
                 })
                 tripContainer.id = `trip${row.trip_id}`;
-                resultsContainer.appendChild(tripContainer);
+                resultsDiv.appendChild(tripContainer);
             }
         });
-        return resultsContainer;
 }
 
 const renderUsers = (data) => {
-    const resultsContainer = document.createElement('div');
-    resultsContainer.className = 'results'
+    const resultsDiv = document.getElementById('results');
+
     data.forEach(row => {
         const userContainer = document.createElement('div');
         userContainer.className = 'user-result';
@@ -197,16 +242,14 @@ const renderUsers = (data) => {
         `
         userContainer.addEventListener('click', () => {
             console.log(`${row.username} clicked`);
-            renderProfile(`${row.user_id}`);
+            // PLACE USER LINK HERE
         })
-        resultsContainer.appendChild(userContainer);
+        resultsDiv.appendChild(userContainer);
     });
-    return resultsContainer;
 }
 
 const renderActivities = (data) => {
-    const resultsContainer = document.createElement('div');
-    resultsContainer.className = 'results'
+    const resultsDiv = document.getElementById('results');
     data.forEach(row => {
         let icon = ''
         switch (row.gm_type) {
@@ -230,28 +273,8 @@ const renderActivities = (data) => {
         `
         activityContainer.addEventListener('click', () => {
             console.log(`activity ${row.activity_name} clicked`);
+            // PLACE ACTIVITY LINK HERE
         })
-        resultsContainer.appendChild(activityContainer);
+        resultsDiv.appendChild(activityContainer);
     });
-    return resultsContainer;
-}
-
-const renderSearchResults = (data) => {
-    const searchType = document.querySelector('input[name="search-type"]:checked').value;
-    pageContainer.innerHTML = '';
-    if (searchType === 'user') {
-        pageContainer.appendChild(renderUsers(data));
-    } else if (searchType === 'city') {
-        pageContainer.appendChild(renderTrips(data));
-    } else if (searchType === 'country') {
-        pageContainer.appendChild(renderTrips(data));
-    } else if (searchType === 'activity') {
-        console.log(data);
-        pageContainer.appendChild(renderActivities(data));
-    } else if (searchType === 'all') {
-        console.log(data);
-        pageContainer.appendChild(renderUsers(data.users));
-        pageContainer.appendChild(renderTrips(data.trips));
-        pageContainer.appendChild(renderActivities(data.activites));
-    }
 }

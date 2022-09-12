@@ -1,7 +1,7 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 
-const viewTrip = (id) => {
+export const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
     // emptying container to remove old content
     pageContainer.innerHTML = '';
