@@ -1,4 +1,5 @@
-import { dateExtractor } from './dateExtractor.js';
+import { dateExtractor } from './date-extractor.js';
+import { renderProfile } from './profile.js';
 
 const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
@@ -13,13 +14,23 @@ const viewTrip = (id) => {
     const keyTakeaway = document.createElement('p');
     const activitiesContainer = document.createElement('div');
 
+    const modifyTripContainer = document.createElement('div');
+    const editTripButton = document.createElement('button');
+    const deleteTripButton = document.createElement('button');
+
+    editTripButton.textContent = 'Edit Trip';
+    deleteTripButton.textContent = 'Delete Trip';
+
     // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
     coverPhoto.className = 'trip-page-cover-pic';
     activitiesContainer.className = 'itinerary-column';
+    modifyTripContainer.id = 'modify-trip';
+    editTripButton.id = 'edit-trip';
+    deleteTripButton.id = 'delete-trip';
 
     // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
     let p = new Promise((resolve, reject) => {
-        axios.get(`/tripDetails/${id}`)
+        axios.get(`/user/trips/${id}`)
             .then(response => {
                 // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
                 const tripDetails = response.data;
@@ -39,9 +50,50 @@ const viewTrip = (id) => {
                 if (tripDetails[0].trip_status === 'draft') {
                     const draftStatus = document.createElement('h2');
                     draftStatus.textContent = 'DRAFT';
-                    draftStatus.className = 'draft-marker';
-                    pageContainer.appendChild(draftStatus);
+                    modifyTripContainer.appendChild(draftStatus);
                 }
+
+                axios.get('/user/session')
+                    .then(response => {
+                        const result = response.data.rows[0];
+                        const loggedInUserId = result.id;
+                        const userIdForTrip = tripDetails[0].user_id;
+                        if (loggedInUserId === userIdForTrip) {
+                            modifyTripContainer.append(editTripButton, deleteTripButton);
+                        }
+                    })
+
+
+                let deleteConfirmation = false;
+                deleteTripButton.addEventListener('click', () => {
+
+                    if (deleteConfirmation) {
+                        axios.delete(`/modifyTrip/deleteTrip/${id}`)
+                            .then(response => console.log(response.data))
+                            .catch(err => console.log(err))
+
+                        // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
+                        renderProfile(2);
+                    }
+
+                    else {
+                        deleteConfirmation = true;
+                        deleteTripButton.disabled = 'true';
+                        deleteTripButton.textContent = 'Confirm delete?';
+                        let startInterval = 5;
+
+                        let confirmDeleteInterval = setInterval(() => {
+                            deleteTripButton.textContent = `Confirm delete? ${startInterval}${'.'.repeat(startInterval)}`;
+                            startInterval--;
+                        }, 1000);
+
+                        setTimeout(() => {
+                            clearInterval(confirmDeleteInterval);
+                            deleteTripButton.textContent = 'Confirm delete?';
+                            deleteTripButton.removeAttribute('disabled');
+                        }, 6000);
+                    }
+                });
 
                 descriptionContent.innerHTML = `
                 <h4>Description</h4>
@@ -64,7 +116,7 @@ const viewTrip = (id) => {
             })
             .catch(error => { })
 
-        axios.get(`/tripDetails/tripActivites/${id}`)
+        axios.get(`/user/trips/activities/${id}`)
             .then(response => {
                 const activities = response.data;
                 for (const activity of activities) {
@@ -103,7 +155,7 @@ const viewTrip = (id) => {
     });
     p.then(() => {
         descriptionContainer.appendChild(descriptionContent);
-        pageContainer.append(tripHeader, coverPhoto, descriptionContainer, keyTakeaway, activitiesContainer);
+        pageContainer.append(tripHeader, modifyTripContainer, coverPhoto, descriptionContainer, keyTakeaway, activitiesContainer);
     })
         .catch(err => console.log(err))
 };
@@ -115,6 +167,6 @@ setTimeout(() => {
 
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
-    viewTrip(1);
-    // viewTrip(2);
-}, 1000);
+    // viewTrip(1);
+    viewTrip(6);
+}, 500);

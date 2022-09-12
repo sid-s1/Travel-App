@@ -3,12 +3,6 @@
     height: auto;
 }
 
-.draft-marker {
-    position: absolute;
-    top: 0rem;
-    right: 1rem;
-}
-
 .itinerary-row {
     display: flex;
 }

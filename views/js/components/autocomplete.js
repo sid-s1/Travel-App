@@ -1,5 +1,5 @@
 function initAutocomplete() {
-    autocomplete = new google.maps.places.Autocomplete(
+    const autocomplete = new google.maps.places.Autocomplete(
         document.getElementById('input-box'), // use the input box query selector where we want autocomplete
         {
             // removed 'types' and 'componentRestrictions' keys so as to not restrict users in entering any kind of place/activity

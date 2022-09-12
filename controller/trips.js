@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Trip = require('../models/tripDetails');
+const Trip = require('../models/trips');
 
 router.get('/:tripId', (request, response) => {
     const tripId = request.params.tripId;
@@ -8,7 +8,7 @@ router.get('/:tripId', (request, response) => {
         .then(dbRes => response.json(dbRes.rows))
 });
 
-router.get('/tripActivites/:tripId', (request, response) => {
+router.get('/activities/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.activities(tripId)
         .then(dbRes => response.json(dbRes.rows))

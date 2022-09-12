@@ -10,8 +10,10 @@ const db = require('./database/db')
 // Controllers
 const { expressSession, pgSession } = require('./controller/session');
 const usersController = require('./controller/users');
-const googleController = require('./controller/googleDetails');
-const tripController = require('./controller/tripDetails');
+const googleController = require('./controller/google-details');
+const tripController = require('./controller/trips');
+const statsController = require('./controller/user-stats');
+const modifyTripController = require('./controller/modify-trip');
 const searchController = require('./controller/search');
 
 // Middleware
@@ -32,9 +34,12 @@ app.use(
 
 // Routing
 app.use('/user/session', usersController);
+app.use('/user/trips', tripController);
 app.use('/placeDetails', googleController);
-app.use('/tripDetails', tripController);
+app.use('/userStats', statsController);
+app.use('/modifyTrip', modifyTripController);
 app.use('/search', searchController);
+
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);

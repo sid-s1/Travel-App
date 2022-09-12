@@ -1,3 +1,4 @@
+// Global page containers
 export const gridContainer = document.getElementById('grid-container');
 export const worldMap = document.getElementById('world-map');
 export const sidePanel = document.getElementById('side-panel');
@@ -6,11 +7,13 @@ export const page = document.getElementById('page');
 export const pageContainer = document.getElementById('page-container');
 
 export const layout = {
-    // wrap content in an outer div. Assign class name, if required.
-    wrap: (items, assignClass) => {
+    // wrap content in an outer div. Assign class name, or id, if required.
+    wrap: (items, itemName, assignId) => {
         const div = document.createElement('div');
-        if (assignClass) {
-            div.className = assignClass
+        if (assignId) {
+            div.id = itemName
+        } else if (itemName) {
+            div.className = itemName
         }
         for (let i = 0; i < items.length; i++) {
             div.appendChild(items[i])
@@ -54,7 +57,7 @@ export const layout = {
         page.style.display = 'flex';
         badges.innerHTML = '';
         sidePanel.innerHTML = '';
-        pageContainer.innerHTML = 'PROFILE VIEW / LOGGED IN';
+        pageContainer.innerHTML = 'PROFILE VIEW / LOGGED IN'; //delete once functional
     },
     publicHomepage: () => {
         worldMap.style.display = 'flex';
@@ -70,6 +73,12 @@ export const layout = {
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
         worldMap.innerHTML = '';
+        pageContainer.innerHTML = '';
+    },
+    newtrip: () => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
         pageContainer.innerHTML = '';
     }
 }

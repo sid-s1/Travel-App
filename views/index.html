@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/signup.css">
     <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="css/trip-details.css">
+    <link rel="stylesheet" href="css/new-trip.css">
+    <link rel="stylesheet" href="css/modify-trip.css">
     <link rel="stylesheet" href="css/search.css">
     <script src="https://kit.fontawesome.com/75d5f2af22.js" crossorigin="anonymous"></script>
     <title>Travel App</title>
@@ -17,46 +19,22 @@
     <header id="nav-bar"></header>
     <div class="container">
     <div id="grid-container">
-            <section id="world-map">
-                <label>getElementById('world-map')</label>
-                <div id="profile-pic">
-                    <div>Profile Pic</div>
-                </div>
-                <div id="profile-stats">
-                    <div>Number of trips: X</div>
-                    <div>Number of countries: X</div>
-                    <div>Achievements: X</div>
-                </div>
-            </section>
-            <section id="side-panel">
-                <label>getElementById('side-panel')</label>
-                <div>Option1</div>
-                <div>Option2</div>
-                <div>Option3</div>
-            </section>
+            <section id="world-map"></section>
+            <section id="side-panel"></section>
             <section id="badges">
                 <label>getElementById('badges')</label>
-                <div id="badgepanel">
-                    <div>Badge1</div>
-                    <div>Badge2</div>
-                    <div>Badge3</div>
-                </div>
+                <div id="badgepanel"></div>
             </section>
             <section id="page">
-                <label>getElementById('page')</label>
-                <div id="page-container">
-                    <label>getElementById('page-container')</label>
-                    <div>Trip1</div>
-                    <div>Trip2</div>
-                    <div>Trip3</div>
-                </div>
+                <div id="page-container"></div>
             </section>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXIgV3tMB6NSRW7KAiix-rGI6mbaM08Ng&libraries=places&callback=initAutocomplete" async defer></script>
     <script src="js/index.js" type="module"></script>
-    <!-- adding view trip js file here for now and loading it as a module; this is until we make other pages call our view-trip function based on what the user clicks -->
-    <!-- <script src="js/components/view-trip.js" type="module"></script> -->
+    <!-- adding view trip and user-stats js file here for now and loading it as a module; this is until we make other pages call our view-trip function based on what the user clicks -->
+    <script src="js/components/view-trip.js" type="module"></script>
+    <script src="js/components/user-stats.js" type="module"></script>
 </body>
 </html>
