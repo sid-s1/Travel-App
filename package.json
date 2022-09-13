@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/sid-s1/Travel-App#readme",
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "connect-pg-simple": "^7.0.0",
     "dotenv": "^16.0.2",
