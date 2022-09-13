@@ -169,6 +169,7 @@ const renderSearchResults = (data, searchString) => {
 export const renderTrips = (data, appLocation) => {
     const resultsDiv = document.getElementById('results');
     const tripArr = []
+    const user_id = 2; // ***FOR TESTING - REMOVE ONCE USER ID PASSED TO CLIENT ***
     // add all data that is unique to that trip into a new object
     for (let i=0; i < data.length; i++) {
         const idCheck = (trip) => trip.trip_id === data[i].id;
