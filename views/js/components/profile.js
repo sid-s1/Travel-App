@@ -1,6 +1,7 @@
 import { layout, sidePanel, worldMap } from "./layout.js";
 import { renderNewTrip } from './new-trip.js';
 import { userStats } from "./user-stats.js";
+import { renderExploreSearch } from "./explore.js"
 
 export const renderProfile = (userId) => {
     // Set view
@@ -12,10 +13,6 @@ export const renderProfile = (userId) => {
 
     // Render world map
     worldMap.innerHTML = '';
-    const profileDiv = document.createElement('div');
-    profileDiv.textContent = 'Profile Pic';
-    const profilePic = layout.wrap([profileDiv], 'profile-pic', 'id');
-    worldMap.appendChild(profilePic);
 
     // get user ID and display stats if it is the same as the user who's profile is being displayed
     axios.get('/user/session')
@@ -39,7 +36,7 @@ export const renderProfile = (userId) => {
     const sidePanelOptions = document.createElement('ul');
     sidePanelOptions.className = 'side-panel-list';
 
-    // Home framew
+    // Home frame
     const home = document.createElement('li');
     home.textContent = 'Home';
     const homeIcon = document.createElement('img');
@@ -63,7 +60,7 @@ export const renderProfile = (userId) => {
         // Render page-container to display existing trips
         // -- insert function --
         console.log(e.target)
-        changeSidePanelFocus(tripFrame);        
+        changeSidePanelFocus(tripFrame);
     });
     sidePanelOptions.appendChild(tripFrame);
 
@@ -90,9 +87,9 @@ export const renderProfile = (userId) => {
     exploreIcon.className = 'side-panel-icon';
     const exploreFrame = layout.wrap([exploreIcon, explore], 'side-panel-options');
     exploreFrame.addEventListener('click', () => {
-        // Render explore 
-        // -- insert function --
+        // Render explore
         changeSidePanelFocus(exploreFrame);
+        renderExploreSearch();
     })
     sidePanelOptions.appendChild(exploreFrame);
 

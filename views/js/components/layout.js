@@ -22,9 +22,9 @@ export const layout = {
     },
     // login view
     reset: () => {
-        worldMap.style.display = 'none';        
-        badges.style.display = 'none';        
-        sidePanel.style.display = 'none';         
+        worldMap.style.display = 'none';
+        badges.style.display = 'none';
+        sidePanel.style.display = 'none';
         page.style.display = 'none';
         worldMap.style.gridArea = '1/1/1/3';
         badges.style.gridArea = '2/2/2/3';
@@ -32,9 +32,9 @@ export const layout = {
         page.style.gridArea = '3/2/3/3';
     },
     login: () => {
-        page.style.display = 'flex';  
+        page.style.display = 'flex';
         page.style.gridArea = '1/1/3/3';
-        pageContainer.innerHTML = '';     
+        pageContainer.innerHTML = '';
     },
     signup: () => {
         page.style.display = 'flex';
@@ -52,12 +52,16 @@ export const layout = {
     },
     publicHomepage: () => {
         worldMap.style.display = 'flex';
-        worldMap.style.gridArea = '1/1/1/3';
-        worldMap.innerHTML = '';
-        badges.style.display = 'none';
-        sidePanel.style.display = 'none';
         page.style.display = 'flex';
+        worldMap.style.gridArea = '1/1/1/3';
         page.style.gridArea = '2/1/3/3';
+        worldMap.innerHTML = '';
+        pageContainer.innerHTML = '';
+    },
+    exploreSearch: ()  => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
         pageContainer.innerHTML = '';
     },
     newtrip: () => {

@@ -23,7 +23,7 @@ export const renderNewTrip = () => {
             .then(dbRes => {
                 const tripId = dbRes.data.rows[0].id;
                 pageContainer.name = tripId;
-                console.log(`pageContainer TRIP ID CREATED: ${tripId}`)
+                console.log(`pageContainer.name = ${tripId}`)
             }).catch(err => err)
     }).catch(err => err)
 }
@@ -75,20 +75,6 @@ const createContainer = (data, parentClass) => {
 
         wrappedElement.addEventListener('click', () => {
             const form = generateForm(type, newElement);
-            if (type === 'airline' || type === 'hotel' || type === 'activity') {
-                const deleteButton = createFloatingElement(form, 'X', 'new-trip-icon-float float-delete');
-                 deleteButton.addEventListener('click', () => {
-                    if (pageContainer.id) {
-                        console.log('itinerary id is present?')
-                        // (?) Note to self: once the form blur adds to DB, attach itinerary id to form?
-                        // As we'll then need to do a call to remove from itinerary_items if form deleted.
-                    } else {
-                        console.log('no id - remove safely')
-                        form.remove();
-                    }
-                    console.log('all inputs removed');                    
-                });
-            };
             pageContainer.insertBefore(form, pageContainer.lastChild);
         })
         arr.push(wrappedElement);
@@ -117,14 +103,22 @@ const generateForm = (dataType, icon) => {
                     element: 'input',
                     type: 'text',                    
                     placeholder: `Enter ${dataType} name...`,
-                    inputName: dataType,
+                    name: 'airline',
                     inputClass: 'new-trip-input',
                     required: true
                 },
                 {
                     element: 'input',
                     type: 'date',                    
-                    inputName: 'date',
+                    name: 'start-date',
+                    inputClass: 'new-trip-input',
+                    required: true
+                },
+                {
+                    element: 'input',
+                    type: 'number',
+                    placeholder: 'Enter rating between 0 - 10',
+                    name: 'rating',
                     inputClass: 'new-trip-input',
                     required: true
                 }
@@ -138,21 +132,29 @@ const generateForm = (dataType, icon) => {
                     element: 'input',
                     type: 'text',                    
                     placeholder: `Enter ${dataType} name...`,
-                    inputName: dataType,
+                    name: 'hotel',
                     inputClass: 'new-trip-input',
                     required: true
                 },
                 {
                     element: 'input',
                     type: 'date',                    
-                    inputName: 'start-date',
+                    name: 'start-date',
                     inputClass: 'new-trip-input',
                     required: true
                 },
                 {
                     element: 'input',
-                    type: 'date',                    
-                    inputName: 'end-date',
+                    type: 'date',
+                    name: 'end-date',
+                    inputClass: 'new-trip-input',
+                    required: true
+                },
+                {
+                    element: 'input',
+                    type: 'number',
+                    placeholder: 'Enter rating between 0 - 10',
+                    name: 'rating',
                     inputClass: 'new-trip-input',
                     required: true
                 }
@@ -166,14 +168,14 @@ const generateForm = (dataType, icon) => {
                     element: 'input',
                     type: 'text',                    
                     placeholder: `Enter ${dataType} name...`,
-                    inputName: dataType,
+                    name: 'activity',
                     inputClass: 'new-trip-input',
                     required: true
                 },
                 {
                     element: 'input',
                     type: 'date',                    
-                    inputName: 'start-date',
+                    name: 'start-date',
                     inputClass: 'new-trip-input',
                     required: true
                 },
@@ -181,7 +183,7 @@ const generateForm = (dataType, icon) => {
                     element: 'input',
                     type: 'number',
                     placeholder: 'Enter rating between 0 - 10',
-                    inputName: 'rating',
+                    name: 'rating',
                     inputClass: 'new-trip-input',
                     required: true
                 }
@@ -189,21 +191,20 @@ const generateForm = (dataType, icon) => {
         }
     ]
 
-    const form = document.createElement('form'); 
-    
+    const tripId = pageContainer.name;
+    const form = document.createElement('form');     
     const fetchData = data.filter(item => item.type === dataType)[0];
     const itineraryType = fetchData.type;
+    const name = fetchData.name;
     form.className = fetchData.formClass;
-
-
 
     const items = fetchData.items;
     for (const i in items) {
-        const { element, type, placeholder, inputName, inputClass, required } = items[i];
+        const { element, type, placeholder, name, inputClass, required } = items[i];
         const newElement = document.createElement(element);
         if (type) newElement.type = type;
         if (placeholder) newElement.placeholder = placeholder;
-        if (inputName) newElement.name = inputName;
+        if (name) newElement.name = name;
         if (inputClass) newElement.className = inputClass;
         if (required) newElement.required = true;
 
@@ -213,48 +214,62 @@ const generateForm = (dataType, icon) => {
                 const userInput = e.target.value.toLowerCase();
                 console.log(userInput);
                 let test = airlines.filter(element => airlines.includes(element));
-                console.log(test);
             })
         }
+             
 
-        newElement.addEventListener('change', () => {
-            console.log('Input CHANGE detected');
-            newElement.addEventListener('blur', (event) => {
-                event.preventDefault();
-                console.log('Input BLUR detected')
-                
-                const formData = new FormData(form)
-                const data = {
-                    type: type,
-                    name: formData.get(inputName),
-                    startDate: formData.get('start-date'),
-                    endDate: formData.get('end-date'),
-                    rating: formData.get('rating')
-                };
-
-                console.log(data)
-
-                const tripId = pageContainer.name;
-
-                // axios.put(`/user/trips/${tripId}`, data)
-                // .then(() => {
-                //         console.log('added to DB')
-                //         // visual green tick, or in/out color affect on the input?
-                //         setTimeout(renderChallenges, 2000);
-                //     } 
-                // )
-                // .catch(err => {
-                //     if (err.response.status === 500) {
-                //         alert('An unknown error occured. Please try again')
-                //     } else {
-                //         alert(err.response.data.message)
-                //     }
-                // });
-            });
-        });
+        // axios.put(`/user/trips/${tripId}`, data)
+        // .then(() => {
+        //         console.log('added to DB')
+        //         // visual green tick, or in/out color affect on the input?
+        //         setTimeout(renderChallenges, 2000);
+        //     } 
+        // )
+        // .catch(err => {
+        //     if (err.response.status === 500) {
+        //         alert('An unknown error occured. Please try again')
+        //     } else {
+        //         alert(err.response.data.message)
+        //     }
+        // });
 
         form.appendChild(newElement)
     }
-    
-    return layout.wrap([icon, form], 'new-trip-form-frame')
+
+        
+
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', () => {
+        if (tripId) {
+            console.log('itinerary id is present?')
+        } else {
+            console.log('no id - remove safely')
+            form.remove();
+        }
+        console.log('all inputs removed');                    
+    });
+
+    // const saveButton = createFloatingElement(form, 'Save', 'new-trip-save-form')
+    const saveButton = document.createElement('button')
+    saveButton.textContent = 'Save';
+    saveButton.onclick = 'this.parentNode.submit()';
+    saveButton.addEventListener('click', () => {
+        const formData = new FormData(form)
+        const data = {
+            tripId: tripId,
+            type: itineraryType,
+            name: formData.get(itineraryType),
+            startDate: formData.get('start-date'),
+            endDate: formData.get('end-date'),
+            rating: formData.get('rating')
+        };
+        console.log(data)
+    })
+
+    const gridButtons = layout.wrap([deleteButton, saveButton], 'new-trip-buttons')
+    form.appendChild(gridButtons)
+    const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');    
+    return layout.wrap([gridIcon, form], 'new-trip-form-frame')
 }
