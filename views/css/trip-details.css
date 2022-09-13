@@ -3,6 +3,18 @@
     height: auto;
 }
 
+#likeDislike-and-coverPhoto {
+    display: flex;
+    justify-content: space-between;
+    margin: 3rem;
+    align-items: center;
+}
+
+.like-dislike-icons {
+    transform: scale(3);
+    cursor: pointer;
+}
+
 .itinerary-row {
     display: flex;
 }

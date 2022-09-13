@@ -1,5 +1,6 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
+import { likeDislike } from './like-dislike.js';
 
 export const viewTrip = (id) => {
     const pageContainer = document.getElementById('page-container');
@@ -8,6 +9,9 @@ export const viewTrip = (id) => {
 
     // add CSS to below elements
     const tripHeader = document.createElement('div');
+    const photoContainer = document.createElement('div');
+    const likeButton = document.createElement('span');
+    const dislikeButton = document.createElement('span');
     const coverPhoto = document.createElement('img');
     const descriptionContainer = document.createElement('div');
     const descriptionContent = document.createElement('p');
@@ -20,6 +24,7 @@ export const viewTrip = (id) => {
 
     editTripButton.textContent = 'Edit Trip';
     deleteTripButton.textContent = 'Delete Trip';
+    likeDislike(likeButton, dislikeButton, photoContainer, coverPhoto);
 
     // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
     coverPhoto.className = 'trip-page-cover-pic';
@@ -27,6 +32,7 @@ export const viewTrip = (id) => {
     modifyTripContainer.id = 'modify-trip';
     editTripButton.id = 'edit-trip';
     deleteTripButton.id = 'delete-trip';
+    photoContainer.id = 'likeDislike-and-coverPhoto';
 
     // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
     let p = new Promise((resolve, reject) => {
@@ -45,7 +51,9 @@ export const viewTrip = (id) => {
                 <h5>${formattedStartDate} - ${formattedEndDate}</h5>
                 `;
 
+
                 coverPhoto.src = tripDetails[0].hero_image_url;
+                photoContainer.append(likeButton, coverPhoto, dislikeButton);
 
                 if (tripDetails[0].trip_status === 'draft') {
                     const draftStatus = document.createElement('h2');
@@ -68,7 +76,7 @@ export const viewTrip = (id) => {
                 deleteTripButton.addEventListener('click', () => {
 
                     if (deleteConfirmation) {
-                        axios.delete(`/users/trips/delete/${id}`)
+                        axios.delete(`/user/trips/delete/${id}`)
                             .then(response => console.log(response.data))
                             .catch(err => console.log(err))
 
@@ -114,7 +122,7 @@ export const viewTrip = (id) => {
                 }
                 tripHeader.appendChild(citiesForHeader);
             })
-            .catch(error => { })
+            .catch(error => console.log(error))
 
         axios.get(`/user/trips/activities/${id}`)
             .then(response => {
@@ -132,13 +140,13 @@ export const viewTrip = (id) => {
                     activityDetails.className = 'itinerary-item-details';
                     activityLogo.className = 'trip-addon-icon';
 
-                    if (activity.gm_type === 'Business') {
+                    if (activity.gm_type === 'activity') {
                         activityLogo.src = '../assets/clipboard-list-solid.svg';
                     }
-                    else if (activity.gm_type === 'Flight') {
+                    else if (activity.gm_type === 'airline') {
                         activityLogo.src = '../assets/jet-fighter-up-solid.svg';
                     }
-                    else if (activity.gm_type === 'Hotel') {
+                    else if (activity.gm_type === 'hotel') {
                         activityLogo.src = '../assets/bed-solid.svg';
                     }
                     activityDetails.innerHTML = `
@@ -155,7 +163,7 @@ export const viewTrip = (id) => {
     });
     p.then(() => {
         descriptionContainer.appendChild(descriptionContent);
-        pageContainer.append(tripHeader, modifyTripContainer, coverPhoto, descriptionContainer, keyTakeaway, activitiesContainer);
+        pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);
     })
         .catch(err => console.log(err))
 };
@@ -168,5 +176,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    // viewTrip(6);
+    viewTrip(2);
 }, 500);
