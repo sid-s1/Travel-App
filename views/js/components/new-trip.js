@@ -93,130 +93,106 @@ const createFloatingElement = (attachTo, content, floatClass) => {
     return float
 }
 
-const generateForm = (dataType, icon) => {
-    const data = [
-        {
-            type: 'airline',
-            formClass: 'new-trip-form',
-            items: [
-                {
-                    element: 'input',
-                    type: 'text',                    
-                    placeholder: `Enter ${dataType} name...`,
-                    name: 'airline',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'date',                    
-                    name: 'start-date',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'number',
-                    placeholder: 'Enter rating between 0 - 10',
-                    name: 'rating',
-                    inputClass: 'new-trip-input',
-                    required: true
-                }
-            ]
-        },
-        {
-            type: 'hotel',
-            formClass: 'new-trip-form',
-            items: [
-                {
-                    element: 'input',
-                    type: 'text',                    
-                    placeholder: `Enter ${dataType} name...`,
-                    name: 'hotel',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'date',                    
-                    name: 'start-date',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'date',
-                    name: 'end-date',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'number',
-                    placeholder: 'Enter rating between 0 - 10',
-                    name: 'rating',
-                    inputClass: 'new-trip-input',
-                    required: true
-                }
-            ]
-        },
-        {
-            type: 'activity',
-            formClass: 'new-trip-form',
-            items: [
-                {
-                    element: 'input',
-                    type: 'text',                    
-                    placeholder: `Enter ${dataType} name...`,
-                    name: 'activity',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'date',                    
-                    name: 'start-date',
-                    inputClass: 'new-trip-input',
-                    required: true
-                },
-                {
-                    element: 'input',
-                    type: 'number',
-                    placeholder: 'Enter rating between 0 - 10',
-                    name: 'rating',
-                    inputClass: 'new-trip-input',
-                    required: true
-                }
-            ]
-        }
-    ]
+const generateForm = (dataType, icon, dataExists) => {
+    const data =
+     {
+        type: dataType,
+        formClass: 'new-trip-form',
+        renderItem: [
+            {
+                element: 'input',
+                type: 'text',                    
+                placeholder: `Enter ${dataType} name...`,
+                name: dataType,
+                inputClass: 'new-trip-input',
+                required: true
+            },
+            {
+                element: 'input',
+                type: 'date',                    
+                name: 'start-date',
+                inputClass: 'new-trip-input',
+                required: true
+            },
+            {
+                element: 'input',
+                type: 'date',
+                name: 'end-date',
+                inputClass: 'new-trip-input',
+                required: true
+            },
+            {
+                element: 'input',
+                type: 'number',
+                placeholder: 'Enter rating between 0 - 10',
+                name: 'rating',
+                inputClass: 'new-trip-input',
+                required: true
+            }
+        ]
+    }
+
+    const form = document.createElement('form');
+    form.className = `allow-float ${data.formClass}`;
 
     const tripId = pageContainer.name;
-    const form = document.createElement('form');     
-    const fetchData = data.filter(item => item.type === dataType)[0];
-    const itineraryType = fetchData.type;
-    const name = fetchData.name;
-    form.className = fetchData.formClass;
+    const itineraryType = data.type;    
 
-    const items = fetchData.items;
-    for (const i in items) {
-        const { element, type, placeholder, name, inputClass, required } = items[i];
-        const newElement = document.createElement(element);
-        if (type) newElement.type = type;
-        if (placeholder) newElement.placeholder = placeholder;
-        if (name) newElement.name = name;
-        if (inputClass) newElement.className = `${inputClass} input-autocomplete`;
-        if (required) newElement.required = true;
+    const renderItem = data.renderItem;
+    for (const i in renderItem) {
+        const { element, type, placeholder, name, inputClass, required } = renderItem[i];
+        if ((itineraryType !== 'airline' || name !== 'end-date') && (itineraryType !== 'activity' || name !== 'end-date')) {
+            const newElement = document.createElement(element);
+            if (type) newElement.type = type;
+            if (placeholder) newElement.placeholder = placeholder;
+            if (name) newElement.name = name;
+            if (inputClass) newElement.className = `${inputClass} input-autocomplete`;
+            if (required) newElement.required = true;
 
-        if (itineraryType === 'airline') {
-            // @SID - Please work on the autocomplete referencing airlines.js array
-            newElement.addEventListener('keyup', (e) => {
-                const userInput = e.target.value.toLowerCase();
-                console.log(userInput);
-                let test = airlines.filter(element => airlines.includes(element));
-            })
+            const label = document.createElement('label');
+            const labelContent = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+
+            label.for = `${labelContent} name:`
+            label.textContent = labelContent;
+            label.className = 'new-trip-label'
+
+            // airline autocomplete dropdown
+            if (itineraryType === 'airline') {
+                const airlineOptions = document.createElement('ul');
+                newElement.addEventListener('keyup', (e) => {
+                    airlineOptions.innerHTML = '';
+                    newElement.innerHTML = '';
+                    const userInput = e.target.value.toLowerCase();
+                    if (userInput === '') {
+                        floatContainer.innerHTML = ''
+                    } else {
+                        const floatContainer = createFloatingElement(row, '', 'airline-autocomplete')
+                        const suggested = airlines.filter(airline => airline.toLowerCase().includes(userInput))
+                        if (suggested.length === 0) {
+                            // no suggested items
+                            const listItem = document.createElement('li')
+                            listItem.textContent = 'No airline exists'
+                            airlineOptions.appendChild(listItem);
+                        } else {
+                            // render suggested items
+                            for (let i = 0; i < 5 && i < suggested.length; i++) {
+                                const listItem = document.createElement('li')
+                                listItem.textContent = suggested[i];
+                                listItem.addEventListener('click', () => {
+                                    newElement.textContent = listItem;
+                                    floatContainer.innerHTML = '';
+                                })
+                                airlineOptions.appendChild(listItem);
+                            }
+                        }
+                        floatContainer.appendChild(airlineOptions)
+                    } 
+                })
+            }
+
+                const row = layout.wrap([label, newElement], 'form-row')    
+                form.appendChild(row)        
         }
-             
 
         // axios.put(`/user/trips/${tripId}`, data)
         // .then(() => {
@@ -232,15 +208,12 @@ const generateForm = (dataType, icon) => {
         //         alert(err.response.data.message)
         //     }
         // });
-
-        form.appendChild(newElement)
+       
     }
-
-        
-
-
+ 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
+    deleteButton.className = 'float new-trip-delete-button';
     deleteButton.addEventListener('click', () => {
         if (tripId) {
             console.log('itinerary id is present?')
@@ -251,9 +224,9 @@ const generateForm = (dataType, icon) => {
         console.log('all inputs removed');                    
     });
 
-    // const saveButton = createFloatingElement(form, 'Save', 'new-trip-save-form')
     const saveButton = document.createElement('button')
     saveButton.textContent = 'Save';
+    saveButton.className = 'float new-trip-save-button';
     saveButton.onclick = 'this.parentNode.submit()';
     saveButton.addEventListener('click', () => {
         const formData = new FormData(form)
@@ -268,8 +241,8 @@ const generateForm = (dataType, icon) => {
         console.log(data)
     })
 
-    const gridButtons = layout.wrap([deleteButton, saveButton], 'new-trip-buttons')
-    form.appendChild(gridButtons)
+    form.appendChild(saveButton)
+    form.appendChild(deleteButton)
     const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');    
     return layout.wrap([gridIcon, form], 'new-trip-form-frame')
 }
