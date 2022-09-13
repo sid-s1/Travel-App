@@ -104,15 +104,15 @@ INSERT INTO user_countries(user_id, country_id) VALUES
 
 TRUNCATE activities restart identity cascade;
 INSERT INTO activities(activity_name, gm_api_place_id, gm_type) VALUES
-('Flight to Brisbane', 'gm_api_place_id', 'Flight'),
-('Brisbane Snowboarding', 'gm_api_place_id', 'Business'),
-('Hotel in Brisbane', 'gm_api_place_id', 'Hotel'),
-('Flight to Adelaide', 'gm_api_place_id', 'Flight'),
-('Hotel in Adelaide', 'gm_api_place_id', 'Hotel'),
-('Adelaide Paragliding', 'gm_api_place_id', 'Business'),
-('Flight to Geneva', 'gm_api_place_id', 'Flight'),
-('Hotel in Geneva', 'gm_api_place_id', 'Hotel'),
-('Geneva Climbing', 'gm_api_place_id', 'Business');
+('Flight to Brisbane', 'gm_api_place_id', 'airline'),
+('Brisbane Snowboarding', 'gm_api_place_id', 'activity'),
+('Hotel in Brisbane', 'gm_api_place_id', 'hotel'),
+('Flight to Adelaide', 'gm_api_place_id', 'airline'),
+('Hotel in Adelaide', 'gm_api_place_id', 'hotel'),
+('Adelaide Paragliding', 'gm_api_place_id', 'activity'),
+('Flight to Geneva', 'gm_api_place_id', 'airline'),
+('Hotel in Geneva', 'gm_api_place_id', 'hotel'),
+('Geneva Climbing', 'gm_api_place_id', 'activity');
 
 TRUNCATE itinerary_items restart identity cascade;
 INSERT INTO itinerary_items(trip_location_id, activity_id, activity_start_date, activity_end_date, activity_rating) VALUES

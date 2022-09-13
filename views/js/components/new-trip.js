@@ -1,31 +1,32 @@
-import { layout, page, pageContainer} from './layout.js';
+import { layout, page, pageContainer } from './layout.js';
 import { airlines } from './airlines.js';
+import { initAutocompleteHotels, initAutocompleteActivities } from './autocomplete.js';
 
 export const renderNewTrip = () => {
     // set view
     layout.reset();
     layout.newtrip();
-    
+
     // render options bar
-    if (page.childElementCount <= 2) {            
+    if (page.childElementCount <= 2) {
         const header = document.createElement('h1');
         header.textContent = '- ADD NEW TRIP -'
         pageContainer.appendChild(header)
-        renderOptionsBar();    
+        renderOptionsBar();
     };
 
     // get user id, then create a new trip row in db, returning tripId value
-    axios.get('/user/session') 
+    axios.get('/user/session')
         .then(dbRes => {
             const userId = dbRes.data.rows[0].id;
-        // create new trip row in db and return trip id 
-        axios.put(`user/trips/${userId}`)
-            .then(dbRes => {
-                const tripId = dbRes.data.rows[0].id;
-                pageContainer.name = tripId;
-                console.log(`pageContainer.name = ${tripId}`)
-            }).catch(err => err)
-    }).catch(err => err)
+            // create new trip row in db and return trip id 
+            axios.put(`user/trips/${userId}`)
+                .then(dbRes => {
+                    const tripId = dbRes.data.rows[0].id;
+                    pageContainer.name = tripId;
+                    console.log(`pageContainer.name = ${tripId}`)
+                }).catch(err => err)
+        }).catch(err => err)
 }
 
 const renderOptionsBar = () => {
@@ -65,10 +66,10 @@ const createContainer = (data, parentClass) => {
         const { type, element, elementContent, elementClass, containerClass, includeFloat } = data[i];
         const newElement = document.createElement(element);
         if (type) newElement.classList.add(type);
-        if (elementClass) newElement.className =  elementClass;
+        if (elementClass) newElement.className = elementClass;
         if (elementContent) newElement.textContent = elementContent;
         const wrappedElement = layout.wrap([newElement], containerClass);
-        
+
         if (type === 'airline' || type === 'hotel' || type === 'activity') {
             if (includeFloat) createFloatingElement(wrappedElement, '+', 'new-trip-icon-float')
         };
@@ -78,7 +79,7 @@ const createContainer = (data, parentClass) => {
             pageContainer.insertBefore(form, pageContainer.lastChild);
         })
         arr.push(wrappedElement);
-    }    
+    }
     return layout.wrap(arr, parentClass);
 };
 
@@ -95,13 +96,13 @@ const createFloatingElement = (attachTo, content, floatClass) => {
 
 const generateForm = (dataType, icon, dataExists) => {
     const data =
-     {
+    {
         type: dataType,
         formClass: 'new-trip-form',
         renderItem: [
             {
                 element: 'input',
-                type: 'text',                    
+                type: 'text',
                 placeholder: `Enter ${dataType} name...`,
                 name: dataType,
                 inputClass: 'new-trip-input',
@@ -109,7 +110,7 @@ const generateForm = (dataType, icon, dataExists) => {
             },
             {
                 element: 'input',
-                type: 'date',                    
+                type: 'date',
                 name: 'start-date',
                 inputClass: 'new-trip-input',
                 required: true
@@ -136,7 +137,7 @@ const generateForm = (dataType, icon, dataExists) => {
     form.className = `allow-float ${data.formClass}`;
 
     const tripId = pageContainer.name;
-    const itineraryType = data.type;    
+    const itineraryType = data.type;
 
     const renderItem = data.renderItem;
     for (const i in renderItem) {
@@ -154,10 +155,12 @@ const generateForm = (dataType, icon, dataExists) => {
 
             label.for = `${labelContent} name:`
             label.textContent = labelContent;
-            label.className = 'new-trip-label'
+            label.className = 'new-trip-label';
+
+
 
             // airline autocomplete dropdown
-            if (itineraryType === 'airline') {
+            if (name === 'airline') {
                 const airlineOptions = document.createElement('ul');
                 newElement.addEventListener('keyup', (e) => {
                     airlineOptions.innerHTML = '';
@@ -186,12 +189,38 @@ const generateForm = (dataType, icon, dataExists) => {
                             }
                         }
                         floatContainer.appendChild(airlineOptions)
-                    } 
+                    }
                 })
             }
 
-                const row = layout.wrap([label, newElement], 'form-row')    
-                form.appendChild(row)        
+            else if (name === 'hotel') {
+                const autoComplete = initAutocompleteHotels(newElement);
+                autoComplete.addListener('place_changed', () => {
+                    let value = newElement.value;
+                    value = value.replaceAll(' ', '%20');
+                    value = value.replaceAll(',', '%2C');
+                    axios.get(`/placeDetails/${value}`)
+                        .then(response => {
+                            console.log(response.data.location);
+                        })
+                        .catch(err => console.log(err))
+                });
+            }
+            else {
+                const autoComplete = initAutocompleteActivities(newElement);
+                autoComplete.addListener('place_changed', () => {
+                    let value = newElement.value;
+                    value = value.replaceAll(' ', '%20');
+                    value = value.replaceAll(',', '%2C');
+                    axios.get(`/placeDetails/${value}`)
+                        .then(response => {
+                            console.log(response.data.location);
+                        })
+                        .catch(err => console.log(err))
+                });
+            }
+            const row = layout.wrap([label, newElement], 'form-row')
+            form.appendChild(row)
         }
 
         // axios.put(`/user/trips/${tripId}`, data)
@@ -208,9 +237,9 @@ const generateForm = (dataType, icon, dataExists) => {
         //         alert(err.response.data.message)
         //     }
         // });
-       
+
     }
- 
+
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
     deleteButton.className = 'float new-trip-delete-button';
@@ -221,7 +250,7 @@ const generateForm = (dataType, icon, dataExists) => {
             console.log('no id - remove safely')
             form.remove();
         }
-        console.log('all inputs removed');                    
+        console.log('all inputs removed');
     });
 
     const saveButton = document.createElement('button')
@@ -243,6 +272,6 @@ const generateForm = (dataType, icon, dataExists) => {
 
     form.appendChild(saveButton)
     form.appendChild(deleteButton)
-    const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');    
+    const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');
     return layout.wrap([gridIcon, form], 'new-trip-form-frame')
 }

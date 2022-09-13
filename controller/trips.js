@@ -6,12 +6,14 @@ router.get('/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.details(tripId)
         .then(dbRes => response.json(dbRes.rows))
+        .catch(err => response.json(err))
 });
 
-router.get('/activites/:tripId', (request, response) => {
+router.get('/activities/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.activities(tripId)
         .then(dbRes => response.json(dbRes.rows))
+        .catch(err => response.json(err))
 });
 
 router.put('/:userId', (request, response) => {
