@@ -25,7 +25,7 @@ router.post('/', (request, response) => {
         Search.searchUsers(searchLowerCase)
         .then(dbRes => {
             for (let i=0; i < dbRes.rowCount; i++) {
-                tripIds.push(dbRes.rows[i].trip_id);
+                results.users.push(dbRes.rows[i]);
             }
             return response.json(results);
         });
@@ -38,32 +38,34 @@ router.post('/', (request, response) => {
             }
             Trip.detailsMultiple(tripIdArr)
             .then(dbRes => {
-                if (dbRes.rowCount > 0) {
-                    return response.json(dbRes.rows);
-                } else {
-                    return response.json({message: 'No results returned'});
+                for (let i = 0; i < dbRes.rowCount; i++) {
+                    results.trips.push(dbRes.rows[i])
                 }
+                return response.json(results);
             })
         });
     } else if (searchType === 'country') {
         Search.searchCountries(searchLowerCase)
-        .then(dbRes => {
+        .then((dbRes) => {
             const tripIdArr = [];
             for (let i = 0; i < dbRes.rowCount; i++) {
                 tripIdArr.push(dbRes.rows[i]['trip_id'])
             }
             Trip.detailsMultiple(tripIdArr)
             .then(dbRes => {
-                if (dbRes.rowCount > 0) {
-                    return response.json(dbRes.rows);
-                } else {
-                    return response.json({message: 'No results returned'});
+                for (let i = 0; i < dbRes.rowCount; i++) {
+                    results.trips.push(dbRes.rows[i])
                 }
+                return response.json(results);
             })
         });
     } else if (searchType === 'activity') {
         Search.searchActivities(searchLowerCase)
-        .then(dbRes => response.json(dbRes.rows));
+        .then(dbRes => {
+            for (let i=0; i < dbRes.rowCount; i++) {
+                results.activites.push(dbRes.rows[i]);
+            }
+        });
     } else if (searchType === 'all') {
         let p1 = new Promise((resolve, reject) => {
             Search.searchCities(searchLowerCase)

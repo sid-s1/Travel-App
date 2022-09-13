@@ -1,4 +1,4 @@
-import { layout } from "./layout.js"
+import { layout, pageContainer } from "./layout.js"
 import { dateExtractor } from "./date-extractor.js"
 import { viewTrip } from "./view-trip.js"
 
@@ -105,53 +105,61 @@ const executeSearch = (form) => {
         searchString: formData.get('homepage-search-bar'),
         searchType: formData.get('search-type')
       };
+    pageContainer.innerHTML =''
+    const resultsContainer = document.createElement('div')
+    resultsContainer.id = 'results';
+    pageContainer.appendChild(resultsContainer);
     axios.post('/search', data)
     .then((dbRes) => {
-        renderSearchResults(dbRes.data, data.searchString);
+        renderResults(dbRes.data, data.searchString, data.searchType, resultsContainer);
     })
     .catch((err) => {
         console.log(err);
     })
 }
 
-const renderSearchResults = (data, searchString) => {
-    const searchType = document.querySelector('input[name="search-type"]:checked').value;
-    const resultsContainer = document.getElementById('results');
+const renderResults = (data, searchString, searchType, resultsContainer) => {
+    const user_id = data.user_id;
     resultsContainer.innerHTML = '';
-    const searchHeading = document.createElement('h2');
-    searchHeading.id = 'search-heading';
-    const searchCount = document.createElement('p');
-    searchCount.id = 'search-count';
-    resultsContainer.appendChild(searchHeading);
-    resultsContainer.appendChild(searchCount);
+    const resultsHeading = document.createElement('h2');
+    resultsHeading.id = 'results-heading';
+    const resultsCount = document.createElement('p');
+    resultsCount.id = 'results-count';
+    resultsContainer.appendChild(resultsHeading);
+    resultsContainer.appendChild(resultsCount);
     if (searchType === 'user') {
-        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Users:`;
-        document.getElementById('search-count').textContent = `${data.length} results found`;
-        renderUsers(data);
+        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Users:`;
+        document.getElementById('results-count').textContent = `${data.users.length} results found`;
+        renderUsers(data.users);
     } else if (searchType === 'city') {
-        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Cities:`;
-        if (data.length === 0) {
-            document.getElementById('search-count').textContent = '0 results found';
-        } else {
+        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Cities:`;
             const tripArr = renderTrips(data, 'search');
-            const tripsLength = tripArr.length
-            document.getElementById('search-count').textContent = `${tripsLength} results found`;
-        }
+            let tripsLength = 0
+            for (let i = 0; i < tripArr.length; i++) {
+                if (tripArr[i].trip_status === 'posted') {
+                    tripsLength++;
+                } else if (tripArr[i].trip_status === 'draft') {
+                    if (user_id && (tripArr[i].user_id === user_id)) {
+                        tripsLength++;
+                    }
+                }
+            }
+            document.getElementById('results-count').textContent = `${tripsLength} results found`;
     } else if (searchType === 'country') {
-        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Countries:`;
+        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Countries:`;
         if (data.length === 0) {
-            document.getElementById('search-count').textContent = '0 results found';
+            document.getElementById('results-count').textContent = '0 results found';
         } else {
             const tripArr = renderTrips(data, 'search');
             const tripsLength = tripArr.length
-            document.getElementById('search-count').textContent = `${tripsLength} results found`;
+            document.getElementById('results-count').textContent = `${tripsLength} results found`;
         }
     } else if (searchType === 'activity') {
-        document.getElementById('search-heading').textContent = `Search for '${searchString}' in Activies:`;
-        document.getElementById('search-count').textContent = `${data.length} results found`;
+        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Activies:`;
+        document.getElementById('results-count').textContent = `${data.length} results found`;
         renderActivities(data);
     } else if (searchType === 'all') {
-        document.getElementById('search-heading').textContent = `Search for '${searchString}' in all categories:`;
+        document.getElementById('results-heading').textContent = `Search for '${searchString}' in all categories:`;
         const tripArr = renderTrips(data.trips, 'search');
         renderUsers(data.users);
         renderActivities(data.activites);
@@ -162,47 +170,47 @@ const renderSearchResults = (data, searchString) => {
             }
         });
         const searchResultsLength = data.users.length + data.activites.length + tripsLength;
-        document.getElementById('search-count').textContent = `${searchResultsLength} results found`;
+        document.getElementById('results-count').textContent = `${searchResultsLength} results found`;
     }
 }
 
 export const renderTrips = (data, appLocation) => {
     const resultsDiv = document.getElementById('results');
     const tripArr = []
-    const user_id = 2; // ***FOR TESTING - REMOVE ONCE USER ID PASSED TO CLIENT ***
+    const user_id = data.user_id; // ***FOR TESTING - REMOVE ONCE USER ID PASSED TO CLIENT ***
     // add all data that is unique to that trip into a new object
-    for (let i=0; i < data.length; i++) {
-        const idCheck = (trip) => trip.trip_id === data[i].id;
+    for (let i=0; i < data.trips.length; i++) {
+        const idCheck = (trip) => trip.trip_id === data.trips[i].id;
         if (!tripArr.some(idCheck)) {
             const obj = {
-                trip_id: data[i].id,
-                trip_name: data[i].trip_name,
-                trip_descr: data[i].description,
-                trip_status: data[i].trip_status,
-                trip_start_date: data[i].trip_start_date,
-                trip_end_date: data[i].trip_end_date,
+                trip_id: data.trips[i].id,
+                trip_name: data.trips[i].trip_name,
+                trip_descr: data.trips[i].description,
+                trip_status: data.trips[i].trip_status,
+                trip_start_date: data.trips[i].trip_start_date,
+                trip_end_date: data.trips[i].trip_end_date,
             }
         tripArr.push(obj);  // add that object to the tripArr array
         }
     }
     // run through data again and for each trip, add all city names as an array under the key 'trip_cities'
-    for (let i=0; i < data.length; i++) {
-        const trip = tripArr.find(item => item.trip_id === data[i].id);
+    for (let i=0; i < data.trips.length; i++) {
+        const trip = tripArr.find(item => item.trip_id === data.trips[i].id);
         if (trip.trip_cities) {
-            trip.trip_cities.push(data[i].city_name)
+            trip.trip_cities.push(data.trips[i].city_name)
         } else {
-            trip.trip_cities = [data[i].city_name]
+            trip.trip_cities = [data.trips[i].city_name]
         }
     }
     // run through data once more and for each trip add all country names as an array under the key 'trip_countries'
-    for (let i=0; i < data.length; i++) {
-        const trip = tripArr.find(item => item.trip_id === data[i].id);
+    for (let i=0; i < data.trips.length; i++) {
+        const trip = tripArr.find(item => item.trip_id === data.trips[i].id);
         if (trip.trip_countries) {
-            if (trip.trip_countries != data[i].country_name) {
-                trip.trip_countries.push(data[i].country_name)
+            if (trip.trip_countries != data.trips[i].country_name) {
+                trip.trip_countries.push(data.trips[i].country_name)
             }
         } else {
-            trip.trip_countries = [data[i].country_name]
+            trip.trip_countries = [data.trips[i].country_name]
         }
     }
     // check if user is logged in - if so, and if search is used for users own trips, allow 'draft' trips to be shown.
@@ -229,7 +237,7 @@ export const renderTrips = (data, appLocation) => {
                 tripContainer.id = `trip${row.trip_id}`;
                 resultsDiv.appendChild(tripContainer);
             } else if (row.trip_status === 'draft') {
-                if (user_id === 2 && appLocation === 'my-trips') {
+                if (user_id === row.user_id && appLocation === 'my-trips') {
                     const tripContainer = document.createElement('div');
                     tripContainer.className = 'trip-result';
                     const cityConversion = row.trip_cities.toString();
