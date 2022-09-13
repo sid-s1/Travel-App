@@ -94,3 +94,25 @@
 .new-trip-input {    
     width: 60%;
 }
+.form-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+.airline-autocomplete {
+    bottom: 0px;
+    right: 5%;
+    margin: 0px;
+    background-color: rgba(0, 255, 0, 0.699);
+}
+.airline-autocomplete > ul {
+    padding: 5px 10px;
+    margin: 0px;
+}
+.airline-autocomplete > ul > li {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
