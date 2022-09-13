@@ -205,7 +205,7 @@ const generateForm = (dataType, icon) => {
         if (type) newElement.type = type;
         if (placeholder) newElement.placeholder = placeholder;
         if (name) newElement.name = name;
-        if (inputClass) newElement.className = inputClass;
+        if (inputClass) newElement.className = `${inputClass} input-autocomplete`;
         if (required) newElement.required = true;
 
         if (itineraryType === 'airline') {

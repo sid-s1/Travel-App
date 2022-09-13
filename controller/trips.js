@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Trip = require('../models/trip-details');
+const Trip = require('../models/trips');
 
 router.get('/:tripId', (request, response) => {
     const tripId = request.params.tripId;
@@ -21,6 +21,17 @@ router.put('/:userId', (request, response) => {
             response.json(dbRes)
         })
         .catch(err => console.log(err))
+});
+
+router.delete('/delete/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    modifyTrip.delete(tripId)
+        .then(dbRes => response.json(`Trip deleted! ${tripId}`))
+        .catch(err => response.json('Trip could not be deleted!'))
+});
+
+router.put('/edit/:tripId', (request, response) => {
+    return response.json('Editing trip...');
 });
 
 module.exports = router;
