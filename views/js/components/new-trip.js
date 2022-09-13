@@ -133,7 +133,7 @@ const generateForm = (dataType, icon, dataExists) => {
     }
 
     const form = document.createElement('form');
-    form.className = data.formClass;
+    form.className = `allow-float ${data.formClass}`;
 
     const tripId = pageContainer.name;
     const itineraryType = data.type;    
@@ -141,9 +141,6 @@ const generateForm = (dataType, icon, dataExists) => {
     const renderItem = data.renderItem;
     for (const i in renderItem) {
         const { element, type, placeholder, name, inputClass, required } = renderItem[i];
-        
-        
-        console.log(`itin type: ${itineraryType} / element name: ${name}`)
         if ((itineraryType !== 'airline' || name !== 'end-date') && (itineraryType !== 'activity' || name !== 'end-date')) {
             const newElement = document.createElement(element);
             if (type) newElement.type = type;
@@ -153,21 +150,24 @@ const generateForm = (dataType, icon, dataExists) => {
             if (required) newElement.required = true;
 
             const label = document.createElement('label');
-            const labelContent = name.charAt(0).toUpperCase() + name.slice(1);
-            label.for = `${labelContent} name:`
-            label.textContent = name;
+            const labelContent = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 
+            label.for = `${labelContent} name:`
+            label.textContent = labelContent;
+            label.className = 'new-trip-label'
+
+            // airline autocomplete dropdown
             if (itineraryType === 'airline') {
                 const airlineOptions = document.createElement('ul');
                 newElement.addEventListener('keyup', (e) => {
                     airlineOptions.innerHTML = '';
                     newElement.innerHTML = '';
-                    const userInput = e.target.value;
+                    const userInput = e.target.value.toLowerCase();
                     if (userInput === '') {
                         floatContainer.innerHTML = ''
                     } else {
                         const floatContainer = createFloatingElement(row, '', 'airline-autocomplete')
-                        const suggested = airlines.filter(airline => airline.includes(userInput))
+                        const suggested = airlines.filter(airline => airline.toLowerCase().includes(userInput))
                         if (suggested.length === 0) {
                             // no suggested items
                             const listItem = document.createElement('li')
@@ -178,6 +178,10 @@ const generateForm = (dataType, icon, dataExists) => {
                             for (let i = 0; i < 5 && i < suggested.length; i++) {
                                 const listItem = document.createElement('li')
                                 listItem.textContent = suggested[i];
+                                listItem.addEventListener('click', () => {
+                                    newElement.textContent = listItem;
+                                    floatContainer.innerHTML = '';
+                                })
                                 airlineOptions.appendChild(listItem);
                             }
                         }
@@ -204,15 +208,12 @@ const generateForm = (dataType, icon, dataExists) => {
         //         alert(err.response.data.message)
         //     }
         // });
-
        
     }
-
-        
-
-
+ 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
+    deleteButton.className = 'float new-trip-delete-button';
     deleteButton.addEventListener('click', () => {
         if (tripId) {
             console.log('itinerary id is present?')
@@ -223,9 +224,9 @@ const generateForm = (dataType, icon, dataExists) => {
         console.log('all inputs removed');                    
     });
 
-    // const saveButton = createFloatingElement(form, 'Save', 'new-trip-save-form')
     const saveButton = document.createElement('button')
     saveButton.textContent = 'Save';
+    saveButton.className = 'float new-trip-save-button';
     saveButton.onclick = 'this.parentNode.submit()';
     saveButton.addEventListener('click', () => {
         const formData = new FormData(form)
@@ -240,8 +241,8 @@ const generateForm = (dataType, icon, dataExists) => {
         console.log(data)
     })
 
-    const gridButtons = layout.wrap([deleteButton, saveButton], 'new-trip-buttons')
-    form.appendChild(gridButtons)
+    form.appendChild(saveButton)
+    form.appendChild(deleteButton)
     const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');    
     return layout.wrap([gridIcon, form], 'new-trip-form-frame')
 }
