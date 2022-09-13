@@ -1,7 +1,8 @@
 import { layout, sidePanel, worldMap } from "./layout.js";
 import { renderNewTrip } from './new-trip.js';
 import { userStats } from "./user-stats.js";
-import { renderExploreSearch } from "./explore.js"
+import { renderExploreSearch } from "./explore.js";
+import { renderMyTrips } from "./my-trips.js";
 
 export const renderProfile = (userId) => {
     // Set view
@@ -62,7 +63,7 @@ export const renderProfile = (userId) => {
     const tripFrame = layout.wrap([tripsIcon, trips], 'side-panel-options');
     tripFrame.addEventListener('click', (e) => {
         // Render page-container to display existing trips
-        // -- insert function --
+        renderMyTrips();
         console.log(e.target)
         changeSidePanelFocus(tripFrame);
     });
