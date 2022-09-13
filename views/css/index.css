@@ -123,20 +123,19 @@ body {
     justify-content: flex-start;
     align-items: center;
     position: relative;
+    margin: 0 auto;
+    width: 90%;
+    height: auto;
+    max-height: 800px;
+    border-radius: 10px;
+    overflow-x: auto;
+    background-color: white;
 }
 #side-panel {
     flex-direction: column;
     justify-content: flex-start;
     align-items: left;
     min-width: 160px;
-}
-#page-container {
-    margin: 0 auto;
-    width: 90%;
-    height: auto;
-    border-radius: 10px;
-    overflow-x: auto;
-    background-color: white;
 }
 #world-map {
     justify-content: center;
@@ -145,20 +144,6 @@ body {
     background-image: url('#');
     height: auto;
     min-height: 300px;
-}
-#profile-pic {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    bottom: -50px;
-    padding: 10px;
-    height: 120px;
-    width: 120px;
-    border: solid rgba(0, 0, 0, 0.649) 1px;
-    border-radius: 70px;
-    overflow: hidden;
-    background-color: rgb(202, 197, 197);
 }
 #profile-stats {
     display: flex;
