@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
 DROP TABLE IF EXISTS trips CASCADE;
 CREATE TABLE IF NOT EXISTS trips (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
     trip_name TEXT,
     trip_type TEXT,
     trip_status TEXT,
@@ -36,16 +36,16 @@ CREATE TABLE IF NOT EXISTS trips (
 DROP TABLE IF EXISTS votes CASCADE;
 CREATE TABLE IF NOT EXISTS votes (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    trip_id INT REFERENCES trips(id),
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    trip_id INT REFERENCES trips(id) ON DELETE CASCADE,
     liked BOOLEAN
 );
 
 DROP TABLE IF EXISTS bookmarked CASCADE;
 CREATE TABLE IF NOT EXISTS bookmarked (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    trip_id INT REFERENCES trips(id)
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    trip_id INT REFERENCES trips(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS achievements CASCADE;
@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS achievements (
 DROP TABLE IF EXISTS user_achievements CASCADE;
 CREATE TABLE IF NOT EXISTS user_achievements (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    achievement_id INT REFERENCES achievements(id)
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    achievement_id INT REFERENCES achievements(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS countries CASCADE;
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS countries (
 DROP TABLE IF EXISTS cities CASCADE;
 CREATE TABLE IF NOT EXISTS cities (
     id SERIAL PRIMARY KEY,
-    country_id INT REFERENCES countries(id),
+    country_id INT REFERENCES countries(id) ON DELETE CASCADE,
     gm_api_city_id TEXT,
     city_name TEXT
 );
@@ -84,8 +84,8 @@ CREATE TABLE IF NOT EXISTS cities (
 DROP TABLE IF EXISTS trip_locations CASCADE;
 CREATE TABLE IF NOT EXISTS trip_locations (
     id SERIAL PRIMARY KEY,
-    trip_id INT REFERENCES trips(id),
-    city_id INT REFERENCES cities(id),
+    trip_id INT REFERENCES trips(id) ON DELETE CASCADE,
+    city_id INT REFERENCES cities(id) ON DELETE CASCADE,
     city_start_date DATE,
     city_end_date DATE
 );
@@ -93,8 +93,8 @@ CREATE TABLE IF NOT EXISTS trip_locations (
 DROP TABLE IF EXISTS user_countries CASCADE;
 CREATE TABLE IF NOT EXISTS user_countries (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    country_id INT REFERENCES countries(id)
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    country_id INT REFERENCES countries(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS activities CASCADE;
@@ -108,8 +108,8 @@ CREATE TABLE IF NOT EXISTS activities (
 DROP TABLE IF EXISTS itinerary_items CASCADE;
 CREATE TABLE IF NOT EXISTS itinerary_items (
     id SERIAL PRIMARY KEY,
-    trip_location_id INT REFERENCES trip_locations(id),
-    activity_id INT REFERENCES activities(id),
+    trip_location_id INT REFERENCES trip_locations(id) ON DELETE CASCADE,
+    activity_id INT REFERENCES activities(id) ON DELETE CASCADE,
     activity_start_date DATE,
     activity_end_date DATE,
     activity_rating INT

@@ -1,14 +1,13 @@
 import { layout, sidePanel, worldMap } from "./layout.js";
 import { renderNewTrip } from './new-trip.js';
 import { userStats } from "./user-stats.js";
+import { renderExploreSearch } from "./explore.js";
+import { renderMyTrips } from "./my-trips.js";
 
 export const renderProfile = (userId) => {
     // Set view
     layout.reset();
     layout.profile();
-
-    // Render stats
-    // -- insert function --
 
     // Render badges
     // -- insert function --
@@ -20,16 +19,23 @@ export const renderProfile = (userId) => {
     const profilePic = layout.wrap([profileDiv], 'profile-pic', 'id');
     worldMap.appendChild(profilePic);
 
-    const statsDiv = document.createElement('div');
-    statsDiv.innerHTML = `
+    // get user ID and display stats if it is the same as the user who's profile is being displayed
+    axios.get('/user/session')
+        .then(response => {
+            const result = response.data.rows[0];
+            const loggedInUserId = result.id;
+            const statsDiv = document.createElement('div');
+
+            statsDiv.innerHTML = `
                      <div>Number of trips: <span id="total-trips"></span></div>
                     <div>Number of countries: <span id="total-countries"></span></div>
                     <div>Achievements: <span id="total-achievements"></span></div>
                     `;
-    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    userStats(userId);
-    worldMap.appendChild(profileStats);
+            const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
 
+            userStats(loggedInUserId);
+            worldMap.appendChild(profileStats);
+        })
 
     // Render side panel
     const sidePanelOptions = document.createElement('ul');
@@ -57,9 +63,9 @@ export const renderProfile = (userId) => {
     const tripFrame = layout.wrap([tripsIcon, trips], 'side-panel-options');
     tripFrame.addEventListener('click', (e) => {
         // Render page-container to display existing trips
-        // -- insert function --
+        renderMyTrips();
         console.log(e.target)
-        changeSidePanelFocus(tripFrame);        
+        changeSidePanelFocus(tripFrame);
     });
     sidePanelOptions.appendChild(tripFrame);
 
@@ -86,9 +92,9 @@ export const renderProfile = (userId) => {
     exploreIcon.className = 'side-panel-icon';
     const exploreFrame = layout.wrap([exploreIcon, explore], 'side-panel-options');
     exploreFrame.addEventListener('click', () => {
-        // Render explore 
-        // -- insert function --
+        // Render explore
         changeSidePanelFocus(exploreFrame);
+        renderExploreSearch();
     })
     sidePanelOptions.appendChild(exploreFrame);
 

@@ -11,8 +11,10 @@ const db = require('./database/db')
 const { expressSession, pgSession } = require('./controller/session');
 const usersController = require('./controller/users');
 const googleController = require('./controller/google-details');
-const tripController = require('./controller/trip-details');
+const tripController = require('./controller/trips');
 const statsController = require('./controller/user-stats');
+const modifyTripController = require('./controller/modify-trip');
+const searchController = require('./controller/search');
 
 // Middleware
 app.use((request, response, next) => {
@@ -27,15 +29,24 @@ app.use(
             createTableIfMissing: true,
         }),
         secret: process.env.EXPRESS_SESSION_SECRET_KEY,
+        resave: false,
+        saveUninitialized: false
     })
 );
 
 // Routing
 app.use('/user/session', usersController);
 app.use('/user/trips', tripController);
-app.use('/user/stats', statsController);
 app.use('/placeDetails', googleController);
+app.use('/userStats', statsController);
+app.use('/modifyTrip', modifyTripController);
+app.use('/search', searchController);
 
+
+app.use(function (error, request, response, next) {
+    response.status(error.status || 500);
+    response.send(error.message);
+  });
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
