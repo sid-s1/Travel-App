@@ -18,6 +18,7 @@ router.post('/', (request, response) => {
             const hashedPassword = user.password;
             if (isValidPassword(password, hashedPassword)) {
                 request.session.email = email;
+                request.session.user_id = user.id;
                 return response.json({ id: user.id })
             }
             return response.status(400).json({ message: 'The username and/or password you have entered is incorrect.' })

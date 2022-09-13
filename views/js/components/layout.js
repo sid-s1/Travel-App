@@ -78,5 +78,11 @@ export const layout = {
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
         pageContainer.innerHTML = '';
+    },
+    myTrips: () => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
+        pageContainer.innerHTML = '';
     }
 }
