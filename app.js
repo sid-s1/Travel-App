@@ -13,7 +13,6 @@ const usersController = require('./controller/users');
 const googleController = require('./controller/google-details');
 const tripController = require('./controller/trips');
 const statsController = require('./controller/user-stats');
-const modifyTripController = require('./controller/modify-trip');
 const searchController = require('./controller/search');
 
 // Middleware
@@ -37,9 +36,8 @@ app.use(
 // Routing
 app.use('/user/session', usersController);
 app.use('/user/trips', tripController);
+app.use('/user/stats', statsController);
 app.use('/placeDetails', googleController);
-app.use('/userStats', statsController);
-app.use('/modifyTrip', modifyTripController);
 app.use('/search', searchController);
 
 

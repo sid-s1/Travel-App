@@ -12,8 +12,13 @@ const Trip = {
         return db.query(sql, [id])
             .then(dbRes => dbRes)
             .catch(err => console.log(err))
+    },
+    createTripId: (userId) => {
+        const sql = "INSERT INTO trips(user_id, trip_status) VALUES($1, 'draft') RETURNING id";
+        return db.query(sql, [userId])
+            .then(dbRes => dbRes)
+            .catch(err => err)
     }
 }
 
 module.exports = Trip;
-

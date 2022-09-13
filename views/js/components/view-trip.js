@@ -68,7 +68,7 @@ export const viewTrip = (id) => {
                 deleteTripButton.addEventListener('click', () => {
 
                     if (deleteConfirmation) {
-                        axios.delete(`/modifyTrip/deleteTrip/${id}`)
+                        axios.delete(`/users/trips/delete/${id}`)
                             .then(response => console.log(response.data))
                             .catch(err => console.log(err))
 

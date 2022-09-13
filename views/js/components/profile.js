@@ -14,10 +14,6 @@ export const renderProfile = (userId) => {
 
     // Render world map
     worldMap.innerHTML = '';
-    const profileDiv = document.createElement('div');
-    profileDiv.textContent = 'Profile Pic';
-    const profilePic = layout.wrap([profileDiv], 'profile-pic', 'id');
-    worldMap.appendChild(profilePic);
 
     // get user ID and display stats if it is the same as the user who's profile is being displayed
     axios.get('/user/session')
@@ -41,7 +37,7 @@ export const renderProfile = (userId) => {
     const sidePanelOptions = document.createElement('ul');
     sidePanelOptions.className = 'side-panel-list';
 
-    // Home framew
+    // Home frame
     const home = document.createElement('li');
     home.textContent = 'Home';
     const homeIcon = document.createElement('img');
@@ -105,17 +101,19 @@ export const renderProfile = (userId) => {
     addTripIcon.src = '../../assets/newtrip_icon.png';
     addTripIcon.className = 'side-panel-icon';
     const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
-    addTripFrame.addEventListener('click', () => {
-        // Render page-container to add new trip
-        // -- insert function --
-        changeSidePanelFocus(addTripFrame);
-        renderNewTrip();
+    let clicked = false;
+    addTripFrame.addEventListener('click', () => {        
+        if (!clicked) {
+            clicked = true;
+            changeSidePanelFocus(addTripFrame);
+            renderNewTrip(); 
+        }        
     })
     sidePanelOptions.appendChild(addTripFrame);
 
     sidePanel.appendChild(sidePanelOptions);
     changeSidePanelFocus(homeFrame);
-}
+};
 
 // Change background of focus tab being viewed
 const changeSidePanelFocus = (focus) => {
