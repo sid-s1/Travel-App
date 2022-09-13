@@ -8,7 +8,7 @@ router.get('/:tripId', (request, response) => {
         .then(dbRes => response.json(dbRes.rows))
 });
 
-router.get('/activites/:tripId', (request, response) => {
+router.get('/activities/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.activities(tripId)
         .then(dbRes => response.json(dbRes.rows))

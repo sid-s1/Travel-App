@@ -11,7 +11,7 @@ router.post('/', (request, response) => {
     results = {
         users: [],
         trips: [],
-        activites: []
+        activities: []
     };
     tripIds = [];
     if (user_id) {
@@ -63,8 +63,9 @@ router.post('/', (request, response) => {
         Search.searchActivities(searchLowerCase)
         .then(dbRes => {
             for (let i=0; i < dbRes.rowCount; i++) {
-                results.activites.push(dbRes.rows[i]);
+                results.activities.push(dbRes.rows[i]);
             }
+            return response.json(results);
         });
     } else if (searchType === 'all') {
         let p1 = new Promise((resolve, reject) => {
@@ -98,7 +99,7 @@ router.post('/', (request, response) => {
             Search.searchActivities(searchLowerCase)
             .then(dbRes => {
                 for (let i=0; i < dbRes.rowCount; i++) {
-                    results.activites.push(dbRes.rows[i]);
+                    results.activities.push(dbRes.rows[i]);
                 }
                 resolve();
             })

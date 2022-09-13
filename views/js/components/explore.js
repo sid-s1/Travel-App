@@ -1,5 +1,5 @@
 import { renderSearchBar } from "./search.js"
-import { layout, pageContainer } from "./layout.js";
+import { layout, page, pageContainer } from "./layout.js";
 
 
 export const renderExploreSearch = () => {
@@ -11,5 +11,6 @@ export const renderExploreSearch = () => {
     const resultsContainer = document.createElement('div');
     resultsContainer.id = 'results';
     pageContainer.appendChild(resultsContainer);
-    renderSearchBar(exploreContainer);
+    const searchBar = renderSearchBar();
+    page.appendChild(searchBar);
 }

@@ -1,8 +1,8 @@
-import { layout, pageContainer } from "./layout.js"
+import { layout, pageContainer, page } from "./layout.js"
 import { dateExtractor } from "./date-extractor.js"
 import { viewTrip } from "./view-trip.js"
 
-export const renderSearchBar = (searchBarContainer) => {
+export const renderSearchBar = () => {
 
     const searchByAllLabel = document.createElement('label');
     searchByAllLabel.setAttribute('for', 'all');
@@ -93,9 +93,7 @@ export const renderSearchBar = (searchBarContainer) => {
     });
 
     const searchDiv = layout.wrap([form], 'search-div');
-
-
-    searchBarContainer.appendChild(searchDiv);
+    return searchDiv;
 }
 
 
@@ -111,77 +109,101 @@ const executeSearch = (form) => {
     pageContainer.appendChild(resultsContainer);
     axios.post('/search', data)
     .then((dbRes) => {
-        renderResults(dbRes.data, data.searchString, data.searchType, resultsContainer);
+        const results = renderResults(dbRes.data, data.searchString, data.searchType);
+        resultsContainer.appendChild(results);
     })
     .catch((err) => {
         console.log(err);
     })
 }
 
-const renderResults = (data, searchString, searchType, resultsContainer) => {
+const renderResults = (data, searchString, searchType) => {
+    console.log(searchType)
+    console.log()
     const user_id = data.user_id;
-    resultsContainer.innerHTML = '';
     const resultsHeading = document.createElement('h2');
     resultsHeading.id = 'results-heading';
     const resultsCount = document.createElement('p');
     resultsCount.id = 'results-count';
-    resultsContainer.appendChild(resultsHeading);
-    resultsContainer.appendChild(resultsCount);
+    const resultsContainer = layout.wrap([resultsHeading,resultsCount],'results')
     if (searchType === 'user') {
-        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Users:`;
-        document.getElementById('results-count').textContent = `${data.users.length} results found`;
-        renderUsers(data.users);
-    } else if (searchType === 'city') {
-        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Cities:`;
-            const tripArr = renderTrips(data, 'search');
-            let tripsLength = 0
-            for (let i = 0; i < tripArr.length; i++) {
-                if (tripArr[i].trip_status === 'posted') {
+        resultsHeading.textContent = `Search for '${searchString}' in Users:`;
+        resultsCount.textContent = `${data.users.length} results found`;
+        console.log(data.users.length);
+        const arrUser = renderUsers(data.users);
+        for (let i = 0; i < arrUser.length; i++) {
+            resultsContainer.appendChild(arrUser[i]);
+        }
+    } else if (searchType === 'city' || searchType === 'country') {
+        if (searchType === 'city') {
+            resultsHeading.textContent = `Search for '${searchString}' in Cities:`;
+        } else if (searchType === 'country') {
+            resultsHeading.textContent = `Search for '${searchString}' in Countries:`;
+        }
+        const tripInfo = renderTrips(data, 'search');
+        let tripsLength = 0;
+        for (let i = 0; i < tripInfo.tripData.length; i++) {
+            if (tripInfo.tripData[i].trip_status === 'posted') {
+                tripsLength++;
+            } else if (tripInfo.tripData[i].trip_status === 'draft') {
+                if (user_id && (tripInfo.tripData[i].user_id === user_id)) {
                     tripsLength++;
-                } else if (tripArr[i].trip_status === 'draft') {
-                    if (user_id && (tripArr[i].user_id === user_id)) {
-                        tripsLength++;
-                    }
                 }
             }
-            document.getElementById('results-count').textContent = `${tripsLength} results found`;
-    } else if (searchType === 'country') {
-        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Countries:`;
-        if (data.length === 0) {
-            document.getElementById('results-count').textContent = '0 results found';
-        } else {
-            const tripArr = renderTrips(data, 'search');
-            const tripsLength = tripArr.length
-            document.getElementById('results-count').textContent = `${tripsLength} results found`;
+        }
+        resultsCount.textContent = `${tripsLength} results found`;
+        for (let i = 0; i < tripInfo.resultsCont.length; i++) {
+            resultsContainer.appendChild(tripInfo.resultsCont[i]);
         }
     } else if (searchType === 'activity') {
-        document.getElementById('results-heading').textContent = `Search for '${searchString}' in Activies:`;
-        document.getElementById('results-count').textContent = `${data.length} results found`;
-        renderActivities(data);
+        resultsHeading.textContent = `Search for '${searchString}' in Activies:`;
+        resultsCount.textContent = `${data.activities.length} results found`;
+        console.log(data.activities.length);
+        const arrAct = renderActivities(data.activities);
+        for (let i = 0; i < arrAct.length; i++) {
+            resultsContainer.appendChild(arrAct[i]);
+        }
     } else if (searchType === 'all') {
-        document.getElementById('results-heading').textContent = `Search for '${searchString}' in all categories:`;
-        const tripArr = renderTrips(data.trips, 'search');
-        renderUsers(data.users);
-        renderActivities(data.activites);
+        resultsHeading.textContent = `Search for '${searchString}' in all categories:`;
+        const tripInfo = renderTrips(data, 'search');
         let tripsLength = 0;
-        tripArr.forEach(trip => {
-            if (trip.trip_status === 'posted') {
+        for (let i = 0; i < tripInfo.tripData.length; i++) {
+            if (tripInfo.tripData[i].trip_status === 'posted') {
                 tripsLength++;
+            } else if (tripInfo.tripData[i].trip_status === 'draft') {
+                if (user_id && (tripInfo.tripData[i].user_id === user_id)) {
+                    tripsLength++;
+                }
             }
-        });
-        const searchResultsLength = data.users.length + data.activites.length + tripsLength;
-        document.getElementById('results-count').textContent = `${searchResultsLength} results found`;
+        }
+        for (let i = 0; i < tripInfo.resultsCont.length; i++) {
+            resultsContainer.appendChild(tripInfo.resultsCont[i]);
+        }
+        const arrUser = renderUsers(data.users);
+        for (let i = 0; i < arrUser.length; i++) {
+            resultsContainer.appendChild(arrUser[i]);
+            tripsLength++;
+        }
+        const arrAct = renderActivities(data.activities);
+        for (let i = 0; i < arrAct.length; i++) {
+            resultsContainer.appendChild(arrAct[i]);
+            tripsLength++;
+        }
+        resultsCount.textContent = `${resultsLength} results found`;
     }
+    return resultsContainer;
 }
 
 export const renderTrips = (data, appLocation) => {
-    const resultsDiv = document.getElementById('results');
-    const tripArr = []
+    const returnObj = {
+        resultsCont: [],
+        tripData: []
+    }
     const user_id = data.user_id; // ***FOR TESTING - REMOVE ONCE USER ID PASSED TO CLIENT ***
     // add all data that is unique to that trip into a new object
     for (let i=0; i < data.trips.length; i++) {
         const idCheck = (trip) => trip.trip_id === data.trips[i].id;
-        if (!tripArr.some(idCheck)) {
+        if (!returnObj.tripData.some(idCheck)) {
             const obj = {
                 trip_id: data.trips[i].id,
                 trip_name: data.trips[i].trip_name,
@@ -190,12 +212,12 @@ export const renderTrips = (data, appLocation) => {
                 trip_start_date: data.trips[i].trip_start_date,
                 trip_end_date: data.trips[i].trip_end_date,
             }
-        tripArr.push(obj);  // add that object to the tripArr array
+        returnObj.tripData.push(obj);  // add that object to the returnObj.tripData array
         }
     }
     // run through data again and for each trip, add all city names as an array under the key 'trip_cities'
     for (let i=0; i < data.trips.length; i++) {
-        const trip = tripArr.find(item => item.trip_id === data.trips[i].id);
+        const trip = returnObj.tripData.find(item => item.trip_id === data.trips[i].id);
         if (trip.trip_cities) {
             trip.trip_cities.push(data.trips[i].city_name)
         } else {
@@ -204,7 +226,7 @@ export const renderTrips = (data, appLocation) => {
     }
     // run through data once more and for each trip add all country names as an array under the key 'trip_countries'
     for (let i=0; i < data.trips.length; i++) {
-        const trip = tripArr.find(item => item.trip_id === data.trips[i].id);
+        const trip = returnObj.tripData.find(item => item.trip_id === data.trips[i].id);
         if (trip.trip_countries) {
             if (trip.trip_countries != data.trips[i].country_name) {
                 trip.trip_countries.push(data.trips[i].country_name)
@@ -214,7 +236,7 @@ export const renderTrips = (data, appLocation) => {
         }
     }
     // check if user is logged in - if so, and if search is used for users own trips, allow 'draft' trips to be shown.
-        tripArr.forEach(row => {
+        returnObj.tripData.forEach(row => {
             if (row.trip_status === 'posted') {
                 const tripContainer = document.createElement('div');
                 tripContainer.className = 'trip-result';
@@ -232,10 +254,13 @@ export const renderTrips = (data, appLocation) => {
                 `
                 tripContainer.addEventListener('click', () => {
                     console.log(`Trip id '${row.trip_id}' clicked`);
+                    if (user_id) {
+                        renderSearchBar(page);
+                    }
                     viewTrip(row.trip_id);
                 })
                 tripContainer.id = `trip${row.trip_id}`;
-                resultsDiv.appendChild(tripContainer);
+                returnObj.resultsCont.push(tripContainer);
             } else if (row.trip_status === 'draft') {
                 if (user_id === row.user_id && appLocation === 'my-trips') {
                     const tripContainer = document.createElement('div');
@@ -257,15 +282,15 @@ export const renderTrips = (data, appLocation) => {
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
-                    resultsDiv.appendChild(tripContainer);
+                    returnObj.resultsCont.push(tripContainer);
                 }
             }
         });
-        return tripArr;
+        return returnObj;
 }
 
 const renderUsers = (data) => {
-    const resultsDiv = document.getElementById('results');
+    const resultsArr = [];
 
     data.forEach(row => {
         const userContainer = document.createElement('div');
@@ -280,22 +305,23 @@ const renderUsers = (data) => {
             console.log(`${row.username} clicked`);
             // PLACE USER LINK HERE
         })
-        resultsDiv.appendChild(userContainer);
+        resultsArr.push(userContainer);
     });
+    return resultsArr;
 }
 
 const renderActivities = (data) => {
-    const resultsDiv = document.getElementById('results');
+    const resultsArr = [];
     data.forEach(row => {
         let icon = ''
         switch (row.gm_type) {
-            case 'Flight':
+            case 'airline':
                 icon = '<i class="fa-light fa-plane-departure"></i>'
                 break;
-            case 'Hotel':
+            case 'hotel':
                 icon = '<i class="fa-light fa-hotel"></i>'
                 break;
-            case 'Business':
+            case 'activity':
                 icon = '<i class="fa-regular fa-calendar-star"></i>'
                 break;
             default:
@@ -311,6 +337,7 @@ const renderActivities = (data) => {
             console.log(`activity ${row.activity_name} clicked`);
             // PLACE ACTIVITY LINK HERE
         })
-        resultsDiv.appendChild(activityContainer);
+        resultsArr.push(activityContainer);
     });
+    return resultsArr;
 }
