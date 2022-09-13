@@ -2,8 +2,8 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    width: 80%;
-    padding: 5px;
+    width: 50%;
+    padding: 15px 0;
     border: solid black 1px;
     border-radius: 10px;
     background-color: grey;
@@ -15,12 +15,37 @@
     cursor: copy;
     border: solid black 1px;
     border-radius: 10px;
-    background-color: white;
     transition: 0.3s ease all;
+    background-color: white;    
 }
-.new-trip-icon:hover {
+.new-trip-icon-float {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: -8px;
+    right: -8px;
+    height: 20px;
+    width: 20px;
+    padding: 2px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: copy;
+    border: solid black 1px;
+    color: green;
+    transition: 0.3s ease all;
+    background-color: white;
+}
+.float-delete {
+    top: 0px;
+    right: 0px;
+    font-size: 15px;
+    color: red;    
+}
+.new-trip-icon:hover, .new-trip-icon-float:hover {
     background-color: rgb(189, 245, 245);
-    box-sizing: border-box;
+}
+.float-delete:hover {
+    background-color: rgb(248, 154, 154);
 }
 .new-trip-form {
     display: flex;

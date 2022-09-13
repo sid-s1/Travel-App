@@ -1,5 +1,4 @@
 const express = require('express');
-const db = require('../database/db');
 const User = require('../models/users');
 const { isValidPassword, generateHash } = require('../util/hash');
 const router = express.Router();

@@ -1,5 +1,5 @@
 export const userStats = (userId) => {
-    axios.get(`/userStats/tripNumber/${userId}`)
+    axios.get(`/user/stats/tripNumber/${userId}`)
         .then(response => {
             const result = response.data[0];
             const totalTrips = document.getElementById('total-trips');
@@ -8,7 +8,7 @@ export const userStats = (userId) => {
             }
         })
         .catch()
-    axios.get(`/userStats/countryNumber/${userId}`)
+    axios.get(`/user/stats/countryNumber/${userId}`)
         .then(response => {
             const result = response.data[0];
             const totalCountries = document.getElementById('total-countries');
@@ -17,7 +17,7 @@ export const userStats = (userId) => {
             }
         })
         .catch()
-    axios.get(`/userStats/achievementNumber/${userId}`)
+    axios.get(`/user/stats/achievementNumber/${userId}`)
         .then(response => {
             const result = response.data[0];
             const totalAchievements = document.getElementById('total-achievements');

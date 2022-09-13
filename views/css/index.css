@@ -178,3 +178,9 @@ body {
 }
 
 /* --NEXT SECTION HERE-- */
+.allow-float {
+    position: relative;
+}
+.float {
+    position: absolute;
+}
