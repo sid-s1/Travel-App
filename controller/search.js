@@ -4,10 +4,17 @@ const Search = require('../models/search.js');
 const Trip = require('../models/trips.js');
 
 router.post('/', (request, response) => {
+    const user_id = request.session.user_id;
+
+    if (user_id) {
+        console.log('logged in')
+    } else {
+        console.log('not logged in')
+    }
+
     const searchString = request.body.searchString;
     const searchLowerCase = searchString.toLowerCase();
     const searchType = request.body.searchType;
-    console.log(`${searchString} & ${searchType}`)
     if (searchType === 'user') {
         Search.searchUsers(searchLowerCase)
         .then(dbRes => response.json(dbRes.rows));
@@ -111,7 +118,7 @@ router.post('/', (request, response) => {
         p1.then(() => {
             return response.json(results);
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
     }
 });
 
