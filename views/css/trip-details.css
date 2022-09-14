@@ -10,6 +10,27 @@
     align-items: center;
 }
 
+#like-container, #dislike-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#coverPhoto-only {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#like-container {
+    color: green;
+}
+
+#dislike-container {
+    color: red;
+}
+
 .like-dislike-icons {
     transform: scale(3);
     cursor: pointer;
