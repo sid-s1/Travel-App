@@ -33,7 +33,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
         const dislikeCount = document.getElementById('dislike-count');
         countVotes(tripId)
             .then(voteCount => {
-                console.log(`trying the sick update >>>>`, voteCount);
                 likeCount.textContent = `+ ${voteCount.likes}`;
                 dislikeCount.textContent = `- ${voteCount.dislikes}`;
             })
@@ -59,7 +58,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     let dislikeBtnClicked = false;
 
     const callApiToChangeLike = (currentState, originalState) => {
-        console.log(`currentstate of like > ${currentState} and and and original state of like > ${originalState}`);
         if (!(currentState === originalState)) {
             data.liked = currentState;
             return axios.post('/user/votes/changeLikeStatus', data)
@@ -83,7 +81,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                                 updateVoteCountOnPress();
                                 switchToLike();
                             })
-                        // viewTrip(tripId);
                     }
                     else {
                         callApiToChangeLike(null, originalLikeState)
@@ -92,11 +89,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                                 updateVoteCountOnPress();
                                 resetLikeAndDislike();
                             })
-
-
-
-                        // viewTrip(tripId);
-
                     }
                 }
                 else {
@@ -112,11 +104,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                                 switchToDislike();
                             })
                             .catch(err => console.log(err))
-
-
-
-                        // viewTrip(tripId);
-
                     }
                     else {
                         callApiToChangeLike(null, originalLikeState)
@@ -126,7 +113,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                                 resetLikeAndDislike();
                             })
                             .catch(err => console.log(err))
-                        // viewTrip(tripId);
 
                     }
                 }
