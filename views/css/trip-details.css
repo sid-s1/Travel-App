@@ -10,17 +10,24 @@
     align-items: center;
 }
 
+#like-container, #dislike-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 #coverPhoto-only {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#like-btn {
+#like-container {
     color: green;
 }
 
-#dislike-btn {
+#dislike-container {
     color: red;
 }
 

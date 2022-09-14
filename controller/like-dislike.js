@@ -1,4 +1,3 @@
-const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const likeDislike = require('../models/like-dislike');
@@ -18,6 +17,14 @@ router.get('/:userId/:tripId', (request, response) => {
         .catch(err => response.json(err))
 });
 
+router.get('/countVotes/:tripId', (request, response) => {
+    console.log('in controller');
+    const tripId = request.params.tripId;
+    likeDislike.countVotes(tripId)
+        .then(res => console.log(res))
+        .catch(err => response.json(err))
+});
+
 router.post('/changeLikeStatus', (request, response) => {
     const { liked, userId, tripId } = request.body;
     likeDislike.changeLiked(userId, tripId, liked)
@@ -29,7 +36,7 @@ router.post('/changeLikeStatus', (request, response) => {
                 return response.json({ message: 'Created like status!' })
             }
         })
-        .catch(err => err)
+        .catch(err => response.json(err))
 });
 
 module.exports = router;

@@ -38,7 +38,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     };
     let originalLikeState;
 
-    // resetLikeAndDislike();
     likeBtn.id = 'like-btn';
     dislikeBtn.id = 'dislike-btn';
     const buttonArray = [likeBtn, dislikeBtn];

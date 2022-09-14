@@ -25,6 +25,25 @@ const likeDislike = {
         return db.query(sql, [userId, tripId, value])
             .then(dbRes => dbRes)
             .catch(err => err)
+    },
+    countVotes: (tripId) => {
+        console.log('counting..');
+        const votes = {
+            likes: 0,
+            dislikes: 0
+        }
+        const sql = `SELECT liked,
+        sum(case when liked = true then 1 else 0 end) as Likes,
+        sum(case when liked = false then 1 else 0 end) as Dislikes
+        FROM votes
+        WHERE trip_id = $1
+        GROUP BY liked`;
+        return db.query(sql, [tripId])
+            .then(dbRes => {
+                console.log(dbRes);
+                console.log(votes);
+                return dbRes;
+            })
     }
 };
 

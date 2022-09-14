@@ -1,6 +1,7 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 import { likeDislike } from './like-dislike.js';
+import { countLikesDislikes } from './count-votes.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
@@ -17,8 +18,12 @@ export const viewTrip = (id) => {
             // add CSS to below elements
             const tripHeader = document.createElement('div');
             const photoContainer = document.createElement('div');
+            const likeDiv = document.createElement('div');
             const likeButton = document.createElement('span');
+            const likeCount = document.createElement('span');
+            const dislikeDiv = document.createElement('div');
             const dislikeButton = document.createElement('span');
+            const dislikeCount = document.createElement('span');
             const coverPhoto = document.createElement('img');
             const descriptionContainer = document.createElement('div');
             const descriptionContent = document.createElement('p');
@@ -31,6 +36,7 @@ export const viewTrip = (id) => {
 
             editTripButton.textContent = 'Edit Trip';
             deleteTripButton.textContent = 'Delete Trip';
+            countLikesDislikes(id);
             likeDislike(likeButton, dislikeButton, loggedInUserId, id);
 
             // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
@@ -39,6 +45,8 @@ export const viewTrip = (id) => {
             modifyTripContainer.id = 'modify-trip';
             editTripButton.id = 'edit-trip';
             deleteTripButton.id = 'delete-trip';
+            likeDiv.id = 'like-container';
+            dislikeDiv.id = 'dislike-container';
 
             // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
             let p = new Promise((resolve, reject) => {
@@ -74,7 +82,9 @@ export const viewTrip = (id) => {
                             modifyTripContainer.append(editTripButton, deleteTripButton);
                         }
                         else {
-                            photoContainer.append(likeButton, coverPhoto, dislikeButton);
+                            likeDiv.append(likeButton, likeCount);
+                            dislikeDiv.append(dislikeButton, dislikeCount);
+                            photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
                             photoContainer.id = 'likeDislike-and-coverPhoto';
                         }
 
@@ -187,5 +197,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    viewTrip(4);
+    viewTrip(5);
 }, 500);
