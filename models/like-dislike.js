@@ -1,6 +1,6 @@
 const db = require('../database/db');
 
-const likeDislike = {
+const Votes = {
     checkLiked: (userId, tripId) => {
         const sql = 'SELECT liked FROM votes WHERE user_id = $1 AND trip_id = $2';
         return db.query(sql, [userId, tripId])
@@ -47,4 +47,4 @@ const likeDislike = {
     }
 };
 
-module.exports = likeDislike;
+module.exports = Votes;
