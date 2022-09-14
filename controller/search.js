@@ -117,6 +117,21 @@ router.post('/', (request, response) => {
             })
         })
         .catch(error => console.log(error));
+    } else if (searchType === 'my-trips') {
+        Trip.tripIdsByUserId(searchString)
+            .then(dbRes => {
+                const userTripArr = []
+                for (let i=0; i < dbRes.rowCount; i++) {
+                    userTripArr.push(dbRes.rows[i]['id']);
+                }
+                Trip.detailsMultiple(userTripArr)
+                .then(dbRes => {
+                        for (let i=0; i < dbRes.rowCount; i++) {
+                            results.trips.push(dbRes.rows[i]);
+                        }
+                    return response.json(results);
+                })
+            })
     }
 });
 

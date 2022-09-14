@@ -18,6 +18,15 @@ const Trip = {
             .then(dbRes => dbRes)
             .catch(err => err)
     },
+    tripIdsByUserId: (id) => {
+        const sql = `SELECT trips.id
+        FROM users
+        LEFT JOIN trips ON users.id = trips.user_id
+        WHERE users.id = $1`;
+        return db.query(sql, [id])
+            .then(dbRes => dbRes)
+            .catch(err => err)
+    },
     activities: (id) => {
         const sql = 'SELECT activities.activity_name, activities.gm_type, itinerary_items.activity_start_date, itinerary_items.activity_end_date, itinerary_items.activity_rating FROM activities INNER JOIN itinerary_items ON activities.id = itinerary_items.activity_id INNER JOIN trip_locations ON itinerary_items.trip_location_id = trip_locations.id WHERE trip_locations.trip_id = $1';
         return db.query(sql, [id])

@@ -69,8 +69,8 @@ export const renderSearchBar = () => {
 
     const searchBar =  document.createElement('input');
     searchBar.setAttribute("placeholder", "Search...");
-    searchBar.id = "homepage-search-bar";
-    searchBar.name = "homepage-search-bar";
+    searchBar.id = "search-bar";
+    searchBar.name = "search-bar";
 
     const searchButton = document.createElement('button');
     searchButton.innerHTML = '<i class="fa-regular fa-magnifying-glass"></i>'
@@ -97,16 +97,14 @@ export const renderSearchBar = () => {
 }
 
 
-const executeSearch = (form) => {
+export const executeSearch = (form) => {
     const formData = new FormData(form);
     const data = {
-        searchString: formData.get('homepage-search-bar'),
+        searchString: formData.get('search-bar'),
         searchType: formData.get('search-type')
       };
-    pageContainer.innerHTML =''
-    const resultsContainer = document.createElement('div')
-    resultsContainer.id = 'results';
-    pageContainer.appendChild(resultsContainer);
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
     axios.post('/search', data)
     .then((dbRes) => {
         const results = renderResults(dbRes.data, data.searchString, data.searchType);
@@ -118,8 +116,6 @@ const executeSearch = (form) => {
 }
 
 const renderResults = (data, searchString, searchType) => {
-    console.log(searchType)
-    console.log()
     const user_id = data.user_id;
     const resultsHeading = document.createElement('h2');
     resultsHeading.id = 'results-heading';
@@ -158,7 +154,6 @@ const renderResults = (data, searchString, searchType) => {
     } else if (searchType === 'activity') {
         resultsHeading.textContent = `Search for '${searchString}' in Activies:`;
         resultsCount.textContent = `${data.activities.length} results found`;
-        console.log(data.activities.length);
         const arrAct = renderActivities(data.activities);
         for (let i = 0; i < arrAct.length; i++) {
             resultsContainer.appendChild(arrAct[i]);
@@ -189,7 +184,16 @@ const renderResults = (data, searchString, searchType) => {
             resultsContainer.appendChild(arrAct[i]);
             tripsLength++;
         }
-        resultsCount.textContent = `${resultsLength} results found`;
+        resultsCount.textContent = `${tripsLength} results found`;
+    } else if (searchType === 'my-trips') {
+        console.log('render results my-trips')
+        resultsHeading.textContent = `My Trips`;
+        console.log(data)
+        const tripInfo = renderTrips(data, 'search');
+        console.log(tripInfo)
+        for (let i = 0; i < tripInfo.resultsCont.length; i++) {
+            resultsContainer.appendChild(tripInfo.resultsCont[i]);
+        }
     }
     return resultsContainer;
 }
@@ -262,7 +266,7 @@ export const renderTrips = (data, appLocation) => {
                 tripContainer.id = `trip${row.trip_id}`;
                 returnObj.resultsCont.push(tripContainer);
             } else if (row.trip_status === 'draft') {
-                if (user_id === row.user_id && appLocation === 'my-trips') {
+                if (appLocation === 'my-trips') {
                     const tripContainer = document.createElement('div');
                     tripContainer.className = 'trip-result';
                     const cityConversion = row.trip_cities.toString();
