@@ -10,6 +10,11 @@
     align-items: center;
 }
 
+#like-btn, #dislike-btn {
+    margin: 1rem;
+    cursor: pointer;
+}
+
 #like-container, #dislike-container {
     display: flex;
     flex-direction: column;
@@ -34,6 +39,10 @@
 .like-dislike-icons {
     transform: scale(3);
     cursor: pointer;
+}
+
+.like-dislike-icons:active {
+    transform: scale(2);
 }
 
 .itinerary-row {
