@@ -75,5 +75,11 @@ export const layout = {
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
         pageContainer.innerHTML = '';
+    },
+    bookmarks: () => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
+        pageContainer.innerHTML = '';
     }
 }

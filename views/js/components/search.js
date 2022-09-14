@@ -115,7 +115,7 @@ export const executeSearch = (form) => {
     })
 }
 
-const renderResults = (data, searchString, searchType) => {
+export const renderResults = (data, searchString, searchType) => {
     const user_id = data.user_id;
     const resultsHeading = document.createElement('h2');
     resultsHeading.id = 'results-heading';
@@ -192,6 +192,13 @@ const renderResults = (data, searchString, searchType) => {
         for (let i = 0; i < tripInfo.resultsCont.length; i++) {
             resultsContainer.appendChild(tripInfo.resultsCont[i]);
         }
+    } else if (searchType === 'bookmarks') {
+        resultsHeading.textContent = `Bookmarks`;
+        const tripInfo = renderTrips(data.data, 'bookmarks');
+        console.log(tripInfo);
+        for (let i = 0; i < tripInfo.resultsCont.length; i++) {
+            resultsContainer.appendChild(tripInfo.resultsCont[i]);
+        }
     }
     return resultsContainer;
 }
@@ -202,6 +209,7 @@ export const renderTrips = (data, appLocation) => {
         tripData: []
     }
     const user_id = data.user_id;
+    console.log(data);
     // add all data that is unique to that trip into a new object
     for (let i=0; i < data.trips.length; i++) {
         const idCheck = (trip) => trip.trip_id === data.trips[i].id;

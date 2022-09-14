@@ -3,6 +3,7 @@ import { renderNewTrip } from './new-trip.js';
 import { userStats } from "./user-stats.js";
 import { renderExploreSearch } from "./explore.js";
 import { renderMyTrips } from "./my-trips.js";
+import { renderBookmarks } from "./bookmarks.js";
 
 export const renderProfile = (userId) => {
     // Set view
@@ -74,8 +75,7 @@ export const renderProfile = (userId) => {
     const bookmarkFrame = layout.wrap([bookmarksIcon, bookmarks], 'side-panel-options');
     bookmarkFrame.addEventListener('click', (e) => {
         // Render page-container to display existing bookmarks
-        // -- insert function --
-        console.log(e)
+        renderBookmarks();
         changeSidePanelFocus(bookmarkFrame);
     })
     sidePanelOptions.appendChild(bookmarkFrame);
@@ -102,12 +102,12 @@ export const renderProfile = (userId) => {
     addTripIcon.className = 'side-panel-icon';
     const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
     let clicked = false;
-    addTripFrame.addEventListener('click', () => {        
+    addTripFrame.addEventListener('click', () => {
         if (!clicked) {
             clicked = true;
             changeSidePanelFocus(addTripFrame);
-            renderNewTrip(); 
-        }        
+            renderNewTrip();
+        }
     })
     sidePanelOptions.appendChild(addTripFrame);
 
