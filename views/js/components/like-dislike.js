@@ -59,11 +59,12 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     let dislikeBtnClicked = false;
 
     const callApiToChangeLike = (currentState, originalState) => {
+        console.log(`currentstate of like > ${currentState} and and and original state of like > ${originalState}`);
         if (!(currentState === originalState)) {
             data.liked = currentState;
             return axios.post('/user/votes/changeLikeStatus', data)
                 .then(response => response)
-                .catch(err => console.log(err))
+                .catch(err => err)
         }
     };
 
@@ -78,6 +79,7 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     if (likeBtnClicked) {
                         callApiToChangeLike(true, originalLikeState)
                             .then(() => {
+                                originalLikeState = true;
                                 updateVoteCountOnPress();
                                 switchToLike();
                             })
@@ -86,6 +88,7 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     else {
                         callApiToChangeLike(null, originalLikeState)
                             .then(() => {
+                                originalLikeState = null;
                                 updateVoteCountOnPress();
                                 resetLikeAndDislike();
                             })
@@ -104,9 +107,11 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     if (dislikeBtnClicked) {
                         callApiToChangeLike(false, originalLikeState)
                             .then(() => {
+                                originalLikeState = false;
                                 updateVoteCountOnPress();
                                 switchToDislike();
                             })
+                            .catch(err => console.log(err))
 
 
 
@@ -116,9 +121,11 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     else {
                         callApiToChangeLike(null, originalLikeState)
                             .then(() => {
+                                originalLikeState = null;
                                 updateVoteCountOnPress();
                                 resetLikeAndDislike();
                             })
+                            .catch(err => console.log(err))
                         // viewTrip(tripId);
 
                     }

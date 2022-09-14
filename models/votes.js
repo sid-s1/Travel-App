@@ -40,8 +40,14 @@ const Votes = {
         GROUP BY liked`;
         return db.query(sql, [tripId])
             .then(dbRes => {
-                votes.likes = dbRes.rows[0].likes;
-                votes.dislikes = dbRes.rows[0].dislikes;
+                for (const row of dbRes.rows) {
+                    if (row.liked === false) {
+                        votes.dislikes = row.dislikes;
+                    }
+                    else {
+                        votes.likes = row.likes;
+                    }
+                }
                 return votes;
             })
             .catch(err => err)
