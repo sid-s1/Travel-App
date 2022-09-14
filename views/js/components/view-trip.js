@@ -1,6 +1,6 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
-import { likeDislike } from './like-dislike.js';
+import { likeDislikeAction } from './like-dislike.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
@@ -48,7 +48,7 @@ export const viewTrip = (id) => {
                 .then(countResponse => {
                     voteCount = countResponse;
 
-                    likeDislike(likeButton, dislikeButton, loggedInUserId, id);
+                    likeDislikeAction(likeButton, dislikeButton, loggedInUserId, id);
 
                     // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
                     coverPhoto.className = 'trip-page-cover-pic';
@@ -94,14 +94,13 @@ export const viewTrip = (id) => {
                                 if (loggedInUserId === userIdForTrip) {
                                     modifyTripContainer.append(editTripButton, deleteTripButton);
                                 }
-                                else {
-                                    likeCount.textContent = `+ ${voteCount.likes}`;
-                                    dislikeCount.textContent = `- ${voteCount.dislikes}`;
-                                    likeDiv.append(likeButton, likeCount);
-                                    dislikeDiv.append(dislikeButton, dislikeCount);
-                                    photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
-                                    photoContainer.id = 'likeDislike-and-coverPhoto';
-                                }
+                                likeCount.textContent = `+ ${voteCount.likes}`;
+                                dislikeCount.textContent = `- ${voteCount.dislikes}`;
+
+                                likeDiv.append(likeButton, likeCount);
+                                dislikeDiv.append(dislikeButton, dislikeCount);
+                                photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
+                                photoContainer.id = 'likeDislike-and-coverPhoto';
 
 
                                 let deleteConfirmation = false;
@@ -211,5 +210,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    viewTrip(5);
+    viewTrip(1);
 }, 500);

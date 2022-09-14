@@ -12,6 +12,7 @@
 
 #like-btn, #dislike-btn {
     margin: 1rem;
+    cursor: pointer;
 }
 
 #like-container, #dislike-container {
@@ -38,6 +39,10 @@
 .like-dislike-icons {
     transform: scale(3);
     cursor: pointer;
+}
+
+.like-dislike-icons:active {
+    transform: scale(2);
 }
 
 .itinerary-row {

@@ -1,6 +1,6 @@
-import { countVotes, viewTrip } from './view-trip.js';
+import { countVotes } from './view-trip.js';
 
-export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
+export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     const resetLikeAndDislike = () => {
         likeBtn.innerHTML = `
                 <i class="fa-thin fa-thumbs-up like-dislike-icons"></i>
