@@ -1,15 +1,21 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 import { likeDislike } from './like-dislike.js';
-import { countLikesDislikes } from './count-votes.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
+
+const countVotes = (tripId) => {
+    return axios.get(`/user/votes/${tripId}`)
+        .then(response => response.data)
+        .catch(err => console.log(err))
+};
 
 export const viewTrip = (id) => {
     axios.get('/user/session')
         .then(response => {
             const result = response.data.rows[0];
             const loggedInUserId = result.id;
+            let voteCount;
 
             const pageContainer = document.getElementById('page-container');
             // emptying container to remove old content
@@ -36,157 +42,163 @@ export const viewTrip = (id) => {
 
             editTripButton.textContent = 'Edit Trip';
             deleteTripButton.textContent = 'Delete Trip';
-            countLikesDislikes(id);
-            likeDislike(likeButton, dislikeButton, loggedInUserId, id);
-
-            // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
-            coverPhoto.className = 'trip-page-cover-pic';
-            activitiesContainer.className = 'itinerary-column';
-            modifyTripContainer.id = 'modify-trip';
-            editTripButton.id = 'edit-trip';
-            deleteTripButton.id = 'delete-trip';
-            likeDiv.id = 'like-container';
-            dislikeDiv.id = 'dislike-container';
-
-            // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
-            let p = new Promise((resolve, reject) => {
-                axios.get(`/user/trips/${id}`)
-                    .then(tripDetailsResponse => {
-                        // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
-                        const tripDetails = tripDetailsResponse.data;
-
-                        const userIdForTrip = tripDetails[0].user_id;
-
-                        // using an imported function to perform date cleanup as DB storage of date includes time
-                        const formattedStartDate = dateExtractor.formatDate(tripDetails[0].trip_start_date);
-                        const formattedEndDate = dateExtractor.formatDate(tripDetails[0].trip_end_date);
-                        const citiesForHeader = document.createElement('p');
-
-                        tripHeader.innerHTML = `
-                        <h4>${tripDetails[0].trip_name}</h4>
-                        <h5>${formattedStartDate} - ${formattedEndDate}</h5>
-                        `;
 
 
-                        coverPhoto.src = tripDetails[0].hero_image_url;
-                        photoContainer.append(coverPhoto);
-                        photoContainer.id = 'coverPhoto-only';
+            countVotes(id)
+                .then(countResponse => {
+                    voteCount = countResponse;
 
-                        if (tripDetails[0].trip_status === 'draft') {
-                            const draftStatus = document.createElement('h2');
-                            draftStatus.textContent = 'DRAFT';
-                            modifyTripContainer.appendChild(draftStatus);
-                        }
+                    likeDislike(likeButton, dislikeButton, loggedInUserId, id);
 
-                        if (loggedInUserId === userIdForTrip) {
-                            modifyTripContainer.append(editTripButton, deleteTripButton);
-                        }
-                        else {
-                            likeDiv.append(likeButton, likeCount);
-                            dislikeDiv.append(dislikeButton, dislikeCount);
-                            photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
-                            photoContainer.id = 'likeDislike-and-coverPhoto';
-                        }
+                    // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
+                    coverPhoto.className = 'trip-page-cover-pic';
+                    activitiesContainer.className = 'itinerary-column';
+                    modifyTripContainer.id = 'modify-trip';
+                    editTripButton.id = 'edit-trip';
+                    deleteTripButton.id = 'delete-trip';
+                    likeDiv.id = 'like-container';
+                    dislikeDiv.id = 'dislike-container';
+
+                    // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
+                    let p = new Promise((resolve, reject) => {
+                        axios.get(`/user/trips/${id}`)
+                            .then(tripDetailsResponse => {
+                                // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
+                                const tripDetails = tripDetailsResponse.data;
+
+                                const userIdForTrip = tripDetails[0].user_id;
+
+                                // using an imported function to perform date cleanup as DB storage of date includes time
+                                const formattedStartDate = dateExtractor.formatDate(tripDetails[0].trip_start_date);
+                                const formattedEndDate = dateExtractor.formatDate(tripDetails[0].trip_end_date);
+                                const citiesForHeader = document.createElement('p');
+
+                                tripHeader.innerHTML = `
+                                <h4>${tripDetails[0].trip_name}</h4>
+                                <h5>${formattedStartDate} - ${formattedEndDate}</h5>
+                                `;
 
 
-                        let deleteConfirmation = false;
-                        deleteTripButton.addEventListener('click', () => {
+                                coverPhoto.src = tripDetails[0].hero_image_url;
+                                photoContainer.append(coverPhoto);
+                                photoContainer.id = 'coverPhoto-only';
 
-                            if (deleteConfirmation) {
-                                axios.delete(`/user/trips/delete/${id}`)
-                                    .then(response => console.log(response.data))
-                                    .catch(err => console.log(err))
+                                if (tripDetails[0].trip_status === 'draft') {
+                                    const draftStatus = document.createElement('h2');
+                                    draftStatus.textContent = 'DRAFT';
+                                    modifyTripContainer.appendChild(draftStatus);
+                                }
 
-                                // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
-                                renderProfile(2);
-                            }
+                                if (loggedInUserId === userIdForTrip) {
+                                    modifyTripContainer.append(editTripButton, deleteTripButton);
+                                }
+                                else {
+                                    likeCount.textContent = `+ ${voteCount.likes}`;
+                                    dislikeCount.textContent = `- ${voteCount.dislikes}`;
+                                    likeDiv.append(likeButton, likeCount);
+                                    dislikeDiv.append(dislikeButton, dislikeCount);
+                                    photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
+                                    photoContainer.id = 'likeDislike-and-coverPhoto';
+                                }
 
-                            else {
-                                deleteConfirmation = true;
-                                deleteTripButton.disabled = 'true';
-                                deleteTripButton.textContent = 'Confirm delete?';
-                                let startInterval = 5;
 
-                                let confirmDeleteInterval = setInterval(() => {
-                                    deleteTripButton.textContent = `Confirm delete? ${startInterval}${'.'.repeat(startInterval)}`;
-                                    startInterval--;
-                                }, 1000);
+                                let deleteConfirmation = false;
+                                deleteTripButton.addEventListener('click', () => {
 
-                                setTimeout(() => {
-                                    clearInterval(confirmDeleteInterval);
-                                    deleteTripButton.textContent = 'Confirm delete?';
-                                    deleteTripButton.removeAttribute('disabled');
-                                }, 6000);
-                            }
-                        });
+                                    if (deleteConfirmation) {
+                                        axios.delete(`/user/trips/delete/${id}`)
+                                            .then(response => console.log(response.data))
+                                            .catch(err => console.log(err))
 
-                        descriptionContent.innerHTML = `
-                        <h4>Description</h4>
-                        ${tripDetails[0].description}
-                        `;
-                        keyTakeaway.innerHTML = `
-                        <h4> | ${tripDetails[0].key_takeaway} | </h4>
-                        `;
+                                        // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
+                                        renderProfile(2);
+                                    }
 
-                        // adding city names that the user has visited in this trip; if it was the last city in the loop we do not need the final comma
-                        for (let iterator = 0; iterator < tripDetails.length; iterator++) {
-                            if (iterator === tripDetails.length - 1) {
-                                citiesForHeader.textContent += `${tripDetails[iterator].city_name}`;
-                            }
-                            else {
-                                citiesForHeader.textContent += `${tripDetails[iterator].city_name}, `;
-                            }
-                        }
-                        tripHeader.appendChild(citiesForHeader);
-                    })
-                    .catch(error => console.log(error))
+                                    else {
+                                        deleteConfirmation = true;
+                                        deleteTripButton.disabled = 'true';
+                                        deleteTripButton.textContent = 'Confirm delete?';
+                                        let startInterval = 5;
 
-                axios.get(`/user/trips/activities/${id}`)
-                    .then(activityResponse => {
-                        const activities = activityResponse.data;
-                        for (const activity of activities) {
-                            // each activity will be an object of activity name, type, start date and end date for the trip id used in our axios call
-                            const formattedStartDate = dateExtractor.formatDate(activity.activity_start_date);
-                            const formattedEndDate = dateExtractor.formatDate(activity.activity_end_date);
+                                        let confirmDeleteInterval = setInterval(() => {
+                                            deleteTripButton.textContent = `Confirm delete? ${startInterval}${'.'.repeat(startInterval)}`;
+                                            startInterval--;
+                                        }, 1000);
 
-                            const activitiesDiv = document.createElement('div');
-                            const activityDetails = document.createElement('h5');
-                            const activityLogo = document.createElement('img');
+                                        setTimeout(() => {
+                                            clearInterval(confirmDeleteInterval);
+                                            deleteTripButton.textContent = 'Confirm delete?';
+                                            deleteTripButton.removeAttribute('disabled');
+                                        }, 6000);
+                                    }
+                                });
 
-                            activitiesDiv.className = 'itinerary-row';
-                            activityDetails.className = 'itinerary-item-details';
-                            activityLogo.className = 'trip-addon-icon';
+                                descriptionContent.innerHTML = `
+                                <h4>Description</h4>
+                                ${tripDetails[0].description}
+                                `;
+                                keyTakeaway.innerHTML = `
+                                <h4> | ${tripDetails[0].key_takeaway} | </h4>
+                                `;
 
-                            if (activity.gm_type === 'activity') {
-                                activityLogo.src = '../assets/clipboard-list-solid.svg';
-                            }
-                            else if (activity.gm_type === 'airline') {
-                                activityLogo.src = '../assets/jet-fighter-up-solid.svg';
-                            }
-                            else if (activity.gm_type === 'hotel') {
-                                activityLogo.src = '../assets/bed-solid.svg';
-                            }
-                            activityDetails.innerHTML = `
+                                // adding city names that the user has visited in this trip; if it was the last city in the loop we do not need the final comma
+                                for (let iterator = 0; iterator < tripDetails.length; iterator++) {
+                                    if (iterator === tripDetails.length - 1) {
+                                        citiesForHeader.textContent += `${tripDetails[iterator].city_name}`;
+                                    }
+                                    else {
+                                        citiesForHeader.textContent += `${tripDetails[iterator].city_name}, `;
+                                    }
+                                }
+                                tripHeader.appendChild(citiesForHeader);
+                            })
+                            .catch(error => console.log(error))
+
+                        axios.get(`/user/trips/activities/${id}`)
+                            .then(activityResponse => {
+                                const activities = activityResponse.data;
+                                for (const activity of activities) {
+                                    // each activity will be an object of activity name, type, start date and end date for the trip id used in our axios call
+                                    const formattedStartDate = dateExtractor.formatDate(activity.activity_start_date);
+                                    const formattedEndDate = dateExtractor.formatDate(activity.activity_end_date);
+
+                                    const activitiesDiv = document.createElement('div');
+                                    const activityDetails = document.createElement('h5');
+                                    const activityLogo = document.createElement('img');
+
+                                    activitiesDiv.className = 'itinerary-row';
+                                    activityDetails.className = 'itinerary-item-details';
+                                    activityLogo.className = 'trip-addon-icon';
+
+                                    if (activity.gm_type === 'activity') {
+                                        activityLogo.src = '../assets/clipboard-list-solid.svg';
+                                    }
+                                    else if (activity.gm_type === 'airline') {
+                                        activityLogo.src = '../assets/jet-fighter-up-solid.svg';
+                                    }
+                                    else if (activity.gm_type === 'hotel') {
+                                        activityLogo.src = '../assets/bed-solid.svg';
+                                    }
+                                    activityDetails.innerHTML = `
                             <p>${activity.activity_name}</p>
                             <p>${formattedStartDate} - ${formattedEndDate}</p>
                             `;
 
-                            activitiesDiv.append(activityLogo, activityDetails);
-                            activitiesContainer.appendChild(activitiesDiv);
-                        }
-                        resolve();
+                                    activitiesDiv.append(activityLogo, activityDetails);
+                                    activitiesContainer.appendChild(activitiesDiv);
+                                }
+                                resolve();
+                            })
+                            .catch(error => reject(error))
+                    });
+                    p.then(() => {
+                        descriptionContainer.appendChild(descriptionContent);
+                        pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);
                     })
-                    .catch(error => reject(error))
-            });
-            p.then(() => {
-                descriptionContainer.appendChild(descriptionContent);
-                pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);
-            })
-                .catch(err => console.log(err))
+                        .catch(err => console.log(err))
+
+                })
         })
-
-
-
 };
 
 setTimeout(() => {
@@ -197,5 +209,5 @@ setTimeout(() => {
     // tripId 2 shows as a 'draft' - some itinerary items and city have been added
 
     // viewTrip(1);
-    // viewTrip(5);
+    viewTrip(5);
 }, 500);

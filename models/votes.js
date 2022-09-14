@@ -15,19 +15,19 @@ const Votes = {
                     return dbRes;
                 }
                 else {
-                    return likeDislike.createLike(userId, tripId, newValue);
+                    return Votes.createLike(userId, tripId, newValue);
                 }
             })
             .catch(err => err)
     },
     createLike: (userId, tripId, value) => {
+        console.log('in model createlike');
         const sql = 'INSERT INTO votes(user_id,trip_id,liked) VALUES($1,$2,$3)';
         return db.query(sql, [userId, tripId, value])
             .then(dbRes => dbRes)
             .catch(err => err)
     },
     countVotes: (tripId) => {
-        console.log('counting..');
         const votes = {
             likes: 0,
             dislikes: 0
@@ -40,10 +40,11 @@ const Votes = {
         GROUP BY liked`;
         return db.query(sql, [tripId])
             .then(dbRes => {
-                console.log(dbRes);
-                console.log(votes);
-                return dbRes;
+                votes.likes = dbRes.rows[0].likes;
+                votes.dislikes = dbRes.rows[0].dislikes;
+                return votes;
             })
+            .catch(err => err)
     }
 };
 

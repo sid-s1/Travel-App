@@ -10,6 +10,10 @@
     align-items: center;
 }
 
+#like-btn, #dislike-btn {
+    margin: 1rem;
+}
+
 #like-container, #dislike-container {
     display: flex;
     flex-direction: column;

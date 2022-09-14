@@ -1,3 +1,5 @@
+import { viewTrip } from './view-trip.js';
+
 export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     const resetLikeAndDislike = () => {
         likeBtn.innerHTML = `
@@ -64,10 +66,12 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
 
                     if (likeBtnClicked) {
                         callApiToChangeLike(true, originalLikeState);
+                        viewTrip(tripId);
                         switchToLike();
                     }
                     else {
                         callApiToChangeLike(null, originalLikeState);
+                        viewTrip(tripId);
                         resetLikeAndDislike();
                     }
                 }
@@ -78,10 +82,12 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
 
                     if (dislikeBtnClicked) {
                         callApiToChangeLike(false, originalLikeState);
+                        viewTrip(tripId);
                         switchToDislike();
                     }
                     else {
                         callApiToChangeLike(null, originalLikeState);
+                        viewTrip(tripId);
                         resetLikeAndDislike();
                     }
                 }
