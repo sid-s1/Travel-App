@@ -14,6 +14,7 @@ const googleController = require('./controller/google-details');
 const tripController = require('./controller/trips');
 const statsController = require('./controller/user-stats');
 const searchController = require('./controller/search');
+const votesController = require('./controller/like-dislike');
 
 // Middleware
 app.use((request, response, next) => {
@@ -39,12 +40,12 @@ app.use('/user/trips', tripController);
 app.use('/user/stats', statsController);
 app.use('/placeDetails', googleController);
 app.use('/search', searchController);
-
+app.use('/user/votes', votesController);
 
 app.use(function (error, request, response, next) {
     response.status(error.status || 500);
     response.send(error.message);
-  });
+});
 
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
