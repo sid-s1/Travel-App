@@ -17,4 +17,11 @@ router.get('/:userId/:tripId', (request, response) => {
         .catch(err => response.json(err))
 });
 
+router.post('/changeLike', (request, response) => {
+    const { liked, userId, tripId } = request.body;
+    likeDislike.changeLiked(userId, tripId, liked)
+        .then(dbRes => response.json({ message: 'Updated like status!' }))
+        .catch(err => err)
+});
+
 module.exports = router;
