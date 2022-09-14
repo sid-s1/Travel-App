@@ -3,6 +3,7 @@ export const logout = () => {
     axios.delete('/user/session/')
     .then(() => {
         console.log('SESSION DELETED')
+        localStorage.clear();
         location.href = '/'; 
         })
     .catch(err => {
