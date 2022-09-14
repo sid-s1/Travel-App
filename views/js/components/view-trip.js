@@ -2,6 +2,8 @@ import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 import { likeDislike } from './like-dislike.js';
 
+// if session does not return anything, display default trip view without modify buttons or like-dislike buttons
+
 export const viewTrip = (id) => {
     axios.get('/user/session')
         .then(response => {
@@ -41,9 +43,9 @@ export const viewTrip = (id) => {
             // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
             let p = new Promise((resolve, reject) => {
                 axios.get(`/user/trips/${id}`)
-                    .then(response => {
+                    .then(tripDetailsResponse => {
                         // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
-                        const tripDetails = response.data;
+                        const tripDetails = tripDetailsResponse.data;
 
                         const userIdForTrip = tripDetails[0].user_id;
 
@@ -130,8 +132,8 @@ export const viewTrip = (id) => {
                     .catch(error => console.log(error))
 
                 axios.get(`/user/trips/activities/${id}`)
-                    .then(response => {
-                        const activities = response.data;
+                    .then(activityResponse => {
+                        const activities = activityResponse.data;
                         for (const activity of activities) {
                             // each activity will be an object of activity name, type, start date and end date for the trip id used in our axios call
                             const formattedStartDate = dateExtractor.formatDate(activity.activity_start_date);

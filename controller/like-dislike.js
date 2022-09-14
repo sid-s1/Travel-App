@@ -1,3 +1,4 @@
+const { response } = require('express');
 const express = require('express');
 const router = express.Router();
 const likeDislike = require('../models/like-dislike');
@@ -17,10 +18,17 @@ router.get('/:userId/:tripId', (request, response) => {
         .catch(err => response.json(err))
 });
 
-router.post('/changeLike', (request, response) => {
+router.post('/changeLikeStatus', (request, response) => {
     const { liked, userId, tripId } = request.body;
     likeDislike.changeLiked(userId, tripId, liked)
-        .then(dbRes => response.json({ message: 'Updated like status!' }))
+        .then(dbRes => {
+            if (dbRes.command === 'UPDATE') {
+                return response.json({ message: 'Updated like status!' })
+            }
+            else {
+                return response.json({ message: 'Created like status!' })
+            }
+        })
         .catch(err => err)
 });
 

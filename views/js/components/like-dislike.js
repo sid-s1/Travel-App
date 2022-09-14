@@ -46,23 +46,52 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     let likeBtnClicked = false;
     let dislikeBtnClicked = false;
 
-    // axios call to controller to get 'liked' column for userid and tripid combo
-    // if exists, change to below
-    // if does not exist, create post request
-
     const callApiToChangeLike = (currentState, originalState) => {
         if (!(currentState === originalState)) {
-            console.log('comparing like states');
             data.liked = currentState;
-            axios.post('/user/votes/changeLike', data)
-                .then(response => console.log(response.data))
+            axios.post('/user/votes/changeLikeStatus', data)
+                .then(response => console.log(response.data.message))
                 .catch(err => console.log(err))
         }
     };
 
+    const likeDislikeListeners = () => {
+        buttonArray.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.getAttribute('id') === 'like-btn') {
+                    dislikeBtnClicked = false;
+
+                    likeBtnClicked = (likeBtnClicked) ? false : true;
+
+                    if (likeBtnClicked) {
+                        callApiToChangeLike(true, originalLikeState);
+                        switchToLike();
+                    }
+                    else {
+                        callApiToChangeLike(false, originalLikeState);
+                        resetLikeAndDislike();
+                    }
+                }
+                else {
+                    likeBtnClicked = false;
+
+                    dislikeBtnClicked = (dislikeBtnClicked) ? false : true;
+
+                    if (dislikeBtnClicked) {
+                        callApiToChangeLike(false, originalLikeState);
+                        switchToDislike();
+                    }
+                    else {
+                        callApiToChangeLike(true, originalLikeState);
+                        resetLikeAndDislike();
+                    }
+                }
+            });
+        });
+    };
+
     axios.get(`/user/votes/${loggedInUserId}/${tripId}`)
         .then(response => {
-            // result will be either {liked: true} or {liked: false} or {noRow: true}
             let result = response.data;
 
             if (result.liked === true) {
@@ -80,55 +109,9 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
             else {
                 resetLikeAndDislike();
             }
-
-            buttonArray.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (button.getAttribute('id') === 'like-btn') {
-                        dislikeBtnClicked = false;
-
-                        likeBtnClicked = (likeBtnClicked) ? false : true;
-
-                        if (likeBtnClicked) {
-                            callApiToChangeLike(true, originalLikeState);
-                            // changedLiked = true;
-                            switchToLike();
-                        }
-                        else {
-                            callApiToChangeLike(false, originalLikeState);
-                            // changedLiked = true;
-                            resetLikeAndDislike();
-                        }
-                    }
-                    else {
-                        likeBtnClicked = false;
-
-                        dislikeBtnClicked = (dislikeBtnClicked) ? false : true;
-
-                        if (dislikeBtnClicked) {
-                            callApiToChangeLike(false, originalLikeState);
-                            // changedLiked = true;
-                            switchToDislike();
-                        }
-                        else {
-                            callApiToChangeLike(true, originalLikeState);
-                            // changedLiked = true;
-                            resetLikeAndDislike();
-                        }
-                    }
-                });
-            });
-
-
-
-            if (!(data.liked === originalLikeState)) {
-                console.log('comparing like states');
-                axios.post('/user/liked/changeLike', data)
-                    .then(response => console.log(response.data))
-                    .catch(err => console.log(err))
-            }
-
-            // check if data.liked is null, it means that user hasnt liked this yet so create new row
-
+            likeDislikeListeners();
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            console.log(err);
+        })
 };
