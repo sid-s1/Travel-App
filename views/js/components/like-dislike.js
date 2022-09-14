@@ -1,4 +1,4 @@
-import { viewTrip } from './view-trip.js';
+import { countVotes, viewTrip } from './view-trip.js';
 
 export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     const resetLikeAndDislike = () => {
@@ -28,6 +28,17 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                 `;
     };
 
+    const updateVoteCountOnPress = () => {
+        const likeCount = document.getElementById('like-count');
+        const dislikeCount = document.getElementById('dislike-count');
+        countVotes(tripId)
+            .then(voteCount => {
+                console.log(`trying the sick update >>>>`, voteCount);
+                likeCount.textContent = `+ ${voteCount.likes}`;
+                dislikeCount.textContent = `- ${voteCount.dislikes}`;
+            })
+    };
+
     const form = document.createElement('form');
     form.innerHTML = `
     <input type="hidden" name="liked">
@@ -50,8 +61,8 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     const callApiToChangeLike = (currentState, originalState) => {
         if (!(currentState === originalState)) {
             data.liked = currentState;
-            axios.post('/user/votes/changeLikeStatus', data)
-                .then(response => console.log(response.data.message))
+            return axios.post('/user/votes/changeLikeStatus', data)
+                .then(response => response)
                 .catch(err => console.log(err))
         }
     };
@@ -65,14 +76,24 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     likeBtnClicked = (likeBtnClicked === true) ? false : true;
 
                     if (likeBtnClicked) {
-                        callApiToChangeLike(true, originalLikeState);
-                        viewTrip(tripId);
-                        switchToLike();
+                        callApiToChangeLike(true, originalLikeState)
+                            .then(() => {
+                                updateVoteCountOnPress();
+                                switchToLike();
+                            })
+                        // viewTrip(tripId);
                     }
                     else {
-                        callApiToChangeLike(null, originalLikeState);
-                        viewTrip(tripId);
-                        resetLikeAndDislike();
+                        callApiToChangeLike(null, originalLikeState)
+                            .then(() => {
+                                updateVoteCountOnPress();
+                                resetLikeAndDislike();
+                            })
+
+
+
+                        // viewTrip(tripId);
+
                     }
                 }
                 else {
@@ -81,14 +102,25 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     dislikeBtnClicked = (dislikeBtnClicked === true) ? false : true;
 
                     if (dislikeBtnClicked) {
-                        callApiToChangeLike(false, originalLikeState);
-                        viewTrip(tripId);
-                        switchToDislike();
+                        callApiToChangeLike(false, originalLikeState)
+                            .then(() => {
+                                updateVoteCountOnPress();
+                                switchToDislike();
+                            })
+
+
+
+                        // viewTrip(tripId);
+
                     }
                     else {
-                        callApiToChangeLike(null, originalLikeState);
-                        viewTrip(tripId);
-                        resetLikeAndDislike();
+                        callApiToChangeLike(null, originalLikeState)
+                            .then(() => {
+                                updateVoteCountOnPress();
+                                resetLikeAndDislike();
+                            })
+                        // viewTrip(tripId);
+
                     }
                 }
             });

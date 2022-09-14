@@ -4,7 +4,7 @@ import { likeDislike } from './like-dislike.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
-const countVotes = (tripId) => {
+export const countVotes = (tripId) => {
     return axios.get(`/user/votes/${tripId}`)
         .then(response => response.data)
         .catch(err => console.log(err))
@@ -58,6 +58,8 @@ export const viewTrip = (id) => {
                     deleteTripButton.id = 'delete-trip';
                     likeDiv.id = 'like-container';
                     dislikeDiv.id = 'dislike-container';
+                    likeCount.id = 'like-count';
+                    dislikeCount.id = 'dislike-count';
 
                     // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
                     let p = new Promise((resolve, reject) => {
