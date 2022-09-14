@@ -15,7 +15,7 @@ const Votes = {
                     return dbRes;
                 }
                 else {
-                    return likeDislike.createLike(userId, tripId, newValue);
+                    return Votes.createLike(userId, tripId, newValue);
                 }
             })
             .catch(err => err)
