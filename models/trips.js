@@ -32,6 +32,44 @@ const Trip = {
     },
     edit: (tripId) => {
         // add edit DB query
+    },
+    createTripId: (userId) => {
+        const sql = "INSERT INTO trips(user_id, trip_status) VALUES($1, 'draft') RETURNING id";
+        return db.query(sql, [userId])
+            .then(dbRes => dbRes)
+            .catch(err => err)
+    },
+    create: (country) => {
+        // userId, placeId, name, city, country
+        console.log('>>>>> INSERT COUNTRY <<<<<')
+        const sql = 'INSERT INTO countries (country_name) SELECT $1 WHERE NOT EXISTS (SELECT id FROM countries WHERE country_name = $1) RETURNING id';
+        return db.query(sql, [country])
+            .then(res => res)
+            .catch(err => err)
+    },
+    deleteDescription: (tripId) => {
+        const sql = "UPDATE trips SET description=null WHERE id=$1";
+        return db.query(sql, [tripId])
+            .then(res => res)
+            .catch(err => err)
+    },
+    writeDescription: (description, tripId) => {
+        const sql = "UPDATE trips SET description=$1 WHERE id=$2";
+        return db.query(sql, [description, tripId])
+            .then(res => res)
+            .catch(err => err)
+    },
+    deleteName: (tripId) => {
+        const sql = "UPDATE trips SET trip_name=null WHERE id=$1";
+        return db.query(sql, [tripId])
+            .then(res => res)
+            .catch(err => err)
+    },
+    writeName: (description, tripId) => {
+        const sql = "UPDATE trips SET trip_name=$1 WHERE id=$2";
+        return db.query(sql, [description, tripId])
+            .then(res => res)
+            .catch(err => err)
     }
 }
 
