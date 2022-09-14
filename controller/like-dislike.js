@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Votes = require('../models/votes');
+const Votes = require('../models/like-dislike');
 
 router.get('/:userId/:tripId', (request, response) => {
     const userId = request.params.userId;

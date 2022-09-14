@@ -14,7 +14,7 @@ const googleController = require('./controller/google-details');
 const tripController = require('./controller/trips');
 const statsController = require('./controller/user-stats');
 const searchController = require('./controller/search');
-const votesController = require('./controller/votes');
+const votesController = require('./controller/like-dislike');
 
 // Middleware
 app.use((request, response, next) => {
