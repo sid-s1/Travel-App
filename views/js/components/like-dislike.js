@@ -38,7 +38,7 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     };
     let originalLikeState;
 
-    resetLikeAndDislike();
+    // resetLikeAndDislike();
     likeBtn.id = 'like-btn';
     dislikeBtn.id = 'dislike-btn';
     const buttonArray = [likeBtn, dislikeBtn];
@@ -61,28 +61,28 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                 if (button.getAttribute('id') === 'like-btn') {
                     dislikeBtnClicked = false;
 
-                    likeBtnClicked = (likeBtnClicked) ? false : true;
+                    likeBtnClicked = (likeBtnClicked === true) ? false : true;
 
                     if (likeBtnClicked) {
                         callApiToChangeLike(true, originalLikeState);
                         switchToLike();
                     }
                     else {
-                        callApiToChangeLike(false, originalLikeState);
+                        callApiToChangeLike(null, originalLikeState);
                         resetLikeAndDislike();
                     }
                 }
                 else {
                     likeBtnClicked = false;
 
-                    dislikeBtnClicked = (dislikeBtnClicked) ? false : true;
+                    dislikeBtnClicked = (dislikeBtnClicked === true) ? false : true;
 
                     if (dislikeBtnClicked) {
                         callApiToChangeLike(false, originalLikeState);
                         switchToDislike();
                     }
                     else {
-                        callApiToChangeLike(true, originalLikeState);
+                        callApiToChangeLike(null, originalLikeState);
                         resetLikeAndDislike();
                     }
                 }
@@ -93,7 +93,6 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     axios.get(`/user/votes/${loggedInUserId}/${tripId}`)
         .then(response => {
             let result = response.data;
-
             if (result.liked === true) {
                 switchToLike();
                 data.liked = true;
@@ -103,7 +102,7 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
             else if (result.liked === false) {
                 switchToDislike();
                 data.liked = false;
-                likeBtnClicked = false;
+                dislikeBtnClicked = true;
                 originalLikeState = JSON.parse(JSON.stringify(data)).liked;
             }
             else {
