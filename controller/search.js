@@ -16,9 +16,9 @@ router.post('/', (request, response) => {
     tripIds = [];
     if (user_id) {
         results.user_id = user_id;
-        console.log('logged in')
+        console.log('logged in');
     } else {
-        console.log('not logged in')
+        console.log('not logged in');
     }
 
     if (searchType === 'user') {
