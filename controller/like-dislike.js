@@ -17,15 +17,15 @@ router.get('/:userId/:tripId', (request, response) => {
         .catch(err => response.json(err))
 });
 
-router.get('/countVotes/:tripId', (request, response) => {
-    console.log('in controller');
+router.get('/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Votes.countVotes(tripId)
-        .then(res => console.log(res))
+        .then(res => response.json(res))
         .catch(err => response.json(err))
 });
 
 router.post('/changeLikeStatus', (request, response) => {
+    console.log('in controller change status');
     const { liked, userId, tripId } = request.body;
     Votes.changeLiked(userId, tripId, liked)
         .then(dbRes => {

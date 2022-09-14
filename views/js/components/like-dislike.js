@@ -1,4 +1,6 @@
-export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
+import { countVotes } from './view-trip.js';
+
+export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     const resetLikeAndDislike = () => {
         likeBtn.innerHTML = `
                 <i class="fa-thin fa-thumbs-up like-dislike-icons"></i>
@@ -26,6 +28,16 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                 `;
     };
 
+    const updateVoteCountOnPress = () => {
+        const likeCount = document.getElementById('like-count');
+        const dislikeCount = document.getElementById('dislike-count');
+        countVotes(tripId)
+            .then(voteCount => {
+                likeCount.textContent = `+ ${voteCount.likes}`;
+                dislikeCount.textContent = `- ${voteCount.dislikes}`;
+            })
+    };
+
     const form = document.createElement('form');
     form.innerHTML = `
     <input type="hidden" name="liked">
@@ -48,9 +60,9 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
     const callApiToChangeLike = (currentState, originalState) => {
         if (!(currentState === originalState)) {
             data.liked = currentState;
-            axios.post('/user/votes/changeLikeStatus', data)
-                .then(response => console.log(response.data.message))
-                .catch(err => console.log(err))
+            return axios.post('/user/votes/changeLikeStatus', data)
+                .then(response => response)
+                .catch(err => err)
         }
     };
 
@@ -63,12 +75,20 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     likeBtnClicked = (likeBtnClicked === true) ? false : true;
 
                     if (likeBtnClicked) {
-                        callApiToChangeLike(true, originalLikeState);
-                        switchToLike();
+                        callApiToChangeLike(true, originalLikeState)
+                            .then(() => {
+                                originalLikeState = true;
+                                updateVoteCountOnPress();
+                                switchToLike();
+                            })
                     }
                     else {
-                        callApiToChangeLike(null, originalLikeState);
-                        resetLikeAndDislike();
+                        callApiToChangeLike(null, originalLikeState)
+                            .then(() => {
+                                originalLikeState = null;
+                                updateVoteCountOnPress();
+                                resetLikeAndDislike();
+                            })
                     }
                 }
                 else {
@@ -77,12 +97,23 @@ export const likeDislike = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
                     dislikeBtnClicked = (dislikeBtnClicked === true) ? false : true;
 
                     if (dislikeBtnClicked) {
-                        callApiToChangeLike(false, originalLikeState);
-                        switchToDislike();
+                        callApiToChangeLike(false, originalLikeState)
+                            .then(() => {
+                                originalLikeState = false;
+                                updateVoteCountOnPress();
+                                switchToDislike();
+                            })
+                            .catch(err => console.log(err))
                     }
                     else {
-                        callApiToChangeLike(null, originalLikeState);
-                        resetLikeAndDislike();
+                        callApiToChangeLike(null, originalLikeState)
+                            .then(() => {
+                                originalLikeState = null;
+                                updateVoteCountOnPress();
+                                resetLikeAndDislike();
+                            })
+                            .catch(err => console.log(err))
+
                     }
                 }
             });
