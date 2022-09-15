@@ -20,8 +20,8 @@ export const renderNewTrip = () => {
         {
             element: 'h1',
             textContent: '- ADD NEW TRIP -'
-        }, 
-        {   
+        },
+        {
             name: 'trip_name',
             element: 'input',
             placeholder: 'Enter trip title',
@@ -66,7 +66,7 @@ export const renderNewTrip = () => {
 }
 
 // attach Blur event listener to automatically update db
-const initBlurEvent = (element, route) => {
+export const initBlurEvent = (element, route) => {
     if (!route) return
 
     let requireSave = false;
@@ -92,7 +92,7 @@ const initBlurEvent = (element, route) => {
     });
 }
 
-const renderOptionsBar = () => {
+export const renderOptionsBar = () => {
     // data to render buttons for adding items to itinerary
     const data = [
         {
@@ -263,7 +263,7 @@ const generateForm = (dataType, icon, dataExists) => {
             } else if (name === 'hotel' || name === 'activity') {
                 isValidItem = false;
                 const autoComplete = initAutocomplete(newElement, name);
-                autoComplete.addListener('place_changed', () => {    
+                autoComplete.addListener('place_changed', () => {
                     isValidItem = true;
                     let value = newElement.value;
                     value = value.replaceAll(' ', '%20');
@@ -276,18 +276,18 @@ const generateForm = (dataType, icon, dataExists) => {
                         .catch(err => console.log(err))
                 });
                 newElement.addEventListener('change', () => {
-                    isValidItem = false; 
+                    isValidItem = false;
                 })
-            } 
-            
+            }
+
             let row;
-            let wrappedElement;            
+            let wrappedElement;
             if (name === 'airline') {
                 wrappedElement = layout.wrap([newElement], 'form-row-airline');
                 row = layout.wrap([label, wrappedElement], 'form-row');
             } else {
                 row = layout.wrap([label, newElement], 'form-row');
-            }            
+            }
             form.appendChild(row);
         }
     }
@@ -312,22 +312,22 @@ const generateForm = (dataType, icon, dataExists) => {
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save';
     saveButton.className = 'float new-trip-save-button';
-   
+
     form.appendChild(saveButton)
     form.appendChild(deleteButton)
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-                
+
         // error prevention - ensure user has entered a valid airline/hotel or activity
-        if (!isValidItem) {            
+        if (!isValidItem) {
             const firstInput = form.childNodes[0].childNodes[1]
             firstInput.focus()
             firstInput.select()
             alert(`Please enter a valid ${itineraryType}`)
             return
-        } 
-        
+        }
+
         const formData = new FormData(form)
         const data = {
         userId: localStorage.getItem('userId'),

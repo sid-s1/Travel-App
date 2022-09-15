@@ -47,8 +47,7 @@ router.put('/edit/:tripId', (request, response) => {
     Trip.edit(tripData)
 .then(dbRes => {
     console.log(dbRes);
-    response.json('Trip edited')
-})
+    response.json('Trip edited')})
     .catch(err => response.json('Trip could not be edited'))
 });
 
@@ -91,7 +90,7 @@ router.post('/', (request, response) => {
                                                                                 .then(dbRes => {
                                                                                     const itinItemId = dbRes.rows[0].id;
                                                                                     console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
-                                                                                })                                                                            
+                                                                                })
                                                                         })
                                                                 })
                                                         })
