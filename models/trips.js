@@ -48,7 +48,99 @@ const Trip = {
         return db.query(sql, [tripData.tripId, tripData.user_id, tripData.trip_name, tripData.trip_status, tripData.trip_start_date, tripData.trip_end_date, tripData.hero_image_url, tripData.description, tripData.key_takeaway])
         .then(dbRes => dbRes)
         .catch(err => err);
-    }
+    },
+    createTripId: (userId) => {
+        const sql = "INSERT INTO trips(user_id, trip_status) VALUES($1, 'draft') RETURNING id";
+        return db.query(sql, [userId])
+            .then(dbRes => dbRes)
+            .catch(err => err)
+    },
+    write: (column, value, tripId) => {
+        let sql;
+        let arr;
+        switch (column) {
+            case 'trip_name':
+                sql = `UPDATE trips SET trip_name=$1 WHERE id=$2`;
+                arr = [value, tripId];
+                break;
+            case 'description':
+                sql = `UPDATE trips SET description=$1 WHERE id=$2`;
+                arr = [value, tripId];
+                break;
+            case 'key_takeaway':
+                sql = `UPDATE trips SET key_takeaway=$1 WHERE id=$2`;
+                arr = [value, tripId];
+                break;
+            case 'hero_image_url':
+                sql = 'UPDATE trips SET hero_image_url=$1 WHERE id=$2'
+                arr = [value, tripId];
+                break;
+        }
+        return db.query(sql, arr)
+            .then(res => res)
+            .catch(err => err)
+    },
+    writeCountry: (country) => {
+        const sql = 'INSERT INTO countries (country_name) SELECT $1 WHERE NOT EXISTS (SELECT id FROM countries WHERE country_name = $1)';
+        return db.query(sql, [country])
+        .then(res => res)
+        .catch(err => err)
+    },
+    getCountry: (country) => {
+        const sql = 'SELECT id FROM countries WHERE country_name=$1';
+        return db.query(sql, [country])
+        .then(res => res)
+        .catch(err => err)
+    },
+    writeCity: (countryId, gm_api_city_id, city) => {
+        const sql = 'INSERT INTO cities (country_id, gm_api_city_id, city_name) SELECT $1, $2, $3 WHERE NOT EXISTS (SELECT id FROM cities WHERE gm_api_city_id = $2)';
+        return db.query(sql, [countryId, gm_api_city_id, city])
+        .then(res => res)
+        .catch(err => err)
+    },
+    getCity: (city) => {
+        const sql = 'SELECT id FROM cities WHERE city_name=$1';
+        return db.query(sql, [city])
+        .then(res => res)
+        .catch(err => err)
+    },
+    writeLocation: (trip_id, city_id) => {
+        const sql = 'INSERT INTO trip_locations (trip_id, city_id) SELECT $1, $2 WHERE NOT EXISTS (SELECT id FROM trip_locations WHERE trip_id=$1 AND city_id = $2)';
+        return db.query(sql, [trip_id, city_id])
+        .then(res => res)
+        .catch(err => err)
+    },
+    getLocation: (trip_id, city_id) => {
+        const sql = 'SELECT id FROM trip_locations WHERE trip_id=$1 AND city_id=$2';
+        return db.query(sql, [trip_id, city_id])
+        .then(res => res)
+        .catch(err => err)
+    },
+    writeActivity: (name, gm_api_city_id, type) => {
+        const sql = 'INSERT INTO activities (activity_name, gm_api_place_id, gm_type) SELECT $1, $2, $3 WHERE NOT EXISTS (SELECT id FROM activities WHERE gm_api_place_id = $2)';
+        return db.query(sql, [name, gm_api_city_id, type])
+        .then(res => res)
+        .catch(err => err)
+    },
+    getActivity: (gm_api_place_id) => {
+        const sql = 'SELECT id FROM activities WHERE gm_api_place_id=$1';
+        return db.query(sql, [gm_api_place_id])
+        .then(res => res)
+        .catch(err => err)
+    },
+    writeItinItem: (locationId, activityId, startDate, endDate, rating) => {
+        const sql = 'INSERT INTO itinerary_items (trip_location_id, activity_id, activity_start_date, activity_end_date, activity_rating) SELECT $1, $2, $3, $4, $5 WHERE NOT EXISTS (SELECT id FROM itinerary_items WHERE trip_location_id = $1 AND activity_id = $2 AND activity_start_date = $3)';
+        return db.query(sql, [locationId, activityId, startDate, endDate, rating])
+        .then(res => res)
+        .catch(err => err)
+    },
+    getItinItem: (locationId, activityId, startDate) => {
+        const sql = 'SELECT id FROM itinerary_items WHERE trip_location_id = $1 AND activity_id = $2 AND activity_start_date = $3';
+        return db.query(sql, [locationId, activityId, startDate])
+        .then(res => res)
+        .catch(err => err)
+    },
+
 }
 
 module.exports = Trip;
