@@ -3,7 +3,7 @@ const router = express.Router();
 const Bookmarks = require('../models/bookmarks.js');
 const Trip = require('../models/trips.js');
 
-router.get('/:userId', (request, response) => {
+router.get('/all/:userId', (request, response) => {
     const userId = request.params.userId;
     const authorisedUserId = request.session.user_id;
     const results = {
@@ -23,7 +23,6 @@ router.get('/:userId', (request, response) => {
         for (let i=0; i < dbRes.rowCount; i++) {
             tripIds.push(dbRes.rows[i]['trip_id']);
         }
-        console.log(tripIds);
         Trip.detailsMultiple(tripIds)
         .then(dbRes => {
             for (let i = 0; i < dbRes.rowCount; i++) {
@@ -34,5 +33,49 @@ router.get('/:userId', (request, response) => {
     })
 });
 
+router.get('/:tripId/:userId', (request, response) => {
+    const userId = request.params.userId;
+    const tripId = request.params.tripId;
+    Bookmarks.checkBookmarkExists(userId, tripId)
+    .then(dbRes => {
+        return dbRes;
+    })
+});
+
+router.post('/', (request, response) => {
+    const tripId = request.body.tripId;
+    const userId = request.body.userId;
+    Bookmarks.checkBookmarkExists(userId, tripId)
+    .then(dbRes => {
+        if (dbRes.rowCount === 0) {
+            Bookmarks.createBookmark(userId, tripId)
+            .then(dbRes => {
+                return response.json({message: 'bookmark created ok'})
+            })
+            .catch(err => console.log(err))
+        } else {
+            return response.json({message: 'bookmark already created'})
+        }
+        console.log(dbRes);
+    })
+})
+
+router.delete('/', (request, response) => {
+    const tripId = request.body.tripId;
+    const userId = request.body.userId;
+    Bookmarks.checkBookmarkExists(userId, tripId)
+    .then(dbRes => {
+        if (dbRes.rowCount > 0) {
+            Bookmarks.deleteBookmark(userId, tripId)
+            .then(dbRes => {
+                return response.json({message: 'bookmark successfully deleted'})
+            })
+            .catch(err => console.log(err))
+        } else {
+            return response.json({message: 'bookmark doesn\'t exist'})
+        }
+        console.log(dbRes.rows);
+    })
+})
 
 module.exports = router;

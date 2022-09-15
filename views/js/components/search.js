@@ -1,6 +1,7 @@
 import { layout, pageContainer, page } from "./layout.js"
 import { dateExtractor } from "./date-extractor.js"
 import { viewTrip } from "./view-trip.js"
+import { createBookmarkIcon } from "./bookmarks.js"
 
 export const renderSearchBar = () => {
 
@@ -209,7 +210,7 @@ export const renderTrips = (data, appLocation) => {
         tripData: []
     }
     const user_id = data.user_id;
-    console.log(data);
+    const loggedInUserId = localStorage.getItem('userId');
     // add all data that is unique to that trip into a new object
     for (let i=0; i < data.trips.length; i++) {
         const idCheck = (trip) => trip.trip_id === data.trips[i].id;
@@ -264,8 +265,7 @@ export const renderTrips = (data, appLocation) => {
                     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
                     <h3>${cities}</h3>
                     <h3>${startDate} to ${endDate}</h3>
-                    <p>${row.trip_descr}</p>
-                    `
+                    <p>${row.trip_descr}</p>`
                     tripContainer.addEventListener('click', () => {
                         console.log(`Trip id '${row.trip_id}' clicked`);
                         if (user_id) {
@@ -274,6 +274,10 @@ export const renderTrips = (data, appLocation) => {
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
+                    // if (loggedInUserId) {
+                    //     const bookmark = createBookmarkIcon(row.trip_id)
+                    //     tripContainer.appendChild(bookmark);
+                    // }
                     returnObj.resultsCont.push(tripContainer);
                 }
             } else if (appLocation === 'my-trips') {

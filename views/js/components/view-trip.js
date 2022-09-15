@@ -1,6 +1,7 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 import { likeDislikeAction } from './like-dislike.js';
+import { createBookmarkIcon } from './bookmarks.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
@@ -11,6 +12,7 @@ export const countVotes = (tripId) => {
 };
 
 export const viewTrip = (id) => {
+
     axios.get('/user/session')
         .then(response => {
             const result = response.data.rows[0];
@@ -42,7 +44,6 @@ export const viewTrip = (id) => {
 
             editTripButton.textContent = 'Edit Trip';
             deleteTripButton.textContent = 'Delete Trip';
-
 
             countVotes(id)
                 .then(countResponse => {
@@ -79,7 +80,13 @@ export const viewTrip = (id) => {
                                 <h4>${tripDetails[0].trip_name}</h4>
                                 <h5>${formattedStartDate} - ${formattedEndDate}</h5>
                                 `;
-
+                                const bookmark = createBookmarkIcon(id);
+                                bookmark.then(result => {
+                                    console.log(result);
+                                    tripHeader.appendChild(result);
+                                })
+                                // console.log(bookmark);
+                                // tripHeader.appendChild(bookmark);
 
                                 coverPhoto.src = tripDetails[0].hero_image_url;
                                 photoContainer.append(coverPhoto);
