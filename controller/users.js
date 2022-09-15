@@ -57,9 +57,11 @@ router.get('/allUsers', (request, response) => {
 // Update user details
 router.put('/updateUser', (request, response) => {
     const { id, email, username, password, secQns, secAns, admin } = request.body;
-    User.updateUser(id, email, username, password, secQns, secAns, admin)
-        .then(dbRes => dbRes.rows)
-        .catch(err => err)
+    const hashedPassword = generateHash(password);
+    const hashedSecurityAnswer = generateHash(secAns);
+    User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
+        .then(dbRes => response.json({ message: 'Updated user details!' }))
+        .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
 });
 
 // Sign up new user

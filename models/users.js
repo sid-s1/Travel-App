@@ -30,8 +30,11 @@ const User = {
       .then(dbRes => dbRes)
       .catch(err => err)
   },
-  updateUser: () => {
-
+  updateUser: (id, email, username, password, secQns, secAns, admin) => {
+    const sql = 'UPDATE users SET username=$1,email=$2,password=$3,security_qn=$4,security_ans=$5,admin=$6 WHERE id=$7';
+    return db.query(sql, [username, email, password, secQns, secAns, admin])
+      .then(dbRes => dbRes)
+      .catch(err => err)
   }
 }
 
