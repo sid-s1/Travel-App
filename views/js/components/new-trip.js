@@ -7,70 +7,6 @@ export const renderNewTrip = () => {
     layout.reset();
     layout.newtrip();
 
-    // render static fields
-    const header = document.createElement('h1');
-    header.textContent = '- ADD NEW TRIP -'
-    pageContainer.appendChild(header)
-
-    const tripName = document.createElement('input');
-    tripName.placeholder = 'Enter your TRIP NAME';
-    tripName.name = 'tripName';
-    let addedTripName = false;
-    tripName.addEventListener('blur', (e) => {
-        const userInput = e.target.value;
-        const tripId = pageContainer.name;        
-        const data = {
-            userInput: userInput,
-            tripId: tripId
-        }
-        if (userInput === '' && addedTripName === true) {
-            return axios.delete(`user/trips/name/${tripId}`)
-                .then(() => addedTripName = false)
-                .catch(err => err)
-        } else {
-            axios.post('user/trips/name', data)
-                .then(() => addedTripName = true)
-                .catch(err => err)
-        }
-    });
-    pageContainer.appendChild(tripName)
-
-    const tripDescription = document.createElement('textarea');
-    tripDescription.placeholder = 'Tell us about your trip / experiences / free-text-field';
-    tripDescription.maxLength = '1500';
-    tripDescription.name = 'description';
-    tripDescription.className = 'new-trip-description';
-    let addedDescription = false;
-    tripDescription.addEventListener('blur', (e) => {
-        const userInput = e.target.value;
-        const tripId = pageContainer.name;        
-        const data = {
-            userInput: userInput,
-            tripId: tripId
-        }
-        if (userInput === '' && addedDescription === true) {
-            return axios.delete(`user/trips/description/${tripId}`)
-                .then(() => addedDescription = false)
-                .catch(err => err)
-        } else {
-            axios.post('user/trips/description', data)
-                .then(() => addedDescription = true)
-                .catch(err => err)
-        }
-    });
-    pageContainer.appendChild(tripDescription)
-
-    const keyTakeaway = document.createElement('input');
-    keyTakeaway.placeholder = 'Whats your key takeaway';
-    keyTakeaway.name = 'keyTakeAway';
-    pageContainer.appendChild(keyTakeaway)
-
-    // render options bar
-    if (page.childElementCount <= 2) {
-
-        renderOptionsBar();
-    };
-
     // create new trip row in db and return trip id
     const userId = localStorage.getItem('userId');
     axios.put(`user/trips/${userId}`)
@@ -78,6 +14,72 @@ export const renderNewTrip = () => {
             const tripId = dbRes.data.rows[0].id;
             pageContainer.name = tripId;
         }).catch(err => err)
+
+    // render static fields
+    const staticFields = [
+        {
+            element: 'h1',
+            textContent: '- ADD NEW TRIP -'
+        }, 
+        {   
+            name: 'trip_name',
+            element: 'input',
+            placeholder: 'Enter trip title',
+            maxLength: '100'
+        },
+        {
+            name: 'description',
+            element: 'textarea',
+            placeholder: 'Tell us about your trip / experiences / free-text-field',
+            maxLength: '1500',
+            className: 'new-trip-description'
+        },
+        {
+            name: 'key_takeaway',
+            element: 'input',
+            placeholder: 'Your key takeaway from the trip',
+            maxLength: '50'
+        }
+    ]
+
+    for (const item of staticFields) {
+        const { name, element, textContent, placeholder, maxLength, className } = item;
+        const newElement = document.createElement(element);
+        if (name) newElement.name = name;
+        if (textContent) newElement.textContent = textContent;
+        if (placeholder) newElement.placeholder = placeholder;
+        if (maxLength) newElement.maxLength = maxLength;
+        if (className) newElement.className = className;
+        initBlurEvent(newElement, name)
+        pageContainer.appendChild(newElement)
+    }
+
+    // render options bar
+    if (page.childElementCount <= 2) {
+        renderOptionsBar();
+    };
+}
+
+// attach Blur event listener to automatically update db
+const initBlurEvent = (element, route) => {
+    if (!route) return
+
+    let requireSave = false;
+    element.addEventListener('change', () => {
+         requireSave = true;
+    })
+    return element.addEventListener('blur', (e) => {
+        const data = {
+            route: route,
+            userInput: e.target.value,
+            tripId: pageContainer.name
+        }
+        if (requireSave) {
+            return axios.patch(`user/trips/static`, data)
+                .then(() => requireSave = false)
+                .catch(err => err)
+        }
+    });
 }
 
 const renderOptionsBar = () => {
@@ -271,12 +273,12 @@ const generateForm = (dataType, icon, dataExists) => {
             let row;
             let wrappedElement;            
             if (name === 'airline') {
-                wrappedElement = layout.wrap([newElement], 'form-row-airline')
-                row = layout.wrap([label, wrappedElement], 'form-row')
+                wrappedElement = layout.wrap([newElement], 'form-row-airline');
+                row = layout.wrap([label, wrappedElement], 'form-row');
             } else {
-                row = layout.wrap([label, newElement], 'form-row')
+                row = layout.wrap([label, newElement], 'form-row');
             }            
-            form.appendChild(row)
+            form.appendChild(row);
         }
     }
 
@@ -306,7 +308,7 @@ const generateForm = (dataType, icon, dataExists) => {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+                
         // error prevention - ensure user has entered a valid airline/hotel or activity
         if (!isValidItem) {            
             const firstInput = form.childNodes[0].childNodes[1]
@@ -331,7 +333,7 @@ const generateForm = (dataType, icon, dataExists) => {
             ...data,
             ...googleApiData
         }
-
+        console.log(googleApiData)
         console.log(combineData)
 
         axios.post('/user/trips', combineData)
