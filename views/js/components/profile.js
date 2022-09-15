@@ -16,8 +16,8 @@ export const renderProfile = (targetUserId) => {
     worldMap.innerHTML = '';
 
     // get user ID and display stats if it is the same as the user who's profile is being displayed
-    let userId = window.localStorage.getItem('userId');
-    let username = window.localStorage.getItem('username');
+    let userId = localStorage.getItem('userId');
+    let username = localStorage.getItem('username');
 
     if (!userId) {
         // if not logged in, create session data
@@ -26,11 +26,21 @@ export const renderProfile = (targetUserId) => {
                 const result = response.data.rows[0];
                 username = result.username;
                 userId = result.id;
-                window.localStorage.setItem('userId', userId); //store in local for future reference
-                window.localStorage.setItem('username', username);
-                console.log(`set the session userid to ${userId}`);
+                localStorage.setItem('userId', userId) //store in local for future reference
+                localStorage.setItem('username', username)
             })
     }
+
+    // Populate user stats
+    const statsDiv = document.createElement('div');
+    statsDiv.innerHTML = `
+            <div>Number of trips: <span id="total-trips"></span></div>
+            <div>Number of countries: <span id="total-countries"></span></div>
+            <div>Achievements: <span id="total-achievements"></span></div>
+            `;
+    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
+    userStats(userId);
+    worldMap.appendChild(profileStats);
 
     // Render side panel
     const sidePanelOptions = document.createElement('ul');
