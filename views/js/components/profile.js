@@ -55,7 +55,7 @@ export const renderProfile = (targetUserId) => {
     const homeFrame = layout.wrap([homeIcon, home], 'side-panel-options');
 
     homeFrame.addEventListener('click', () => {
-        renderProfile(userId);
+        renderProfile(targetUserId);
     })
     sidePanelOptions.appendChild(homeFrame);
 
@@ -111,12 +111,12 @@ export const renderProfile = (targetUserId) => {
     addTripIcon.className = 'side-panel-icon';
     const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
     let clicked = false;
-    addTripFrame.addEventListener('click', () => {        
+    addTripFrame.addEventListener('click', () => {
         if (!clicked) {
             clicked = true;
             changeSidePanelFocus(addTripFrame);
-            renderNewTrip(); 
-        }        
+            renderNewTrip();
+        }
     })
     sidePanelOptions.appendChild(addTripFrame);
 

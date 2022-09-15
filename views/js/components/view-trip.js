@@ -11,204 +11,197 @@ export const countVotes = (tripId) => {
 };
 
 export const viewTrip = (id) => {
-    axios.get('/user/session')
-        .then(response => {
-            const result = response.data.rows[0];
-            const loggedInUserId = result.id;
-            let voteCount;
+    const loggedInUserId = Number(localStorage.getItem('userId'));
+    console.log(`logged in as user ${loggedInUserId} looking at trip ${id}`);
+    let voteCount;
 
-            const pageContainer = document.getElementById('page-container');
-            // emptying container to remove old content
-            pageContainer.innerHTML = '';
+    const pageContainer = document.getElementById('page-container');
+    // emptying container to remove old content
+    pageContainer.innerHTML = '';
 
-            // add CSS to below elements
-            const tripHeader = document.createElement('div');
-            const photoContainer = document.createElement('div');
-            const likeDiv = document.createElement('div');
-            const likeButton = document.createElement('span');
-            const likeCount = document.createElement('span');
-            const dislikeDiv = document.createElement('div');
-            const dislikeButton = document.createElement('span');
-            const dislikeCount = document.createElement('span');
-            const coverPhoto = document.createElement('img');
-            const descriptionContainer = document.createElement('div');
-            const descriptionContent = document.createElement('p');
-            const keyTakeaway = document.createElement('p');
-            const activitiesContainer = document.createElement('div');
+    // add CSS to below elements
+    const tripHeader = document.createElement('div');
+    const photoContainer = document.createElement('div');
+    const likeDiv = document.createElement('div');
+    const likeButton = document.createElement('span');
+    const likeCount = document.createElement('span');
+    const dislikeDiv = document.createElement('div');
+    const dislikeButton = document.createElement('span');
+    const dislikeCount = document.createElement('span');
+    const coverPhoto = document.createElement('img');
+    const descriptionContainer = document.createElement('div');
+    const descriptionContent = document.createElement('p');
+    const keyTakeaway = document.createElement('p');
+    const activitiesContainer = document.createElement('div');
 
-            const modifyTripContainer = document.createElement('div');
-            const editTripButton = document.createElement('button');
-            const deleteTripButton = document.createElement('button');
+    const showcaseLikeButton = document.createElement('span');
+    const showcasedislikeButton = document.createElement('span');
 
-            editTripButton.textContent = 'Edit Trip';
-            deleteTripButton.textContent = 'Delete Trip';
+    showcaseLikeButton.innerHTML = `
+    <i class="fa-thin fa-thumbs-up showcase-like-dislike-icons"></i>
+    `;
+    showcasedislikeButton.innerHTML = `
+    <i class="fa-thin fa-thumbs-down showcase-like-dislike-icons"></i>
+    `;
+
+    const modifyTripContainer = document.createElement('div');
+    const editTripButton = document.createElement('button');
+    const deleteTripButton = document.createElement('button');
+
+    editTripButton.textContent = 'Edit Trip';
+    deleteTripButton.textContent = 'Delete Trip';
 
 
-            countVotes(id)
-                .then(countResponse => {
-                    voteCount = countResponse;
+    countVotes(id)
+        .then(countResponse => {
+            voteCount = countResponse;
 
-                    likeDislikeAction(likeButton, dislikeButton, loggedInUserId, id);
+            likeDislikeAction(likeButton, dislikeButton, loggedInUserId, id);
 
-                    // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
-                    coverPhoto.className = 'trip-page-cover-pic';
-                    activitiesContainer.className = 'itinerary-column';
-                    modifyTripContainer.id = 'modify-trip';
-                    editTripButton.id = 'edit-trip';
-                    deleteTripButton.id = 'delete-trip';
-                    likeDiv.id = 'like-container';
-                    dislikeDiv.id = 'dislike-container';
-                    likeCount.id = 'like-count';
-                    dislikeCount.id = 'dislike-count';
+            // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
+            coverPhoto.className = 'trip-page-cover-pic';
+            activitiesContainer.className = 'itinerary-column';
+            modifyTripContainer.id = 'modify-trip';
+            editTripButton.id = 'edit-trip';
+            deleteTripButton.id = 'delete-trip';
+            likeDiv.id = 'like-container';
+            dislikeDiv.id = 'dislike-container';
+            likeCount.id = 'like-count';
+            dislikeCount.id = 'dislike-count';
+            showcaseLikeButton.id = 'showcase-like-btn';
+            showcasedislikeButton.id = 'showcase-dislike-btn';
 
-                    // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
-                    let p = new Promise((resolve, reject) => {
-                        axios.get(`/user/trips/${id}`)
-                            .then(tripDetailsResponse => {
-                                // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
-                                const tripDetails = tripDetailsResponse.data;
+            // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
+            let p = new Promise((resolve, reject) => {
+                axios.get(`/user/trips/${id}`)
+                    .then(tripDetailsResponse => {
+                        // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
+                        const tripDetails = tripDetailsResponse.data;
 
-                                const userIdForTrip = tripDetails[0].user_id;
+                        const userIdForTrip = tripDetails[0].user_id;
 
-                                // using an imported function to perform date cleanup as DB storage of date includes time
-                                const formattedStartDate = dateExtractor.formatDate(tripDetails[0].trip_start_date);
-                                const formattedEndDate = dateExtractor.formatDate(tripDetails[0].trip_end_date);
-                                const citiesForHeader = document.createElement('p');
+                        // using an imported function to perform date cleanup as DB storage of date includes time
+                        const formattedStartDate = dateExtractor.formatDate(tripDetails[0].trip_start_date);
+                        const formattedEndDate = dateExtractor.formatDate(tripDetails[0].trip_end_date);
+                        const citiesForHeader = document.createElement('p');
 
-                                tripHeader.innerHTML = `
+                        tripHeader.innerHTML = `
                                 <h4>${tripDetails[0].trip_name}</h4>
                                 <h5>${formattedStartDate} - ${formattedEndDate}</h5>
                                 `;
 
 
-                                coverPhoto.src = tripDetails[0].hero_image_url;
-                                photoContainer.append(coverPhoto);
-                                photoContainer.id = 'coverPhoto-only';
+                        coverPhoto.src = tripDetails[0].hero_image_url;
 
-                                if (tripDetails[0].trip_status === 'draft') {
-                                    const draftStatus = document.createElement('h2');
-                                    draftStatus.textContent = 'DRAFT';
-                                    modifyTripContainer.appendChild(draftStatus);
-                                }
+                        if (tripDetails[0].trip_status === 'draft') {
+                            const draftStatus = document.createElement('h2');
+                            draftStatus.textContent = 'DRAFT';
+                            modifyTripContainer.appendChild(draftStatus);
+                        }
 
-                                if (loggedInUserId === userIdForTrip) {
-                                    modifyTripContainer.append(editTripButton, deleteTripButton);
-                                }
-                                likeCount.textContent = `+ ${voteCount.likes}`;
-                                dislikeCount.textContent = `- ${voteCount.dislikes}`;
+                        if (loggedInUserId === userIdForTrip) {
+                            modifyTripContainer.append(editTripButton, deleteTripButton);
+                        }
+                        likeCount.textContent = `+ ${voteCount.likes}`;
+                        dislikeCount.textContent = `- ${voteCount.dislikes}`;
 
-                                likeDiv.append(likeButton, likeCount);
-                                dislikeDiv.append(dislikeButton, dislikeCount);
-                                photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
-                                photoContainer.id = 'likeDislike-and-coverPhoto';
+                        if (loggedInUserId) {
+                            likeDiv.append(likeButton, likeCount);
+                            dislikeDiv.append(dislikeButton, dislikeCount);
+                            photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
+                            photoContainer.id = 'likeDislike-and-coverPhoto';
+                        }
+                        else {
+                            likeDiv.append(showcaseLikeButton, likeCount);
+                            dislikeDiv.append(showcasedislikeButton, dislikeCount);
+                            photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
+                            photoContainer.id = 'likeDislike-and-coverPhoto';
+                        }
 
+                        deleteTripButton.textContent = 'Delete';
 
-                                let deleteConfirmation = false;
-                                deleteTripButton.addEventListener('click', () => {
+                        deleteTripButton.addEventListener('click', (e) => {
 
-                                    if (deleteConfirmation) {
-                                        axios.delete(`/user/trips/delete/${id}`)
-                                            .then(response => console.log(response.data))
-                                            .catch(err => console.log(err))
+                            if (e.target.textContent == 'Delete') {
+                                e.target.textContent = 'Confirm';
+                                e.target.classList.add('confirm-delete');
+                                setTimeout(() => {
+                                    e.target.textContent = 'Delete';
+                                    e.target.classList.remove('confirm-delete');
+                                }, 3000)
+                            }
+                            else {
+                                axios.delete(`/user/trips/delete/${id}`)
+                                    .then(response => console.log(response.data))
+                                    .catch(err => console.log(err))
 
-                                        // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
-                                        renderProfile(2);
-                                    }
+                                renderProfile(loggedInUserId);
+                            }
+                        })
 
-                                    else {
-                                        deleteConfirmation = true;
-                                        deleteTripButton.disabled = 'true';
-                                        deleteTripButton.textContent = 'Confirm delete?';
-                                        let startInterval = 5;
-
-                                        let confirmDeleteInterval = setInterval(() => {
-                                            deleteTripButton.textContent = `Confirm delete? ${startInterval}${'.'.repeat(startInterval)}`;
-                                            startInterval--;
-                                        }, 1000);
-
-                                        setTimeout(() => {
-                                            clearInterval(confirmDeleteInterval);
-                                            deleteTripButton.textContent = 'Confirm delete?';
-                                            deleteTripButton.removeAttribute('disabled');
-                                        }, 6000);
-                                    }
-                                });
-
-                                descriptionContent.innerHTML = `
+                        descriptionContent.innerHTML = `
                                 <h4>Description</h4>
                                 ${tripDetails[0].description}
                                 `;
-                                keyTakeaway.innerHTML = `
+                        keyTakeaway.innerHTML = `
                                 <h4> | ${tripDetails[0].key_takeaway} | </h4>
                                 `;
 
-                                // adding city names that the user has visited in this trip; if it was the last city in the loop we do not need the final comma
-                                for (let iterator = 0; iterator < tripDetails.length; iterator++) {
-                                    if (iterator === tripDetails.length - 1) {
-                                        citiesForHeader.textContent += `${tripDetails[iterator].city_name}`;
-                                    }
-                                    else {
-                                        citiesForHeader.textContent += `${tripDetails[iterator].city_name}, `;
-                                    }
-                                }
-                                tripHeader.appendChild(citiesForHeader);
-                            })
-                            .catch(error => console.log(error))
+                        // adding city names that the user has visited in this trip; if it was the last city in the loop we do not need the final comma
+                        for (let iterator = 0; iterator < tripDetails.length; iterator++) {
+                            if (iterator === tripDetails.length - 1) {
+                                citiesForHeader.textContent += `${tripDetails[iterator].city_name}`;
+                            }
+                            else {
+                                citiesForHeader.textContent += `${tripDetails[iterator].city_name}, `;
+                            }
+                        }
+                        tripHeader.appendChild(citiesForHeader);
+                    })
+                    .catch(error => console.log(error))
 
-                        axios.get(`/user/trips/activities/${id}`)
-                            .then(activityResponse => {
-                                const activities = activityResponse.data;
-                                for (const activity of activities) {
-                                    // each activity will be an object of activity name, type, start date and end date for the trip id used in our axios call
-                                    const formattedStartDate = dateExtractor.formatDate(activity.activity_start_date);
-                                    const formattedEndDate = dateExtractor.formatDate(activity.activity_end_date);
+                axios.get(`/user/trips/activities/${id}`)
+                    .then(activityResponse => {
+                        const activities = activityResponse.data;
+                        for (const activity of activities) {
+                            // each activity will be an object of activity name, type, start date and end date for the trip id used in our axios call
+                            const formattedStartDate = dateExtractor.formatDate(activity.activity_start_date);
+                            const formattedEndDate = dateExtractor.formatDate(activity.activity_end_date);
 
-                                    const activitiesDiv = document.createElement('div');
-                                    const activityDetails = document.createElement('h5');
-                                    const activityLogo = document.createElement('img');
+                            const activitiesDiv = document.createElement('div');
+                            const activityDetails = document.createElement('h5');
+                            const activityLogo = document.createElement('img');
 
-                                    activitiesDiv.className = 'itinerary-row';
-                                    activityDetails.className = 'itinerary-item-details';
-                                    activityLogo.className = 'trip-addon-icon';
+                            activitiesDiv.className = 'itinerary-row';
+                            activityDetails.className = 'itinerary-item-details';
+                            activityLogo.className = 'trip-addon-icon';
 
-                                    if (activity.gm_type === 'activity') {
-                                        activityLogo.src = '../assets/clipboard-list-solid.svg';
-                                    }
-                                    else if (activity.gm_type === 'airline') {
-                                        activityLogo.src = '../assets/jet-fighter-up-solid.svg';
-                                    }
-                                    else if (activity.gm_type === 'hotel') {
-                                        activityLogo.src = '../assets/bed-solid.svg';
-                                    }
-                                    activityDetails.innerHTML = `
+                            if (activity.gm_type === 'activity') {
+                                activityLogo.src = '../assets/clipboard-list-solid.svg';
+                            }
+                            else if (activity.gm_type === 'airline') {
+                                activityLogo.src = '../assets/jet-fighter-up-solid.svg';
+                            }
+                            else if (activity.gm_type === 'hotel') {
+                                activityLogo.src = '../assets/bed-solid.svg';
+                            }
+                            activityDetails.innerHTML = `
                             <p>${activity.activity_name}</p>
                             <p>${formattedStartDate} - ${formattedEndDate}</p>
                             `;
 
-                                    activitiesDiv.append(activityLogo, activityDetails);
-                                    activitiesContainer.appendChild(activitiesDiv);
-                                }
-                                resolve();
-                            })
-                            .catch(error => reject(error))
-                    });
-                    p.then(() => {
-                        descriptionContainer.appendChild(descriptionContent);
-                        pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);
+                            activitiesDiv.append(activityLogo, activityDetails);
+                            activitiesContainer.appendChild(activitiesDiv);
+                        }
+                        resolve();
                     })
-                        .catch(err => console.log(err))
+                    .catch(error => reject(error))
+            });
+            p.then(() => {
+                descriptionContainer.appendChild(descriptionContent);
+                pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);
+            })
+                .catch(err => console.log(err))
 
-                })
         })
 };
-
-setTimeout(() => {
-    // Calling the function here; once we decide where user is clicking to view these trips, we can link those buttons to call viewTrip function with tripId as an argument
-
-    // tripId 1 has been changed to 'posted' - itinerary items and cities have been added
-
-    // tripId 2 shows as a 'draft' - some itinerary items and city have been added
-
-    // viewTrip(1);
-    viewTrip(1);
-}, 500);
