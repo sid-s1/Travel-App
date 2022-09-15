@@ -33,11 +33,11 @@ router.delete('/delete/:tripId', (request, response) => {
 });
 
 router.put('/edit/:tripId', (request, response) => {
+    console.log('backend data collected:');
     const tripData = {
         tripId: request.params.tripId,
         user_id: request.body.user_id,
         trip_name: request.body.trip_name,
-        trip_type: request.body.trip_type,
         trip_status: request.body.trip_status,
         trip_start_date: request.body.trip_start_date,
         trip_end_date: request.body.trip_end_date,
@@ -45,8 +45,12 @@ router.put('/edit/:tripId', (request, response) => {
         description: request.body.description,
         key_takeaway: request.body.key_takeaway
     }
+    console.log(tripData);
     Trip.edit(tripData)
-    .then(dbRes => response.json('Trip edited'))
+.then(dbRes => {
+    console.log(dbRes);
+    response.json('Trip edited')
+})
     .catch(err => response.json('Trip could not be edited'))
 });
 

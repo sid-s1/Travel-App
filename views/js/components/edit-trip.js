@@ -6,15 +6,16 @@ export const renderEditTripForm = (tripId) => {
     layout.reset();
     layout.editTrip();
     const user_id = localStorage.getItem('userId');
+
     axios.get(`/user/trips/${tripId}`)
     .then(dbRes => {
         console.log(dbRes);
-
         const tripEditForm = document.createElement('form');
         tripEditForm.id = 'trip-edit-form'
 
         const tripNameInput = HtmlElements.createInput('text', 'trip-name', 'trip-name', 'edit-trip-input', dbRes.data[0].trip_name);
-        const tripTypeInput = HtmlElements.createInput('text', 'trip_type', 'trip_type', 'edit-trip-input', dbRes.data[0].trip_type);
+        const userIdInput = HtmlElements.createInput('hidden', 'user-id', 'user-id', 'edit-trip-input', user_id);
+        const tripStatusInput = HtmlElements.createInput('hidden', 'trip-status', 'trip-status', 'edit-trip-input', 'posted');
         const tripStartDateInput = HtmlElements.createInput('date', 'trip_start_date', 'trip_start_date', 'edit-trip-input', dbRes.data[0].trip_start_date);
         const tripEndDateInput = HtmlElements.createInput('date', 'trip_end_date', 'trip_end_date', 'edit-trip-input', dbRes.data[0].trip_end_date);
         const tripHeroImageUrlInput = HtmlElements.createInput('text', 'hero_image_url', 'hero_image_url', 'edit-trip-input', dbRes.data[0].hero_image_url);
@@ -22,7 +23,6 @@ export const renderEditTripForm = (tripId) => {
         const tripKeyTakeawayInput = HtmlElements.createInput('text', 'key_takeaway', 'key_takeaway', 'edit-trip-input', dbRes.data[0].key_takeaway);
 
         const tripNameLabel = HtmlElements.createLabel('trip-name', 'Trip name', 'edit-trip-label');
-        const tripTypeLabel = HtmlElements.createLabel('trip-type', 'Trip type', 'edit-trip-label');
         const tripStartDateLabel = HtmlElements.createLabel('trip_start_date', 'Trip start date', 'edit-trip-label');
         const tripEndDateLabel = HtmlElements.createLabel('trip_end_date', 'Trip end date', 'edit-trip-label');
         const tripHeroImageUrlLabel = HtmlElements.createLabel('hero_image_url', 'Trip image url', 'edit-trip-label');
@@ -36,18 +36,27 @@ export const renderEditTripForm = (tripId) => {
             e.preventDefault();
             viewTrip(tripId);
         })
-        tripEditForm.append(tripNameLabel, tripNameInput, tripTypeLabel, tripTypeInput, tripStartDateLabel, tripStartDateInput, tripEndDateLabel, tripEndDateInput, tripHeroImageUrlLabel, tripHeroImageUrlInput, tripDescriptionLabel, tripDescriptionInput, tripKeyTakeawayLabel, tripKeyTakeawayInput, cancelButton, saveButton);
+        tripEditForm.append(tripNameLabel, tripNameInput, userIdInput, tripStatusInput, tripStartDateLabel, tripStartDateInput, tripEndDateLabel, tripEndDateInput, tripHeroImageUrlLabel, tripHeroImageUrlInput, tripDescriptionLabel, tripDescriptionInput, tripKeyTakeawayLabel, tripKeyTakeawayInput, cancelButton, saveButton);
 
         tripEditForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            console.log('saving form...')
             const formData = new FormData(tripEditForm);
             const data = {
-                username: formData.get('username'),
-                email: formData.get('email'),
-                confirmedPassword: formData.get('confirm-password'),
-                securityQuestion: formData.get('security-question'),
-                securityAnswer: formData.get('security-answer')
+                user_id: formData.get('user-id'),
+                trip_name: formData.get('trip-name'),
+                trip_status: formData.get('trip-status'),
+                trip_start_date: formData.get('trip_start_date'),
+                trip_end_date: formData.get('trip_end_date'),
+                hero_image_url: formData.get('hero_image_url'),
+                description: formData.get('description'),
+                key_takeaway: formData.get('key_takeaway')
             }
+            axios.put(`/user/trips/edit/${tripId}`, data)
+            .then(() => {
+                viewTrip(tripId);
+            })
+            .catch(err => console.log(err));
         });
         pageContainer.appendChild(tripEditForm);
 
