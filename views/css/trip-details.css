@@ -10,7 +10,7 @@
     align-items: center;
 }
 
-#like-btn, #dislike-btn {
+#like-btn, #dislike-btn, #showcase-like-btn, #showcase-dislike-btn {
     margin: 1rem;
     cursor: pointer;
 }
@@ -36,7 +36,7 @@
     color: red;
 }
 
-.like-dislike-icons {
+.like-dislike-icons, .showcase-like-dislike-icons {
     transform: scale(3);
     cursor: pointer;
 }

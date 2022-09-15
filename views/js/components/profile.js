@@ -56,7 +56,7 @@ export const renderProfile = (targetUserId) => {
     const homeFrame = layout.wrap([homeIcon, home], 'side-panel-options');
 
     homeFrame.addEventListener('click', () => {
-        renderProfile(userId);
+        renderProfile(targetUserId);
     })
     sidePanelOptions.appendChild(homeFrame);
 
