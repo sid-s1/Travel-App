@@ -33,7 +33,9 @@
 #modify-trip > #delete-trip:hover {
     background-color: red;
 }
-#modify-trip > #delete-trip:disabled {
-    background-color: rgb(151, 0, 0);
-    cursor: not-allowed;
+#modify-trip #delete-trip.confirm-delete {
+    background-color: rgb(0, 237, 0);
+}
+#modify-trip #delete-trip.confirm-delete:hover {
+    background-color: green;
 }

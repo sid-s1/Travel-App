@@ -118,36 +118,27 @@ export const viewTrip = (id) => {
                             photoContainer.id = 'likeDislike-and-coverPhoto';
                         }
 
-                        let deleteConfirmation = false;
-                        deleteTripButton.addEventListener('click', () => {
+                        deleteTripButton.textContent = 'Delete';
 
-                            if (deleteConfirmation) {
+                        deleteTripButton.addEventListener('click', (e) => {
+
+                            if (e.target.textContent == 'Delete') {
+                                e.target.textContent = 'Confirm';
+                                e.target.classList.add('confirm-delete');
+                                setTimeout(() => {
+                                    e.target.textContent = 'Delete';
+                                    e.target.classList.remove('confirm-delete');
+                                }, 3000)
+                            }
+                            else {
                                 axios.delete(`/user/trips/delete/${id}`)
                                     .then(response => console.log(response.data))
                                     .catch(err => console.log(err))
 
                                 // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
-                                renderProfile(2);
+                                renderProfile(loggedInUserId);
                             }
-
-                            else {
-                                deleteConfirmation = true;
-                                deleteTripButton.disabled = 'true';
-                                deleteTripButton.textContent = 'Confirm delete?';
-                                let startInterval = 5;
-
-                                let confirmDeleteInterval = setInterval(() => {
-                                    deleteTripButton.textContent = `Confirm delete? ${startInterval}${'.'.repeat(startInterval)}`;
-                                    startInterval--;
-                                }, 1000);
-
-                                setTimeout(() => {
-                                    clearInterval(confirmDeleteInterval);
-                                    deleteTripButton.textContent = 'Confirm delete?';
-                                    deleteTripButton.removeAttribute('disabled');
-                                }, 6000);
-                            }
-                        });
+                        })
 
                         descriptionContent.innerHTML = `
                                 <h4>Description</h4>
