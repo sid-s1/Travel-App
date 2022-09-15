@@ -8,5 +8,6 @@ export const renderPublicHomepage = () => {
     const resultsContainer = document.createElement('div');
     resultsContainer.id = 'results';
     pageContainer.appendChild(resultsContainer);
-    renderSearchBar(worldMap);
+    const searchBar = renderSearchBar();
+    worldMap.appendChild(searchBar);
 }

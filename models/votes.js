@@ -21,13 +21,13 @@ const Votes = {
             .catch(err => err)
     },
     createLike: (userId, tripId, value) => {
+        console.log('in model createlike');
         const sql = 'INSERT INTO votes(user_id,trip_id,liked) VALUES($1,$2,$3)';
         return db.query(sql, [userId, tripId, value])
             .then(dbRes => dbRes)
             .catch(err => err)
     },
     countVotes: (tripId) => {
-        console.log('counting..');
         const votes = {
             likes: 0,
             dislikes: 0
@@ -40,10 +40,17 @@ const Votes = {
         GROUP BY liked`;
         return db.query(sql, [tripId])
             .then(dbRes => {
-                console.log(dbRes);
-                console.log(votes);
-                return dbRes;
+                for (const row of dbRes.rows) {
+                    if (row.liked === false) {
+                        votes.dislikes = row.dislikes;
+                    }
+                    else {
+                        votes.likes = row.likes;
+                    }
+                }
+                return votes;
             })
+            .catch(err => err)
     }
 };
 
