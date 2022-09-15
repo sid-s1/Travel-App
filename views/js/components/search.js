@@ -2,91 +2,38 @@ import { layout, pageContainer, page } from "./layout.js"
 import { dateExtractor } from "./date-extractor.js"
 import { viewTrip } from "./view-trip.js"
 import { createBookmarkIcon } from "./bookmarks.js"
+import { HtmlElements } from "./html-elements.js"
 
 export const renderSearchBar = () => {
 
-    const searchByAllLabel = document.createElement('label');
-    searchByAllLabel.setAttribute('for', 'all');
-    searchByAllLabel.textContent = 'All';
+    const searchByAllLabel = HtmlElements.createLabel('all', 'All');
+    const searchByAll = HtmlElements.createInput('radio', 'search-type', 'all', 'search-bar-options', 'all', null, null, true);
 
-    const searchByAll = document.createElement('input');
-    searchByAll.type = 'radio';
-    searchByAll.name = 'search-type';
-    searchByAll.id = 'all';
-    searchByAll.value = 'all';
-    searchByAll.checked = true;
+    const searchByUserLabel = HtmlElements.createLabel('user', 'User');
+    const searchByUser = HtmlElements.createInput('radio', 'search-type', 'user', 'search-bar-options', 'user');
 
-    const searchByUserLabel = document.createElement('label');
-    searchByUserLabel.setAttribute('for', 'user');
-    searchByUserLabel.textContent = 'User';
+    const searchByCityLabel = HtmlElements.createLabel('city', 'City');
+    const searchByCity = HtmlElements.createInput('radio', 'search-type', 'city', 'search-bar-options', 'city');
 
-    const searchByUser = document.createElement('input');
-    searchByUser.type = 'radio';
-    searchByUser.name = 'search-type';
-    searchByUser.id = 'user';
-    searchByUser.value = 'user';
-    searchByUser.checked = false;
+    const searchByActivityLabel = HtmlElements.createLabel('activity', 'Activity');
+    const searchByActivity = HtmlElements.createInput('radio', 'search-type', 'activity', 'search-bar-options', 'activity');
 
-    const searchByCityLabel = document.createElement('label');
-    searchByCityLabel.setAttribute('for', 'city');
-    searchByCityLabel.textContent = 'City';
-
-    const searchByCity = document.createElement('input');
-    searchByCity.type = 'radio';
-    searchByCity.name = 'search-type';
-    searchByCity.id = 'city';
-    searchByCity.value = 'city';
-    searchByCity.checked = false;
-
-    const searchByActivityLabel = document.createElement('label');
-    searchByActivityLabel.setAttribute('for', 'activity');
-    searchByActivityLabel.textContent = 'Activity';
-
-    const searchByActivity = document.createElement('input');
-    searchByActivity.type = 'radio';
-    searchByActivity.name = 'search-type';
-    searchByActivity.id = 'activity';
-    searchByActivity.value = 'activity';
-    searchByActivity.checked = false;
-
-    const searchByCountryLabel = document.createElement('label');
-    searchByCountryLabel.setAttribute('for', 'country');
-    searchByCountryLabel.textContent = 'Country';
-
-    const searchByCountry = document.createElement('input');
-    searchByCountry.type = 'radio';
-    searchByCountry.name = 'search-type';
-    searchByCountry.id = 'country';
-    searchByCountry.value = 'country';
-    searchByCountry.checked = false;
+    const searchByCountryLabel = HtmlElements.createLabel('country', 'Country');
+    const searchByCountry = HtmlElements.createInput('radio', 'search-type', 'country', 'search-bar-options', 'country');
 
     const searchTabs = layout.wrap([searchByAll, searchByAllLabel, searchByUser, searchByUserLabel, searchByCity, searchByCityLabel, searchByActivity, searchByActivityLabel, searchByCountry, searchByCountryLabel],'search-tabs')
 
     const form = document.createElement('form');
     form.id = 'search-form';
-    form.style.display = 'flex';
-    form.style.justifyContent = 'space-between';
-    form.style.columnGap = '20px';
 
-    const searchBar =  document.createElement('input');
-    searchBar.setAttribute("placeholder", "Search...");
-    searchBar.id = "search-bar";
-    searchBar.name = "search-bar";
+    const searchBar =  HtmlElements.createInput('text', 'search-bar', 'search-bar', null, null, 'Search...');
 
-    const searchButton = document.createElement('button');
-    searchButton.innerHTML = '<i class="fa-regular fa-magnifying-glass"></i>'
-    searchButton.type = 'submit';
-    searchButton.id = 'submit-search';
+    const searchButton = HtmlElements.createButton('submit', '<i class="fa-regular fa-magnifying-glass"></i>', 'submit-search')
     searchButton.style.cursor = 'pointer';
 
-    const searchType = document.createElement('input');
-    searchType.type = 'hidden';
+    const searchType = HtmlElements.createInput('hidden', null, null);
 
-
-    form.appendChild(searchTabs);
-    form.appendChild(searchBar);
-    form.appendChild(searchType);
-    form.appendChild(searchButton);
+    form.append(searchTabs, searchBar, searchType, searchButton);
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();

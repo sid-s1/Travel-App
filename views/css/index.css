@@ -141,7 +141,10 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
-    background-image: url('#');
+    /* background-image: url('https://images.unsplash.com/photo-1566935843973-aed0ddcb0ecc'); */
+    background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1');
+    background-position: center;
+    background-size: cover;
     height: auto;
     min-height: 300px;
 }

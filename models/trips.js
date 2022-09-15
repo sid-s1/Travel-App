@@ -39,8 +39,12 @@ const Trip = {
             .then(dbRes => dbRes)
             .catch(err => err)
     },
-    edit: (tripId) => {
-        // add edit DB query
+    edit: (tripData) => {
+        const sql = `UPDATE trips
+        SET trip_name = $3, trip_type = $4, trip_status = $5, trip_start_date = $6, trip_end_date = $7, hero_image_url = $8, description = $9, key_takeaway = $10
+        WHERE id = $1
+        AND user_id = $2`
+        return db.query(sql, [tripData.tripId, tripData.user_id, tripData.trip_name, tripData.trip_type, tripData.trip_status, tripData.trip_start_date, tripData.trip_end_date, tripData.hero_image_url, tripData.description, tripData.key_takeaway])
     }
 }
 

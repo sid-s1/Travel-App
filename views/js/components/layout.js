@@ -70,6 +70,12 @@ export const layout = {
         page.style.display = 'flex';
         pageContainer.innerHTML = '';
     },
+    editTrip: () => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
+        pageContainer.innerHTML = '';
+    },
     myTrips: () => {
         worldMap.style.display = 'flex';
         sidePanel.style.display = 'flex';
