@@ -2,7 +2,8 @@ import { renderLogin } from './login.js'
 import { renderSignup } from './signup.js';
 import { renderProfile } from './profile.js';
 import { logout } from './logout.js';
-import { renderPublicHomepage } from './public-homepage.js'
+import { renderPublicHomepage } from './public-homepage.js';
+import { renderAdminPanel } from './admin-panel.js';
 
 // Render top navigation bar
 export const renderNavBar = () => {
@@ -24,6 +25,7 @@ export const renderNavBar = () => {
             if (response) {
                 const userId = response.data.rows[0].id;
                 const userName = response.data.rows[0].username;
+                const adminStatus = response.data.rows[0].admin;
 
                 h1.textContent = `TRIPT - ${userName}`;
 
@@ -46,6 +48,14 @@ export const renderNavBar = () => {
                     // Render user settings (modal?)
                 });
                 navList.appendChild(settingsButton);
+
+                // Admin Panel
+                if (adminStatus) {
+                    const adminButton = document.createElement('li');
+                    adminButton.textContent = 'Admin Panel';
+                    adminButton.addEventListener('click', renderAdminPanel);
+                    navList.appendChild(adminButton);
+                }
 
                 // Button - Logout
                 const logoutButton = document.createElement('li');

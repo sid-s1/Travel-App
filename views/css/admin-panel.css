@@ -1,0 +1,19 @@
+#admin-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.user-details-row, #admin-panel-header {
+    display: flex;
+    justify-content: space-between;
+    width: 70%;
+}
+.user-details, .admin-panel-items {
+    display: flex;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 0.5rem;
+    width: 6rem;
+    font-size: 0.7rem;
+}

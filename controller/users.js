@@ -9,7 +9,6 @@ router.post('/', (request, response) => {
     const password = request.body.password;
     User.checkExists(email)
         .then(dbRes => {
-            console.log(dbRes)
             if (dbRes.rowCount === 0) {
                 return response.status(400).json({ message: 'The username and/or password you have entered is incorrect.' })
             }
@@ -42,11 +41,26 @@ router.get('/', (request, response) => {
     if (!email) {
         return response.status(401).json({ message: 'Please login to access this page' });
     } else {
-        User.getIdAndUsername(email)
+        User.getIdUsernameAdmin(email)
             .then(dbRes => response.json(dbRes))
             .catch(err => response.json(err))
     }
 })
+
+// Get all users and their info
+router.get('/allUsers', (request, response) => {
+    User.getAllUsers()
+        .then(dbRes => response.json(dbRes.rows))
+        .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+});
+
+// Update user details
+router.put('/updateUser', (request, response) => {
+    const { id, email, username, password, secQns, secAns, admin } = request.body;
+    User.updateUser(id, email, username, password, secQns, secAns, admin)
+        .then(dbRes => dbRes.rows)
+        .catch(err => err)
+});
 
 // Sign up new user
 router.post('/signup', (request, response) => {
