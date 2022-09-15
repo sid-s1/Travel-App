@@ -58,7 +58,6 @@ const Trip = {
     write: (column, value, tripId) => {
         let sql;
         let arr;
-        console.log(`~~~~~~ ${column} + ${value} ~~~~~~`)
         switch (column) {
             case 'trip_name': 
                 sql = `UPDATE trips SET trip_name=$1 WHERE id=$2`;
@@ -70,6 +69,10 @@ const Trip = {
                 break;
             case 'key_takeaway':
                 sql = `UPDATE trips SET key_takeaway=$1 WHERE id=$2`;
+                arr = [value, tripId];
+                break;
+            case 'hero_image_url':
+                sql = 'UPDATE trips SET hero_image_url=$1 WHERE id=$2'
                 arr = [value, tripId];
                 break;
         }

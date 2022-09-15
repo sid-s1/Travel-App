@@ -36,8 +36,11 @@ router.put('/edit/:tripId', (request, response) => {
 
 // ADD NEW TRIP
 router.post('/', (request, response) => {
-    // const data = request.body;
     const { tripId, userId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
+
+    if (type === 'airline') {
+        // Render save path
+    }
 
     Trip.writeCountry(country)
         .then(() => {

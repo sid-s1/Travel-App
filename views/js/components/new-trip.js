@@ -1,4 +1,4 @@
-import { layout, page, pageContainer } from './layout.js';
+import { layout, page, pageContainer, worldMap } from './layout.js';
 import { airlines } from './airlines.js';
 import { initAutocomplete } from './autocomplete.js';
 
@@ -26,6 +26,11 @@ export const renderNewTrip = () => {
             element: 'input',
             placeholder: 'Enter trip title',
             maxLength: '100'
+        },
+        {
+            name: 'hero_image_url',
+            element: 'input',
+            placeholder: 'Enter image url'
         },
         {
             name: 'description',
@@ -74,11 +79,16 @@ const initBlurEvent = (element, route) => {
             userInput: e.target.value,
             tripId: pageContainer.name
         }
+        if (route === 'hero_image_url') {
+            worldMap.style.backgroundImage = `url("${e.target.value}")`
+            worldMap.style.minHeight = '300px'
+        }
         if (requireSave) {
             return axios.patch(`user/trips/static`, data)
                 .then(() => requireSave = false)
                 .catch(err => err)
         }
+
     });
 }
 
@@ -333,13 +343,10 @@ const generateForm = (dataType, icon, dataExists) => {
             ...data,
             ...googleApiData
         }
-        console.log(googleApiData)
-        console.log(combineData)
 
         axios.post('/user/trips', combineData)
             .then(dbRes => {
-                console.log('I HAVE RETURNED')
-                console.log(dbRes)
+                console.log('Data has been saved to db')
             });
     })
 
