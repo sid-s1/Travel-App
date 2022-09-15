@@ -48,13 +48,6 @@ const Trip = {
             .then(dbRes => dbRes)
             .catch(err => err)
     },
-    create: (country) => {
-        // userId, placeId, name, city, country
-        const sql = 'INSERT INTO countries (country_name) SELECT $1 WHERE NOT EXISTS (SELECT id FROM countries WHERE country_name = $1) RETURNING id';
-        return db.query(sql, [country])
-            .then(res => res)
-            .catch(err => err)
-    },
     write: (column, value, tripId) => {
         let sql;
         let arr;

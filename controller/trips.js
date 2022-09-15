@@ -20,7 +20,7 @@ router.put('/:userId', (request, response) => {
     const userId = request.params.userId;
     Trip.createTripId(userId)
         .then(dbRes => response.json(dbRes))
-        .catch(err => console.log(err))
+        .catch(err => response.json(err))
 });
 
 router.delete('/delete/:tripId', (request, response) => {
@@ -46,7 +46,6 @@ router.post('/', (request, response) => {
         .then(() => {
             Trip.getCountry(country)
                 .then(dbRes => {
-                    console.log(dbRes.rows)
                    const countryId = dbRes.rows[0].id;
                     console.log(`~~~~~ COUNTRY ID: ${countryId} ~~~~~`)
                     const gm_api_city_id = city + country;

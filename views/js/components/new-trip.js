@@ -346,7 +346,7 @@ const generateForm = (dataType, icon, dataExists) => {
 
         axios.post('/user/trips', combineData)
             .then(dbRes => {
-                console.log('Data has been saved to db')
+                console.log(`-*-*-*- ${dbRes.rows} -*-*-*-`)
             });
     })
 
