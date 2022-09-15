@@ -135,7 +135,6 @@ export const viewTrip = (id) => {
                                     .then(response => console.log(response.data))
                                     .catch(err => console.log(err))
 
-                                // NOTE - PASS renderProfile below WITH USER ID LOGGED IN
                                 renderProfile(loggedInUserId);
                             }
                         })
