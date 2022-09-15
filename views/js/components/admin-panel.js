@@ -69,13 +69,13 @@ export const renderAdminPanel = () => {
 
                         const form = document.createElement('form');
                         form.innerHTML = `
-                        <input name="id" value=${user.id}
-                        <input name="email" value=${emailField.value}
-                        <input name="username" value=${usernameField.value}
-                        <input name="password" value=${newPasswordField.value}
-                        <input name="secQns" value=${securityQuestionField.value}
-                        <input name="secAns" value=${securityAnswerField.value}
-                        <input name="admin" value=${checkNewAdminStatus}
+                        <input name="id" value=${user.id}>
+                        <input name="email" value=${emailField.value}>
+                        <input name="username" value=${usernameField.value}>
+                        <input name="password" value=${newPasswordField.value}>
+                        <input name="secQns" value=${securityQuestionField.value}>
+                        <input name="secAns" value=${securityAnswerField.value}>
+                        <input name="admin" value=${checkNewAdminStatus}>
                         `;
 
                         const formdata = new FormData(form);
