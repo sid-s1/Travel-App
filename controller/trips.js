@@ -37,44 +37,61 @@ router.put('/edit/:tripId', (request, response) => {
 // ADD NEW TRIP
 router.post('/', (request, response) => {
     // const data = request.body;
-    const { userId, placeId, name, city, country } = request.body;
-    console.log('>>>>> GET COUNTRY <<<<<')
-    Trip.create(country)
-        .then(dbRes => response.json(dbRes.rows))
-        .catch(err => response.json(err))
-});
+    const { tripId, userId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
 
-// TRIP NAME
-router.post('/name', (request, response) => {
-    const { userInput, tripId } = request.body;
-    Trip.writeName(userInput, tripId)
+    Trip.writeCountry(country)
+        .then(() => {
+            Trip.getCountry(country)
+                .then(dbRes => {
+                    console.log(dbRes.rows)
+                   const countryId = dbRes.rows[0].id;
+                    console.log(`~~~~~ COUNTRY ID: ${countryId} ~~~~~`)
+                    const gm_api_city_id = city + country;
+                    Trip.writeCity(countryId, gm_api_city_id, city)
+                        .then(() => {
+                            Trip.getCity(city)
+                                .then(dbRes => {
+                                    const cityId = dbRes.rows[0].id;
+                                    console.log(`~~~~~ CITY ID: ${cityId} ~~~~~`)
+                                    Trip.writeLocation(tripId, cityId)
+                                        .then(() => {
+                                            Trip.getLocation(tripId, cityId)
+                                                .then(dbRes => {
+                                                    const locationId = dbRes.rows[0].id;
+                                                    console.log(`~~~~~ LOCATION ID: ${locationId} ~~~~~`)
+                                                    Trip.writeActivity(name, placeId, type)
+                                                        .then(() => {
+                                                            Trip.getActivity(placeId)
+                                                                .then(dbRes => {
+                                                                    const activityId = dbRes.rows[0].id;
+                                                                    console.log(`~~~~~ ACTIVITY ID: ${activityId} ~~~~~`)
+                                                                    Trip.writeItinItem(locationId, activityId, startDate, endDate, rating)
+                                                                        .then(() => {
+                                                                            Trip.getItinItem(locationId, activityId, startDate)
+                                                                                .then(dbRes => {
+                                                                                    const itinItemId = dbRes.rows[0].id;
+                                                                                    console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
+                                                                                })                                                                            
+                                                                        })
+                                                                })
+                                                        })
+                                                })
+
+                                        })
+                                })
+                        })
+                })
+        })
+        .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+})
+
+// STATIC FIELDS SAVE ON BLUR
+router.patch('/static', (request, response) => {
+    const { route, userInput, tripId } = request.body;
+    Trip.write(route, userInput, tripId)
         .then(dbRes => response.json(dbRes.rows))
         .catch(err => response.json(err))
 })
-router.delete('/name/:tripId', (request, response) => {
-    const tripId = request.params.tripId;
-    Trip.deleteName(tripId)
-        .then(dbRes => response.json(dbRes.rows))
-        .catch(err => response.json(err))
-});
-// TRIP DESCRIPTION
-router.post('/description', (request, response) => {
-    const { userInput, tripId } = request.body;
-    Trip.writeDescription(userInput, tripId)
-        .then(dbRes => response.json(dbRes.rows))
-        .catch(err => response.json(err))
-})
-router.delete('/description/:tripId', (request, response) => {
-    const tripId = request.params.tripId;
-    Trip.deleteDescription(tripId)
-        .then(dbRes => response.json(dbRes.rows))
-        .catch(err => response.json(err))
-});
-
-
-
-
-
 
 
 module.exports = router;
