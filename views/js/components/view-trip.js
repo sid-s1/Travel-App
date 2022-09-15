@@ -12,6 +12,7 @@ export const countVotes = (tripId) => {
 
 export const viewTrip = (id) => {
     const loggedInUserId = Number(localStorage.getItem('userId'));
+    console.log(`logged in as user ${loggedInUserId} looking at trip ${id}`);
     let voteCount;
 
     const pageContainer = document.getElementById('page-container');
@@ -32,6 +33,16 @@ export const viewTrip = (id) => {
     const descriptionContent = document.createElement('p');
     const keyTakeaway = document.createElement('p');
     const activitiesContainer = document.createElement('div');
+
+    const showcaseLikeButton = document.createElement('span');
+    const showcasedislikeButton = document.createElement('span');
+
+    showcaseLikeButton.innerHTML = `
+    <i class="fa-thin fa-thumbs-up showcase-like-dislike-icons"></i>
+    `;
+    showcasedislikeButton.innerHTML = `
+    <i class="fa-thin fa-thumbs-down showcase-like-dislike-icons"></i>
+    `;
 
     const modifyTripContainer = document.createElement('div');
     const editTripButton = document.createElement('button');
@@ -57,6 +68,8 @@ export const viewTrip = (id) => {
             dislikeDiv.id = 'dislike-container';
             likeCount.id = 'like-count';
             dislikeCount.id = 'dislike-count';
+            showcaseLikeButton.id = 'showcase-like-btn';
+            showcasedislikeButton.id = 'showcase-dislike-btn';
 
             // creating a promise so that when the API calls are made, the data is received and the HTML elements are filled, no appending to the body happens until the promise is fulfilled
             let p = new Promise((resolve, reject) => {
@@ -79,8 +92,6 @@ export const viewTrip = (id) => {
 
 
                         coverPhoto.src = tripDetails[0].hero_image_url;
-                        photoContainer.append(coverPhoto);
-                        photoContainer.id = 'coverPhoto-only';
 
                         if (tripDetails[0].trip_status === 'draft') {
                             const draftStatus = document.createElement('h2');
@@ -94,11 +105,18 @@ export const viewTrip = (id) => {
                         likeCount.textContent = `+ ${voteCount.likes}`;
                         dislikeCount.textContent = `- ${voteCount.dislikes}`;
 
-                        likeDiv.append(likeButton, likeCount);
-                        dislikeDiv.append(dislikeButton, dislikeCount);
-                        photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
-                        photoContainer.id = 'likeDislike-and-coverPhoto';
-
+                        if (loggedInUserId) {
+                            likeDiv.append(likeButton, likeCount);
+                            dislikeDiv.append(dislikeButton, dislikeCount);
+                            photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
+                            photoContainer.id = 'likeDislike-and-coverPhoto';
+                        }
+                        else {
+                            likeDiv.append(showcaseLikeButton, likeCount);
+                            dislikeDiv.append(showcasedislikeButton, dislikeCount);
+                            photoContainer.append(likeDiv, coverPhoto, dislikeDiv);
+                            photoContainer.id = 'likeDislike-and-coverPhoto';
+                        }
 
                         let deleteConfirmation = false;
                         deleteTripButton.addEventListener('click', () => {
@@ -197,14 +215,3 @@ export const viewTrip = (id) => {
 
         })
 };
-
-setTimeout(() => {
-    // Calling the function here; once we decide where user is clicking to view these trips, we can link those buttons to call viewTrip function with tripId as an argument
-
-    // tripId 1 has been changed to 'posted' - itinerary items and cities have been added
-
-    // tripId 2 shows as a 'draft' - some itinerary items and city have been added
-
-    // viewTrip(1);
-    viewTrip(1);
-}, 500);

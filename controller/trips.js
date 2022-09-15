@@ -27,7 +27,7 @@ router.put('/:userId', (request, response) => {
 
 router.delete('/delete/:tripId', (request, response) => {
     const tripId = request.params.tripId;
-    modifyTrip.delete(tripId)
+    Trip.delete(tripId)
         .then(dbRes => response.json(`Trip deleted! ${tripId}`))
         .catch(err => response.json('Trip could not be deleted!'))
 });
