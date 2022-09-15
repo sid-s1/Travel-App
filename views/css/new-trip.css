@@ -52,6 +52,7 @@
     grid-template-columns: 1fr 6fr;
     margin-bottom: 30px;
     height: 150px;
+    min-height: 150px;
     width: 100%;
     max-width: 700px;
     border: dotted black 1px;
@@ -111,22 +112,36 @@
     align-items: center;
     width: 100%;
 }
+.form-row-airline {
+    width: 100%;
+    display: contents;
+    background-color: aqua;
+    border: solid red 2px;
+}
 .airline-autocomplete {
-    top: 20px;
-    left: 31%;
-    margin: 0px;
-    background-color: rgba(0, 255, 0, 0.699);
+    top: 40px;
+    left: 120px;
+    background-color: rgb(255, 255, 255);
+    
 }
 .airline-autocomplete > ul {
-    padding: 5px 10px;
-    margin: 0px;
+    margin: 0px;  
+    padding: 0px;
+    border: solid black 1px;
 }
 .airline-autocomplete > ul > li {
     list-style: none;
-    padding: 0px;
-    margin: 0px;
+    border-bottom: solid rgb(179, 177, 177) 1px;
+    padding: 5px 10px;
 }
 .new-trip-label {
     margin: 5px 20px;
     width: 80px;
+}
+.new-trip-description {
+    width: 80%;
+    height: 200px;
+    min-height: 200px;
+    resize: none;
+    margin: 20px auto;
 }
