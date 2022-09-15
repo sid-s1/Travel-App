@@ -9,8 +9,9 @@ router.get('/:place', (request, response) => {
     const placeTrial = `${place.split(',')[0]},${place.split(',')[1]}`;
     // console.log(`${place.split(',')[0]}, ${place.split(',')[0]}`);
 
-    place = place.replaceAll(' ', '%20');
-    place = place.replaceAll(',', '%2C');
+    // place = place.replaceAll(' ', '%20');
+    // place = place.replaceAll(',', '%2C');
+    place = encodeURIComponent(place);
 
     const placeDetails = {};
 
