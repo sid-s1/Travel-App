@@ -25,12 +25,14 @@ export const renderNewTrip = () => {
             name: 'trip_name',
             element: 'input',
             placeholder: 'Enter trip title',
-            maxLength: '100'
+            maxLength: '100',
+            className: 'new-trip-title'
         },
         {
             name: 'hero_image_url',
             element: 'input',
-            placeholder: 'Enter image url'
+            placeholder: 'Enter image url',
+            className: 'new-trip-url'
         },
         {
             name: 'description',
@@ -43,7 +45,8 @@ export const renderNewTrip = () => {
             name: 'key_takeaway',
             element: 'input',
             placeholder: 'Your key takeaway from the trip',
-            maxLength: '50'
+            maxLength: '50',
+            className: 'new-trip-takeaway'
         }
     ]
 
@@ -362,6 +365,8 @@ export const generateForm = (dataType, icon, dataExists) => {
         endDate: formData.get('end-date'),
         rating: formData.get('rating')
         }
+
+        console.log(data)
 
         const combinedData = {
             ...data,

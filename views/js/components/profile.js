@@ -1,4 +1,4 @@
-import { layout, sidePanel, worldMap } from "./layout.js";
+import { layout, page, pageContainer, sidePanel, worldMap } from "./layout.js";
 import { renderNewTrip } from './new-trip.js';
 import { userStats } from "./user-stats.js";
 import { renderExploreSearch } from "./explore.js";
@@ -9,13 +9,13 @@ export const renderProfile = (targetUserId) => {
     // Set view
     layout.reset();
     layout.profile();
-
-    // Render badges
-    // -- insert function --
-
-    // Render world map
     worldMap.innerHTML = '';
     worldMap.style.backgroundImage = `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1')`;
+    page.style.backgroundImage = 'none';
+    pageContainer.style.border = 'none';
+
+    // Render badges
+    // -- insert function --  
 
     // get user ID and display stats if it is the same as the user who's profile is being displayed
     let userId = localStorage.getItem('userId');

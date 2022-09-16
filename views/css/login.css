@@ -58,6 +58,6 @@
     cursor: pointer;
 }
 .login-message {
-    color: red;
+    color: black;
     text-transform: italic;
 }
