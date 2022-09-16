@@ -14,7 +14,7 @@ export const securityQuestions = {
 export const renderSignup = () => {
     layout.reset();
     layout.signup();
-    
+
     pageContainer.style.width = '65%'
     pageContainer.style.border = '2px solid black'
 
@@ -27,16 +27,16 @@ export const renderSignup = () => {
     signupForm.id = 'signup-form';
 
     const usernameLabel = HtmlElements.createLabel('username', 'Username', 'signup-label');
-    const usernameInput = HtmlElements.createInput('text', 'username', 'username', 'signup-input');
+    const usernameInput = HtmlElements.createInput('text', 'username', 'username', 'signup-input', null,'Choose a username...');
 
     const emailLabel = HtmlElements.createLabel('email', 'Email', 'signup-label');
-    const emailInput = HtmlElements.createInput('email', 'email', 'email', 'signup-input');
+    const emailInput = HtmlElements.createInput('email', 'email', 'email', 'signup-input', null,'Enter your email...');
 
     const passwordLabel = HtmlElements.createLabel('password', 'Password', 'signup-label');
-    const passwordInput = HtmlElements.createInput('password', 'password', 'password', 'signup-input');
+    const passwordInput = HtmlElements.createInput('password', 'password', 'password', 'signup-input', null,'Choose a password...');
 
     const confirmPasswordLabel = HtmlElements.createLabel('confirm-password', 'Confirm Password', 'signup-label');
-    const confirmPasswordInput = HtmlElements.createInput('password', 'confirm-password', 'confirm-password', 'signup-input');
+    const confirmPasswordInput = HtmlElements.createInput('password', 'confirm-password', 'confirm-password', 'signup-input', null,'Confirm your password...');
 
     const securityQuestionLabel = HtmlElements.createLabel('security-question', 'Select a security question', 'signup-label');
     const securityQuestionInput = document.createElement('select');
@@ -53,7 +53,7 @@ export const renderSignup = () => {
     }
 
     const securityAnswerLabel = HtmlElements.createLabel('security-answer', 'Answer', 'signup-label');
-    const securityAnswerInput = HtmlElements.createInput('text', 'security-answer', 'security-answer', 'signup-input');
+    const securityAnswerInput = HtmlElements.createInput('text', 'security-answer', 'security-answer', 'signup-input', null,'Enter your answer...');
 
     const submitButton = HtmlElements.createButton('submit', 'Sign up', 'signup-button')
 

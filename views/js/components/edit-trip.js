@@ -3,11 +3,14 @@ import { generateForm, initBlurEvent, renderOptionsBar } from './new-trip.js'
 
 
 export const renderEditTripForm = (tripId) => {
+    // set view
     layout.reset();
     layout.editTrip();
-    const user_id = localStorage.getItem('userId');
+
+    // set pageContainer
     pageContainer.name = tripId;
 
+    // get trip data & set input fields with trip values
     axios.get(`/user/trips/${tripId}`)
     .then(dbRes => {
         console.log(dbRes);
@@ -63,8 +66,6 @@ export const renderEditTripForm = (tripId) => {
 
         axios.get(`/user/trips/activities/${tripId}`)
         .then(dbRes => {
-            console.log(dbRes);
-
             dbRes.data.forEach(row => {
                 const newDiv = document.createElement('div');
                 const form = generateForm(row.gm_type, newDiv, row);
