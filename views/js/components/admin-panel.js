@@ -1,4 +1,5 @@
 import { securityQuestions } from './signup.js';
+import { userStats } from './user-stats.js';
 
 export const renderAdminPanel = (loggedInUserId) => {
     const pageContainer = document.getElementById('page-container');
@@ -12,8 +13,9 @@ export const renderAdminPanel = (loggedInUserId) => {
     // add check to make sure not all admins are turned into normal users
     // add check to make sure currently logged in user is not turned to normal user
     // add check to make sure the user currently logged in is not deleted
-    // bring up a modal for feedback on when something is done
+    // bring up a modal for feedback on when something is done -  ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
     // collaps other sections when you come to this page
+    // airline or activity - no end date VIEW TRIP
 
     axios.get('/user/session/allUsers')
         .then(response => {
@@ -128,7 +130,18 @@ export const renderAdminPanel = (loggedInUserId) => {
                     console.log(data);
 
                     axios.put('/user/session/updateUser', data)
-                        .then(response => console.log(response.data))
+                        .then(response => {
+                            if (username !== localStorage.getItem('username')) {
+                                localStorage.setItem('username', username);
+                                userStats.updateUsernameDisplay(username);
+                            }
+                            const emailForm = {
+                                email: email
+                            };
+                            axios.put('/user/session/updateSessionEmail', emailForm)
+                                .then()
+                                .catch()
+                        })
                         .catch(err => console.log(err))
                 });
 
