@@ -18,7 +18,7 @@ export const modal = {
         `;
         return modal;
     },
-    display: (modal) => {
+    display: (modal, loggedInUserId) => {
         const modalDiv = modal.firstElementChild;
         modalDiv.classList.add('show-modal');
         document.body.appendChild(modal);
@@ -29,7 +29,7 @@ export const modal = {
             setTimeout(() => {
                 modal.remove();
             }, 350);
-            renderAdminPanel();
+            renderAdminPanel(loggedInUserId);
         });
     }
 };

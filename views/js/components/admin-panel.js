@@ -144,9 +144,11 @@ export const renderAdminPanel = (loggedInUserId) => {
                                 const emailForm = {
                                     email: email
                                 };
+                                console.log(`checking form id - ${data.id} and logged in user id - ${loggedInUserId}`)
                                 if (data.id == loggedInUserId) {
                                     if (data.username !== localStorage.getItem('username')) {
                                         localStorage.setItem('username', username);
+                                        console.log(username);
                                         userStats.updateUsernameDisplay(username);
                                     }
                                     axios.put('/user/session/updateSessionEmail', emailForm)
@@ -154,14 +156,14 @@ export const renderAdminPanel = (loggedInUserId) => {
                                         .catch()
                                 }
                                 const modalElement = modal.create(response.data.message);
-                                modal.display(modalElement);
+                                modal.display(modalElement, loggedInUserId);
                             })
                             .catch(err => console.log(err))
                     }
                     else {
                         const message = `You have not updated anything, ${localStorage.getItem('username')}!`
                         const modalElement = modal.create(message);
-                        modal.display(modalElement);
+                        modal.display(modalElement, loggedInUserId);
                     }
 
                 });
@@ -177,7 +179,7 @@ export const renderAdminPanel = (loggedInUserId) => {
                         if (userId === loggedInUserId) {
                             const message = 'You cannot delete yourself!';
                             const modalElement = modal.create(message);
-                            modal.display(modalElement);
+                            modal.display(modalElement, loggedInUserId);
                         }
                         else {
                             e.target.textContent = 'Confirm';
@@ -192,8 +194,8 @@ export const renderAdminPanel = (loggedInUserId) => {
                         axios.delete(`/user/session/${userId}/${user.username}`)
                             .then(response => {
                                 const modalElement = modal.create(response.data.message);
-                                modal.display(modalElement);
-                                renderAdminPanel();
+                                modal.display(modalElement, loggedInUserId);
+                                renderAdminPanel(loggedInUserId);
                                 console.log(response.data);
                             })
                             .catch(err => console.log(err))
