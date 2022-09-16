@@ -1,0 +1,54 @@
+#admin-panel {
+    display: grid;
+    grid-template-columns: 6fr;
+    margin: 0 auto;
+    width: 100%;
+}
+#admin-panel-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.user-details-row {
+    display: flex;
+    margin: 0.5rem;
+    border: 1px dotted grey;
+    border-radius: 0.5em;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.user-edit-action-options {
+    display: flex;
+    padding-inline-start: 0;
+}
+.user-details {
+    margin: 0.2rem;
+    border-radius: 0.5em;
+    padding: 0.2rem;
+    width: 8rem;
+    height: 35%;
+}
+.user-admin-radio {
+    width: 0.75rem;
+}
+.user-edit-action-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem;
+    margin: 0.2rem;
+    border: 2px solid black;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: 0.5s ease all;
+}
+.user-edit-action-btn:hover {
+    background-color: aqua;
+}
+.confirm-delete-user {
+    background-color: rgb(251, 130, 130);
+}
+.confirm-delete-user:hover {
+    background-color: red;
+}
