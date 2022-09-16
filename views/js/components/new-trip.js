@@ -384,7 +384,11 @@ export const generateForm = (dataType, icon, activityRow=null) => {
             ...googleApiData
         }
 
-        axios.post('/user/trips', combinedData)
+        if (activityRow) {
+            wrappedForm.id = activityRow.id;
+            // axios patch here
+        } else {
+            axios.post('/user/trips', combinedData)
             .then(dbRes => {
                 const itineraryId = dbRes.data.itineraryId;
                 wrappedForm.id = itineraryId;
@@ -392,6 +396,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
                 saveButton.textContent = 'Saved'
                 saveButton.disabled = true;
             });
+        }
     })
 
     const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');
