@@ -44,8 +44,9 @@ export const renderProfile = (targetUserId) => {
             })
     }
 
-    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    userStats(targetUserId);
+    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id');
+    // userStats.updateUsername(targetUserId);
+    userStats.display(targetUserId);
     worldMap.appendChild(profileStats);
 
     // Render side panel
