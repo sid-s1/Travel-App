@@ -36,12 +36,41 @@ router.put('/edit/:tripId', (request, response) => {
 
 // ADD NEW TRIP
 router.post('/', (request, response) => {
-    const { tripId, userId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
+    const { tripId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
 
+    // Save pathway for AIRLINE
     if (type === 'airline') {
-        // Render save path
-    }
+        Trip.writeAirline(name, type)
+            .then(() => {
+                Trip.getAirline(name)
+                    .then(dbRes => {
+                        const airlineId = dbRes.rows[0].id;
+                        console.log(`~~~~~ AIRLINE ACTIVITY ID: ${airlineId} ~~~~~`)
+                        Trip.writeAirlineLocation(tripId)
+                            .then(() => {
+                                Trip.getAirlineLocation(tripId)
+                                    .then(dbRes => {
+                                        const locationId = dbRes.rows[0].id;
+                                        console.log(`~~~~~ AIRLINE LOCATION ID: ${locationId} ~~~~~`)
+                                        Trip.writeAirlineItinItem(locationId, airlineId, startDate, rating)
+                                            .then(() => {
+                                                Trip.getAirlineItinItem(locationId, airlineId, startDate)
+                                                    .then(dbRes => {
+                                                        const itinItemId = dbRes.rows[0].id;
+                                                        console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
+                                                        return response.json({itineraryId: itinItemId})
+                                                    })
 
+
+                                            })
+
+                                    })
+                            })
+                    })
+            })
+            .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+    } else {
+    // Save pathway for HOTEL & ACTIVITY
     Trip.writeCountry(country)
         .then(() => {
             Trip.getCountry(country)
@@ -73,7 +102,8 @@ router.post('/', (request, response) => {
                                                                                 .then(dbRes => {
                                                                                     const itinItemId = dbRes.rows[0].id;
                                                                                     console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
-                                                                                })                                                                            
+                                                                                    return response.json({itineraryId: itinItemId})
+                                                                                })
                                                                         })
                                                                 })
                                                         })
@@ -85,7 +115,9 @@ router.post('/', (request, response) => {
                 })
         })
         .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+    }
 })
+
 
 // STATIC FIELDS SAVE ON BLUR
 router.patch('/static', (request, response) => {

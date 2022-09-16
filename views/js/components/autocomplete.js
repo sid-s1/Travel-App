@@ -7,3 +7,5 @@ export function initAutocomplete(element, type) {
 
     return new google.maps.places.Autocomplete(element, data);
 }
+export function initAutocompleteActivities() {}
+export function initAutocompleteHotels() {}

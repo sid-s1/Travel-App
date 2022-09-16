@@ -2,6 +2,10 @@ import { layout, pageContainer } from "./layout.js"
 import { renderTrips, executeSearch } from "./search.js"
 
 export const renderMyTrips = () => {
+    // set view
+    layout.reset();
+    layout.myTrips();
+
     axios.get('/user/session')
         .then(response => {
             const result = response.data.rows[0];
@@ -12,8 +16,7 @@ export const renderMyTrips = () => {
             resultsContainer.id = 'results';
             const form = document.createElement('form');
             const userIdInput = document.createElement('input');
-            userIdInput.type = 'hidden';
-            userIdInput.name = 'search-bar';
+            userIdInput.type = 'hidden';            userIdInput.name = 'search-bar';
             userIdInput.id = 'search-bar';
             userIdInput.value = loggedInUserId;
             const searchType = document.createElement('input');

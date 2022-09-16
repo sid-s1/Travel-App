@@ -49,6 +49,15 @@ const Search = {
         ON ii.trip_location_id=tl.id
         WHERE LOWER(activity_name) LIKE $1`
         return db.query(sql, [searchWithWildcard])
+    },
+    searchTrips: (searchString) => {
+        const searchWithWildcard = `%${searchString}%`
+        const sql =`SELECT t.id
+        FROM trips t
+        WHERE LOWER(trip_name) LIKE $1
+        OR LOWER(description) LIKE $1
+        OR LOWER(key_takeaway) LIKE $1`
+        return db.query(sql, [searchWithWildcard])
     }
 }
 

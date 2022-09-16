@@ -30,6 +30,9 @@ export const layout = {
         badges.style.gridArea = '2/2/2/3';
         sidePanel.style.gridArea = '2/1/4/2';
         page.style.gridArea = '3/2/3/3';
+        worldMap.style.backgroundImage = `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1')`;
+
+
     },
     login: () => {
         page.style.display = 'flex';
@@ -43,7 +46,7 @@ export const layout = {
     },
     profile: () => {
         worldMap.style.display = 'flex';
-        badges.style.display = 'flex';
+        // badges.style.display = 'flex';
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
         badges.innerHTML = '';
@@ -70,7 +73,19 @@ export const layout = {
         page.style.display = 'flex';
         pageContainer.innerHTML = '';
     },
+    editTrip: () => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
+        pageContainer.innerHTML = '';
+    },
     myTrips: () => {
+        worldMap.style.display = 'flex';
+        sidePanel.style.display = 'flex';
+        page.style.display = 'flex';
+        pageContainer.innerHTML = '';
+    },
+    bookmarks: () => {
         worldMap.style.display = 'flex';
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';

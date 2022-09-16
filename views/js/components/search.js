@@ -1,91 +1,40 @@
 import { layout, pageContainer, page } from "./layout.js"
 import { dateExtractor } from "./date-extractor.js"
 import { viewTrip } from "./view-trip.js"
+import { createBookmarkIcon } from "./bookmarks.js"
+import { HtmlElements } from "./html-elements.js"
+import { createFloatingElement } from "./new-trip.js"
 
 export const renderSearchBar = () => {
 
-    const searchByAllLabel = document.createElement('label');
-    searchByAllLabel.setAttribute('for', 'all');
-    searchByAllLabel.textContent = 'All';
+    const searchByAllLabel = HtmlElements.createLabel('all', 'All');
+    const searchByAll = HtmlElements.createInput('radio', 'search-type', 'all', 'search-bar-options', 'all', null, null, true);
 
-    const searchByAll = document.createElement('input');
-    searchByAll.type = 'radio';
-    searchByAll.name = 'search-type';
-    searchByAll.id = 'all';
-    searchByAll.value = 'all';
-    searchByAll.checked = true;
+    const searchByUserLabel = HtmlElements.createLabel('user', 'User');
+    const searchByUser = HtmlElements.createInput('radio', 'search-type', 'user', 'search-bar-options', 'user');
 
-    const searchByUserLabel = document.createElement('label');
-    searchByUserLabel.setAttribute('for', 'user');
-    searchByUserLabel.textContent = 'User';
+    const searchByCityLabel = HtmlElements.createLabel('city', 'City');
+    const searchByCity = HtmlElements.createInput('radio', 'search-type', 'city', 'search-bar-options', 'city');
 
-    const searchByUser = document.createElement('input');
-    searchByUser.type = 'radio';
-    searchByUser.name = 'search-type';
-    searchByUser.id = 'user';
-    searchByUser.value = 'user';
-    searchByUser.checked = false;
+    const searchByActivityLabel = HtmlElements.createLabel('activity', 'Activity');
+    const searchByActivity = HtmlElements.createInput('radio', 'search-type', 'activity', 'search-bar-options', 'activity');
 
-    const searchByCityLabel = document.createElement('label');
-    searchByCityLabel.setAttribute('for', 'city');
-    searchByCityLabel.textContent = 'City';
-
-    const searchByCity = document.createElement('input');
-    searchByCity.type = 'radio';
-    searchByCity.name = 'search-type';
-    searchByCity.id = 'city';
-    searchByCity.value = 'city';
-    searchByCity.checked = false;
-
-    const searchByActivityLabel = document.createElement('label');
-    searchByActivityLabel.setAttribute('for', 'activity');
-    searchByActivityLabel.textContent = 'Activity';
-
-    const searchByActivity = document.createElement('input');
-    searchByActivity.type = 'radio';
-    searchByActivity.name = 'search-type';
-    searchByActivity.id = 'activity';
-    searchByActivity.value = 'activity';
-    searchByActivity.checked = false;
-
-    const searchByCountryLabel = document.createElement('label');
-    searchByCountryLabel.setAttribute('for', 'country');
-    searchByCountryLabel.textContent = 'Country';
-
-    const searchByCountry = document.createElement('input');
-    searchByCountry.type = 'radio';
-    searchByCountry.name = 'search-type';
-    searchByCountry.id = 'country';
-    searchByCountry.value = 'country';
-    searchByCountry.checked = false;
+    const searchByCountryLabel = HtmlElements.createLabel('country', 'Country');
+    const searchByCountry = HtmlElements.createInput('radio', 'search-type', 'country', 'search-bar-options', 'country');
 
     const searchTabs = layout.wrap([searchByAll, searchByAllLabel, searchByUser, searchByUserLabel, searchByCity, searchByCityLabel, searchByActivity, searchByActivityLabel, searchByCountry, searchByCountryLabel],'search-tabs')
 
     const form = document.createElement('form');
     form.id = 'search-form';
-    form.style.display = 'flex';
-    form.style.justifyContent = 'space-between';
-    form.style.columnGap = '20px';
 
-    const searchBar =  document.createElement('input');
-    searchBar.setAttribute("placeholder", "Search...");
-    searchBar.id = "search-bar";
-    searchBar.name = "search-bar";
+    const searchBar =  HtmlElements.createInput('text', 'search-bar', 'search-bar', null, null, 'Search...');
 
-    const searchButton = document.createElement('button');
-    searchButton.innerHTML = '<i class="fa-regular fa-magnifying-glass"></i>'
-    searchButton.type = 'submit';
-    searchButton.id = 'submit-search';
+    const searchButton = HtmlElements.createButton('submit', '<i class="fa-regular fa-magnifying-glass"></i>', 'submit-search')
     searchButton.style.cursor = 'pointer';
 
-    const searchType = document.createElement('input');
-    searchType.type = 'hidden';
+    const searchType = HtmlElements.createInput('hidden', null, null);
 
-
-    form.appendChild(searchTabs);
-    form.appendChild(searchBar);
-    form.appendChild(searchType);
-    form.appendChild(searchButton);
+    form.append(searchTabs, searchBar, searchType, searchButton);
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -115,7 +64,7 @@ export const executeSearch = (form) => {
     })
 }
 
-const renderResults = (data, searchString, searchType) => {
+export const renderResults = (data, searchString, searchType) => {
     const user_id = data.user_id;
     const resultsHeading = document.createElement('h2');
     resultsHeading.id = 'results-heading';
@@ -192,6 +141,13 @@ const renderResults = (data, searchString, searchType) => {
         for (let i = 0; i < tripInfo.resultsCont.length; i++) {
             resultsContainer.appendChild(tripInfo.resultsCont[i]);
         }
+    } else if (searchType === 'bookmarks') {
+        resultsHeading.textContent = `Bookmarks`;
+        const tripInfo = renderTrips(data.data, 'bookmarks');
+        console.log(tripInfo);
+        for (let i = 0; i < tripInfo.resultsCont.length; i++) {
+            resultsContainer.appendChild(tripInfo.resultsCont[i]);
+        }
     }
     return resultsContainer;
 }
@@ -202,6 +158,7 @@ export const renderTrips = (data, appLocation) => {
         tripData: []
     }
     const user_id = data.user_id;
+    const loggedInUserId = localStorage.getItem('userId');
     // add all data that is unique to that trip into a new object
     for (let i=0; i < data.trips.length; i++) {
         const idCheck = (trip) => trip.trip_id === data.trips[i].id;
@@ -256,8 +213,7 @@ export const renderTrips = (data, appLocation) => {
                     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
                     <h3>${cities}</h3>
                     <h3>${startDate} to ${endDate}</h3>
-                    <p>${row.trip_descr}</p>
-                    `
+                    <p>${row.trip_descr}</p>`
                     tripContainer.addEventListener('click', () => {
                         console.log(`Trip id '${row.trip_id}' clicked`);
                         if (user_id) {
@@ -266,6 +222,18 @@ export const renderTrips = (data, appLocation) => {
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
+
+                    if (loggedInUserId) {
+
+                        createBookmarkIcon(row.trip_id)
+                            .then(response => {
+                                console.log(response.innerHTML)
+                                console.log(tripContainer)
+                                createFloatingElement(tripContainer, response.innerHTML, 'bookmark-float')
+                                })                                    
+                            .catch(err => console.log('bookmark promise not here'))
+                    }
+
                     returnObj.resultsCont.push(tripContainer);
                 }
             } else if (appLocation === 'my-trips') {
@@ -307,7 +275,8 @@ export const renderTrips = (data, appLocation) => {
                 <h3>${startDate} to ${endDate}</h3>
                 <p>${row.trip_descr}</p>
                 `
-                tripContainer.addEventListener('click', () => {
+                tripContainer.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     console.log(`Trip id '${row.trip_id}' clicked`);
                     viewTrip(row.trip_id);
                 })

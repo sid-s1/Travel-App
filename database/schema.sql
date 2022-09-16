@@ -87,7 +87,8 @@ CREATE TABLE IF NOT EXISTS trip_locations (
     trip_id INT REFERENCES trips(id) ON DELETE CASCADE,
     city_id INT REFERENCES cities(id) ON DELETE CASCADE,
     city_start_date DATE,
-    city_end_date DATE
+    city_end_date DATE,
+    airline BOOLEAN
 );
 
 DROP TABLE IF EXISTS user_countries CASCADE;

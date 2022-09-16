@@ -1,6 +1,8 @@
 import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 import { likeDislikeAction } from './like-dislike.js';
+import { createBookmarkIcon } from './bookmarks.js';
+import { renderEditTripForm } from './edit-trip.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
@@ -9,6 +11,7 @@ export const countVotes = (tripId) => {
         .then(response => response.data)
         .catch(err => console.log(err))
 };
+
 
 export const viewTrip = (id) => {
     const loggedInUserId = Number(localStorage.getItem('userId'));
@@ -36,6 +39,7 @@ export const viewTrip = (id) => {
 
     const showcaseLikeButton = document.createElement('span');
     const showcasedislikeButton = document.createElement('span');
+    let bookmark;
 
     showcaseLikeButton.innerHTML = `
     <i class="fa-thin fa-thumbs-up showcase-like-dislike-icons"></i>
@@ -50,7 +54,6 @@ export const viewTrip = (id) => {
 
     editTripButton.textContent = 'Edit Trip';
     deleteTripButton.textContent = 'Delete Trip';
-
 
     countVotes(id)
         .then(countResponse => {
@@ -90,6 +93,10 @@ export const viewTrip = (id) => {
                                 <h5>${formattedStartDate} - ${formattedEndDate}</h5>
                                 `;
 
+                        // INSERT BOOKMARK
+                        createBookmarkIcon(id)
+                        .then(response => tripHeader.appendChild(response))
+                        .catch(err => console.log('bookmark promise not here'))
 
                         coverPhoto.src = tripDetails[0].hero_image_url;
 
@@ -118,6 +125,9 @@ export const viewTrip = (id) => {
                             photoContainer.id = 'likeDislike-and-coverPhoto';
                         }
 
+                                editTripButton.addEventListener('click', () => {
+                                    renderEditTripForm(id);
+                                })
                         deleteTripButton.textContent = 'Delete';
 
                         deleteTripButton.addEventListener('click', (e) => {
@@ -197,6 +207,7 @@ export const viewTrip = (id) => {
                     })
                     .catch(error => reject(error))
             });
+
             p.then(() => {
                 descriptionContainer.appendChild(descriptionContent);
                 pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);
