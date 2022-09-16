@@ -56,7 +56,6 @@ export const executeSearch = (form) => {
     resultsContainer.innerHTML = '';
     axios.post('/search', data)
     .then((dbRes) => {
-        console.log(dbRes.data);
         const results = renderResults(dbRes.data, data.searchString, data.searchType);
         resultsContainer.appendChild(results);
     })
@@ -274,7 +273,6 @@ export const renderTrips = (data, appLocation) => {
                 `
                 tripContainer.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    console.log(`Trip id '${row.trip_id}' clicked`);
                     viewTrip(row.trip_id);
                 })
                 tripContainer.id = `trip${row.trip_id}`;
@@ -299,7 +297,6 @@ export const renderTrips = (data, appLocation) => {
                     <p>${row.trip_descr}</p>
                     `
                     tripContainer.addEventListener('click', () => {
-                        console.log(`Trip id '${row.trip_id}' clicked`);
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
@@ -310,54 +307,6 @@ export const renderTrips = (data, appLocation) => {
         return returnObj;
 }
 
-// const renderPostedTrip = (row) => {
-//     const tripContainer = document.createElement('div');
-//     tripContainer.className = 'trip-result';
-//     const cityConversion = row.trip_cities.toString();
-//     const countryConversion = row.trip_countries.toString();
-//     const cities = cityConversion.replace(/,/g, ', ');
-//     const countries = countryConversion.replace(/,/g, ', ');
-//     const startDate = dateExtractor.formatDate(row.trip_start_date);
-//     const endDate = dateExtractor.formatDate(row.trip_end_date);
-//     tripContainer.innerHTML = `
-//     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
-//     <h3>${cities}</h3>
-//     <h3>${startDate} to ${endDate}</h3>
-//     <p>${row.trip_descr}</p>
-//     `
-//     tripContainer.addEventListener('click', () => {
-//         console.log(`Trip id '${row.trip_id}' clicked`);
-//         if (user_id) {
-//             renderSearchBar(page);
-//         }
-//         viewTrip(row.trip_id);
-//     })
-//     tripContainer.id = `trip${row.trip_id}`;
-//     returnObj.resultsCont.push(tripContainer);
-// }
-
-// const renderDraftTrip = (row) => {
-//     const tripContainer = document.createElement('div');
-//     tripContainer.className = 'trip-result';
-//     const cityConversion = row.trip_cities.toString();
-//     const countryConversion = row.trip_countries.toString();
-//     const cities = cityConversion.replace(/,/g, ', ');
-//     const countries = countryConversion.replace(/,/g, ', ');
-//     const startDate = dateExtractor.formatDate(row.trip_start_date);
-//     const endDate = dateExtractor.formatDate(row.trip_end_date);
-//     tripContainer.innerHTML = `
-//     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries} (${row.trip_status})</h2>
-//     <h3>${cities}</h3>
-//     <h3>${startDate} to ${endDate}</h3>
-//     <p>${row.trip_descr}</p>
-//     `
-//     tripContainer.addEventListener('click', () => {
-//         console.log(`Trip id '${row.trip_id}' clicked`);
-//         viewTrip(row.trip_id);
-//     })
-//     tripContainer.id = `trip${row.trip_id}`;
-//     returnObj.resultsCont.push(tripContainer);
-// }
 
 const renderUsers = (data) => {
     const resultsArr = [];
@@ -405,6 +354,7 @@ const renderActivities = (data) => {
         `
         activityContainer.addEventListener('click', () => {
             console.log(`activity ${row.activity_name} clicked`);
+            console.log(row);
             // PLACE ACTIVITY LINK HERE
         })
         resultsArr.push(activityContainer);
