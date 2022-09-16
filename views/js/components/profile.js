@@ -39,7 +39,7 @@ export const renderProfile = (targetUserId) => {
             <div>Achievements: <span id="total-achievements"></span></div>
             `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    userStats(userId);
+    userStats(targetUserId);
     worldMap.appendChild(profileStats);
 
     // Render side panel

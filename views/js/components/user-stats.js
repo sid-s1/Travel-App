@@ -7,7 +7,7 @@ export const userStats = (userId) => {
                 totalTrips.textContent = result.trip_count;
             }
         })
-        .catch()
+        .catch(err => console.log(err))
     axios.get(`/user/stats/countryNumber/${userId}`)
         .then(response => {
             const result = response.data[0];
