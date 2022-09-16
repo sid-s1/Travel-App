@@ -66,7 +66,7 @@ export const renderNewTrip = () => {
 }
 
 // attach Blur event listener to automatically update db
-export const initBlurEvent = (element, route) => {
+const initBlurEvent = (element, route) => {
     if (!route) return
 
     let requireSave = false;
@@ -92,7 +92,7 @@ export const initBlurEvent = (element, route) => {
     });
 }
 
-export const renderOptionsBar = () => {
+const renderOptionsBar = () => {
     // data to render buttons for adding items to itinerary
     const data = [
         {
