@@ -1,7 +1,10 @@
 import { securityQuestions } from './signup.js';
 import { userStats } from './user-stats.js';
+import { modal } from './render-modal.js';
+import { layout } from './layout.js';
 
 export const renderAdminPanel = (loggedInUserId) => {
+    layout.adminPanel();
     const pageContainer = document.getElementById('page-container');
     pageContainer.innerHTML = '';
 
@@ -10,12 +13,12 @@ export const renderAdminPanel = (loggedInUserId) => {
 
     adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
 
-    // add check to make sure not all admins are turned into normal users
-    // add check to make sure currently logged in user is not turned to normal user
-    // add check to make sure the user currently logged in is not deleted
-    // bring up a modal for feedback on when something is done -  ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
-    // collaps other sections when you come to this page
-    // airline or activity - no end date VIEW TRIP
+    // add check to make sure not all admins are turned into normal users DONE
+    // add check to make sure currently logged in user is not turned to normal user DONE
+    // add check to make sure the user currently logged in is not deleted DONE
+    // bring up a modal for feedback on when something is done DONE
+    // collaps other sections when you come to this page DONE
+    // my trips instead of profile when delete trip DONE
 
     axios.get('/user/session/allUsers')
         .then(response => {
@@ -39,7 +42,8 @@ export const renderAdminPanel = (loggedInUserId) => {
                     securityQuestionOption.text = securityQuestions[key];
                     securityQuestionOption.value = key;
                     if (key == user.security_qn) {
-                        securityQuestionOption.setAttribute('selected', '')
+                        securityQuestionOption.setAttribute('selected', '');
+                        securityQuestionField.setAttribute('value', key);
                     }
                     securityQuestionField.appendChild(securityQuestionOption);
                 }
@@ -129,20 +133,37 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                     console.log(data);
 
-                    axios.put('/user/session/updateUser', data)
-                        .then(response => {
-                            if (username !== localStorage.getItem('username')) {
-                                localStorage.setItem('username', username);
-                                userStats.updateUsernameDisplay(username);
-                            }
-                            const emailForm = {
-                                email: email
-                            };
-                            axios.put('/user/session/updateSessionEmail', emailForm)
-                                .then()
-                                .catch()
-                        })
-                        .catch(err => console.log(err))
+                    const checkChange = (data.email !== user.email) || (data.username !== user.username) || (securityQn !== String(user.security_qn)) || (user.admin !== checkNewAdminStatus);
+
+                    if (checkChange === 1 || checkChange === true) {
+                        axios.put('/user/session/updateUser', data)
+                            .then(response => {
+                                console.log('axios call');
+                                const emailForm = {
+                                    email: email
+                                };
+                                console.log(`checking form id - ${data.id} and logged in user id - ${loggedInUserId}`)
+                                if (data.id == loggedInUserId) {
+                                    if (data.username !== localStorage.getItem('username')) {
+                                        localStorage.setItem('username', username);
+                                        console.log(username);
+                                        userStats.updateUsernameDisplay(username);
+                                    }
+                                    axios.put('/user/session/updateSessionEmail', emailForm)
+                                        .then()
+                                        .catch()
+                                }
+                                const modalElement = modal.create(response.data.message);
+                                modal.display(modalElement, loggedInUserId);
+                            })
+                            .catch(err => console.log(err))
+                    }
+                    else {
+                        const message = `You have not updated anything, ${localStorage.getItem('username')}!`
+                        const modalElement = modal.create(message);
+                        modal.display(modalElement, loggedInUserId);
+                    }
+
                 });
 
                 const deleteUser = document.createElement('li');
@@ -154,7 +175,9 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                     if (e.target.textContent == 'Delete') {
                         if (userId === loggedInUserId) {
-                            alert('You cannot delete yourself!');
+                            const message = 'You cannot delete yourself!';
+                            const modalElement = modal.create(message);
+                            modal.display(modalElement, loggedInUserId);
                         }
                         else {
                             e.target.textContent = 'Confirm';
@@ -166,9 +189,11 @@ export const renderAdminPanel = (loggedInUserId) => {
                         }
                     }
                     else {
-                        axios.delete(`/user/session/${userId}`)
+                        axios.delete(`/user/session/${userId}/${user.username}`)
                             .then(response => {
-                                renderAdminPanel();
+                                const modalElement = modal.create(response.data.message);
+                                modal.display(modalElement, loggedInUserId);
+                                renderAdminPanel(loggedInUserId);
                                 console.log(response.data);
                             })
                             .catch(err => console.log(err))

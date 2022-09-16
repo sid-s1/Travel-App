@@ -36,6 +36,6 @@ export const userStats = {
     },
     updateUsernameDisplay: (username) => {
         const statsUsername = document.querySelector('#stats-username');
-        statsUsername.textContent = `Logged in as - ${username}`;
+        statsUsername.innerHTML = `<h1>${username}'s Stats</h1>`;
     }
 };

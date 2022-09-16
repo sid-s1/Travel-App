@@ -61,27 +61,27 @@ router.put('/updateUser', (request, response) => {
     const updateUserFunctions = (id, email, username, password, secQns, secAns, admin) => {
         if (password === 'undefined' && secAns === 'undefined') {
             User.updateUserWithoutPasswordOrSecAnswer(id, email, username, secQns, admin)
-                .then(dbRes => response.json({ message: 'Updated user details without password and security answer!' }))
+                .then(dbRes => response.json({ message: `Updated user details for '${username}' without password and security answer!` }))
                 .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
         }
         else {
             if (password === 'undefined') {
                 const hashedSecurityAnswer = generateHash(secAns);
                 User.updateUserWithoutPassword(id, email, username, secQns, hashedSecurityAnswer, admin)
-                    .then(dbRes => response.json({ message: 'Updated user details without password!' }))
+                    .then(dbRes => response.json({ message: `Updated user details for '${username}' without password!` }))
                     .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
             }
             else if (secAns === 'undefined') {
                 const hashedPassword = generateHash(password);
                 User.updateUserWithoutSecAnswer(id, email, username, hashedPassword, secQns, admin)
-                    .then(dbRes => response.json({ message: 'Updated user details without security answer!' }))
+                    .then(dbRes => response.json({ message: `Updated user details for '${username}' without security answer!` }))
                     .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
             }
             else {
                 const hashedPassword = generateHash(password);
                 const hashedSecurityAnswer = generateHash(secAns);
                 User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
-                    .then(dbRes => response.json({ message: 'Updated user details!' }))
+                    .then(dbRes => response.json({ message: `Updated user details for '${username}'!` }))
                     .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
             }
         }
@@ -91,14 +91,14 @@ router.put('/updateUser', (request, response) => {
             .then(dbRes => {
                 const adminCount = dbRes.rows[0].count;
                 if (id === loggedInUserId) {
-                    return response.json({ message: 'You cannot unset your own admin status! - please stay an admin!' })
+                    return response.json({ message: `You cannot unset your own admin status, ${username} - please stay an admin!` })
                 }
                 else {
                     if (adminCount > 1) {
                         updateUserFunctions(id, email, username, password, secQns, secAns, admin);
                     }
                     else {
-                        return response.json({ message: 'You cannot unset the last admin!' })
+                        return response.json({ message: `You cannot unset the last admin, ${username}!` })
                     }
                 }
             })
@@ -156,11 +156,11 @@ router.put('/updateSessionEmail', (request, response) => {
     }
 });
 
-router.delete('/:id', (request, response) => {
+router.delete('/:id/:username', (request, response) => {
     const id = request.params.id;
-    console.log('user id in controller - ', id);
+    const username = request.params.username;
     User.deleteUser(id)
-        .then(dbRes => response.json({ message: `User id ${id} deleted!` }))
+        .then(dbRes => response.json({ message: `User '${username}' deleted!` }))
         .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
 });
 

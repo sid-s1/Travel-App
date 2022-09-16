@@ -4,14 +4,15 @@ import { likeDislikeAction } from './like-dislike.js';
 import { createBookmarkIcon } from './bookmarks.js';
 // import { renderEditTripForm } from './edit-trip.js';
 import { renderNewTrip } from './new-trip.js';
-
-// if session does not return anything, display default trip view without modify buttons or like-dislike buttons
+import { renderMyTrips } from './my-trips.js';
 
 export const countVotes = (tripId) => {
     return axios.get(`/user/votes/${tripId}`)
         .then(response => response.data)
         .catch(err => console.log(err))
 };
+
+// ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
 
 
 export const viewTrip = (id) => {
@@ -97,8 +98,8 @@ export const viewTrip = (id) => {
 
                         // INSERT BOOKMARK
                         createBookmarkIcon(id)
-                        .then(response => tripHeader.appendChild(response))
-                        .catch(err => console.log('bookmark promise not here'))
+                            .then(response => tripHeader.appendChild(response))
+                            .catch(err => console.log('bookmark promise not here'))
 
                         coverPhoto.src = tripDetails[0].hero_image_url;
 
@@ -144,10 +145,10 @@ export const viewTrip = (id) => {
                             }
                             else {
                                 axios.delete(`/user/trips/delete/${id}`)
-                                    .then(response => console.log(response.data))
+                                    .then(response => {
+                                        renderMyTrips();
+                                    })
                                     .catch(err => console.log(err))
-
-                                renderProfile(loggedInUserId);
                             }
                         })
 
@@ -190,17 +191,25 @@ export const viewTrip = (id) => {
 
                             if (activity.gm_type === 'activity') {
                                 activityLogo.src = '../assets/clipboard-list-solid.svg';
+                                activityDetails.innerHTML = `
+                                <p>${activity.activity_name}</p>
+                                <p>${formattedStartDate}</p>
+                                `;
                             }
                             else if (activity.gm_type === 'airline') {
                                 activityLogo.src = '../assets/jet-fighter-up-solid.svg';
+                                activityDetails.innerHTML = `
+                                <p>${activity.activity_name}</p>
+                                <p>${formattedStartDate}</p>
+                                `;
                             }
                             else if (activity.gm_type === 'hotel') {
                                 activityLogo.src = '../assets/bed-solid.svg';
+                                activityDetails.innerHTML = `
+                                <p>${activity.activity_name}</p>
+                                <p>${formattedStartDate} - ${formattedEndDate}</p>
+                                `;
                             }
-                            activityDetails.innerHTML = `
-                            <p>${activity.activity_name}</p>
-                            <p>${formattedStartDate} - ${formattedEndDate}</p>
-                            `;
 
                             activitiesDiv.append(activityLogo, activityDetails);
                             activitiesContainer.appendChild(activitiesDiv);
