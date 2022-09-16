@@ -23,9 +23,9 @@ export const renderProfile = (targetUserId) => {
     // Populate user stats
     const statsDiv = document.createElement('div');
     statsDiv.innerHTML = `
-    <div id="stats-username">Logged in as - ${username}</div>
-    <div>Number of trips: <span id="total-trips"></span></div>
-    <div>Number of countries: <span id="total-countries"></span></div>
+    <div id="stats-username"><h2>${username}'s Stats</h2></div>
+    <div>Trips: <span id="total-trips"></span></div>
+    <div>Countries: <span id="total-countries"></span></div>
     <div>Achievements: <span id="total-achievements"></span></div>
     `;
 
@@ -39,7 +39,7 @@ export const renderProfile = (targetUserId) => {
                 localStorage.setItem('userId', userId) //store in local for future reference
                 localStorage.setItem('username', username)
                 const usernameDivStats = document.getElementById('stats-username');
-                usernameDivStats.textContent = `Logged in as - ${username}`;
+                usernameDivStats.innerHTML = `<h2>${username}'s Stats</h2>`;
             })
     }
 

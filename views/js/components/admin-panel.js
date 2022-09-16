@@ -1,7 +1,10 @@
 import { securityQuestions } from './signup.js';
 import { userStats } from './user-stats.js';
+import { modal } from './render-modal.js';
+import { layout } from './layout.js';
 
 export const renderAdminPanel = (loggedInUserId) => {
+    layout.adminPanel();
     const pageContainer = document.getElementById('page-container');
     pageContainer.innerHTML = '';
 
@@ -10,11 +13,12 @@ export const renderAdminPanel = (loggedInUserId) => {
 
     adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
 
-    // add check to make sure not all admins are turned into normal users
-    // add check to make sure currently logged in user is not turned to normal user
-    // add check to make sure the user currently logged in is not deleted
-    // bring up a modal for feedback on when something is done -  ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
-    // collaps other sections when you come to this page
+    // add check to make sure not all admins are turned into normal users DONE
+    // add check to make sure currently logged in user is not turned to normal user DONE
+    // add check to make sure the user currently logged in is not deleted DONE
+    // bring up a modal for feedback on when something is done DONE
+    // ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
+    // collaps other sections when you come to this page DONE
     // airline or activity - no end date VIEW TRIP
 
     axios.get('/user/session/allUsers')
@@ -131,16 +135,22 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                     axios.put('/user/session/updateUser', data)
                         .then(response => {
-                            if (username !== localStorage.getItem('username')) {
-                                localStorage.setItem('username', username);
-                                userStats.updateUsernameDisplay(username);
-                            }
                             const emailForm = {
                                 email: email
                             };
-                            axios.put('/user/session/updateSessionEmail', emailForm)
-                                .then()
-                                .catch()
+                            if (data.id == loggedInUserId) {
+                                if (data.username !== localStorage.getItem('username')) {
+                                    console.log('am i not coming here?');
+                                    localStorage.setItem('username', username);
+                                    userStats.updateUsernameDisplay(username);
+                                }
+                                console.log('should i really be here?');
+                                axios.put('/user/session/updateSessionEmail', emailForm)
+                                    .then()
+                                    .catch()
+                            }
+                            const modalElement = modal.create(response.data.message);
+                            modal.display(modalElement);
                         })
                         .catch(err => console.log(err))
                 });
@@ -154,7 +164,9 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                     if (e.target.textContent == 'Delete') {
                         if (userId === loggedInUserId) {
-                            alert('You cannot delete yourself!');
+                            const message = 'You cannot delete yourself!';
+                            const modalElement = modal.create(message);
+                            modal.display(modalElement);
                         }
                         else {
                             e.target.textContent = 'Confirm';
@@ -166,8 +178,10 @@ export const renderAdminPanel = (loggedInUserId) => {
                         }
                     }
                     else {
-                        axios.delete(`/user/session/${userId}`)
+                        axios.delete(`/user/session/${userId}/${user.username}`)
                             .then(response => {
+                                const modalElement = modal.create(response.data.message);
+                                modal.display(modalElement);
                                 renderAdminPanel();
                                 console.log(response.data);
                             })
