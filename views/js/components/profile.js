@@ -91,6 +91,7 @@ export const renderProfile = (targetUserId) => {
         // Render page-container to display existing trips
         renderMyTrips();
         changeSidePanelFocus(tripFrame);
+        userStats.display(userId);
     });
     sidePanelOptions.appendChild(tripFrame);
 
@@ -106,6 +107,7 @@ export const renderProfile = (targetUserId) => {
         // Render page-container to display existing bookmarks
         renderBookmarks();
         changeSidePanelFocus(bookmarkFrame);
+        userStats.display(userId);
     })
     sidePanelOptions.appendChild(bookmarkFrame);
 
@@ -121,6 +123,7 @@ export const renderProfile = (targetUserId) => {
         // Render explore
         changeSidePanelFocus(exploreFrame);
         renderExploreSearch();
+        userStats.display(userId);
     })
     sidePanelOptions.appendChild(exploreFrame);
 
