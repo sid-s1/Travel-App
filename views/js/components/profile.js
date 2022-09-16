@@ -27,7 +27,8 @@ export const renderProfile = (targetUserId) => {
     <div id="stats-username"><h1>${username}'s Stats</h1></div>
     <div>Trips: <span id="total-trips"></span></div>
     <div>Countries: <span id="total-countries"></span></div>
-    <div>Achievements: <span id="total-achievements"></span></div>
+    <div>Activities: <span id="total-activities"></span></div>
+    <div>Likes on my trips: <span id="total-likes"></span></div>
     `;
 
     if (!userId) {
@@ -90,6 +91,7 @@ export const renderProfile = (targetUserId) => {
         // Render page-container to display existing trips
         renderMyTrips();
         changeSidePanelFocus(tripFrame);
+        userStats.display(userId);
     });
     sidePanelOptions.appendChild(tripFrame);
 
@@ -105,6 +107,7 @@ export const renderProfile = (targetUserId) => {
         // Render page-container to display existing bookmarks
         renderBookmarks();
         changeSidePanelFocus(bookmarkFrame);
+        userStats.display(userId);
     })
     sidePanelOptions.appendChild(bookmarkFrame);
 
@@ -120,6 +123,7 @@ export const renderProfile = (targetUserId) => {
         // Render explore
         changeSidePanelFocus(exploreFrame);
         renderExploreSearch();
+        userStats.display(userId);
     })
     sidePanelOptions.appendChild(exploreFrame);
 
@@ -133,11 +137,8 @@ export const renderProfile = (targetUserId) => {
     const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
     let clicked = false;
     addTripFrame.addEventListener('click', () => {
-        if (!clicked) {
-            clicked = true;
-            changeSidePanelFocus(addTripFrame);
-            renderNewTrip();
-        }
+        changeSidePanelFocus(addTripFrame);
+        renderNewTrip();
     })
     sidePanelOptions.appendChild(addTripFrame);
 

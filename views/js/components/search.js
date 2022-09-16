@@ -22,12 +22,12 @@ export const renderSearchBar = () => {
     const searchByCountryLabel = HtmlElements.createLabel('country', 'Country');
     const searchByCountry = HtmlElements.createInput('radio', 'search-type', 'country', 'search-bar-options', 'country');
 
-    const searchTabs = layout.wrap([searchByAll, searchByAllLabel, searchByUser, searchByUserLabel, searchByCity, searchByCityLabel, searchByActivity, searchByActivityLabel, searchByCountry, searchByCountryLabel],'search-tabs')
+    const searchTabs = layout.wrap([searchByAll, searchByAllLabel, searchByUser, searchByUserLabel, searchByCity, searchByCityLabel, searchByActivity, searchByActivityLabel, searchByCountry, searchByCountryLabel], 'search-tabs')
 
     const form = document.createElement('form');
     form.id = 'search-form';
 
-    const searchBar =  HtmlElements.createInput('text', 'search-bar', 'search-bar', null, null, 'Search...');
+    const searchBar = HtmlElements.createInput('text', 'search-bar', 'search-bar', null, null, 'Search...');
 
     const searchButton = HtmlElements.createButton('submit', '<i class="fa-regular fa-magnifying-glass"></i>', 'submit-search')
     searchButton.style.cursor = 'pointer';
@@ -51,17 +51,18 @@ export const executeSearch = (form) => {
     const data = {
         searchString: formData.get('search-bar'),
         searchType: formData.get('search-type')
-      };
+    };
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '';
     axios.post('/search', data)
-    .then((dbRes) => {
-        const results = renderResults(dbRes.data, data.searchString, data.searchType);
-        resultsContainer.appendChild(results);
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+        .then((dbRes) => {
+            const results = renderResults(dbRes.data, data.searchString, data.searchType);
+            resultsContainer.appendChild(results);
+            pageContainer.style.display = 'flex';
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 }
 
 export const renderResults = (data, searchString, searchType) => {
@@ -73,7 +74,7 @@ export const renderResults = (data, searchString, searchType) => {
     resultsHeading.id = 'results-heading';
     const resultsCount = document.createElement('p');
     resultsCount.id = 'results-count';
-    const resultsContainer = layout.wrap([resultsHeading,resultsCount],'results')
+    const resultsContainer = layout.wrap([resultsHeading, resultsCount], 'results')
     if (searchType === 'user') {
         resultsHeading.textContent = `Search for '${searchString}' in Users:`;
         resultsCount.textContent = `${data.users.length} results found`;
@@ -161,7 +162,7 @@ export const renderTrips = (data, appLocation) => {
     const user_id = data.user_id;
     const loggedInUserId = localStorage.getItem('userId');
     // add all data that is unique to that trip into a new object
-    for (let i=0; i < data.trips.length; i++) {
+    for (let i = 0; i < data.trips.length; i++) {
         const idCheck = (trip) => trip.trip_id === data.trips[i].id;
         if (!returnObj.tripData.some(idCheck)) {
             const obj = {
@@ -174,11 +175,11 @@ export const renderTrips = (data, appLocation) => {
                 trip_start_date: data.trips[i].trip_start_date,
                 trip_end_date: data.trips[i].trip_end_date,
             }
-        returnObj.tripData.push(obj);  // add that object to the returnObj.tripData array
+            returnObj.tripData.push(obj);  // add that object to the returnObj.tripData array
         }
     }
     // run through data again and for each trip, add all city names as an array under the key 'trip_cities'
-    for (let i=0; i < data.trips.length; i++) {
+    for (let i = 0; i < data.trips.length; i++) {
         const trip = returnObj.tripData.find(item => item.trip_id === data.trips[i].id);
         if (trip.trip_cities) {
             trip.trip_cities.push(data.trips[i].city_name)
@@ -187,7 +188,7 @@ export const renderTrips = (data, appLocation) => {
         }
     }
     // run through data once more and for each trip add all country names as an array under the key 'trip_countries'
-    for (let i=0; i < data.trips.length; i++) {
+    for (let i = 0; i < data.trips.length; i++) {
         const trip = returnObj.tripData.find(item => item.trip_id === data.trips[i].id);
         if (trip.trip_countries) {
             if (trip.trip_countries != data.trips[i].country_name) {
@@ -198,86 +199,86 @@ export const renderTrips = (data, appLocation) => {
         }
     }
     // check if user is logged in - if so, and if search is used for users own trips, allow 'draft' trips to be shown.
-        returnObj.tripData.forEach(row => {
-            if (appLocation === 'search') {
-                // Functionality for public-homepage.js & explore.js
-                // ONLY SHOW POSTED
-                if (row.trip_status === 'posted') {
-                    const tripContainer = document.createElement('div');
-                    tripContainer.className = 'trip-result';
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'trip-image'
-                    imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
-                    imageContainer.style.backgroundSize = 'cover';
-                    const cityConversion = row.trip_cities.toString();
-                    const countryConversion = row.trip_countries.toString();
-                    const cities = cityConversion.replace(/,/g, ', ');
-                    const countries = countryConversion.replace(/,/g, ', ');
-                    const startDate = dateExtractor.formatDate(row.trip_start_date);
-                    const endDate = dateExtractor.formatDate(row.trip_end_date);
-                    const spanText = document.createElement('span');
-                    spanText.className = 'result-text'
-                    let dateLine = ''
-                    if (startDate) {dateLine = `${startDate} to ${endDate}`}
-                    spanText.innerHTML = `
-                    <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
-                    <h3>${cities}</h3>
-                    <h3>${dateLine}</h3>
-                    <p>${row.trip_descr}</p>`
-                    tripContainer.append(spanText, imageContainer);
-                    tripContainer.addEventListener('click', () => {
-                        if (user_id) {
-                            renderSearchBar(page);
-                        }
-                        viewTrip(row.trip_id);
-                    })
-                    tripContainer.id = `trip${row.trip_id}`;
-
-
-                    if (loggedInUserId) {
-
-                        createBookmarkIcon(row.trip_id)
-                            .then(response => {
-                                createFloatingElement(tripContainer, response.innerHTML, 'bookmark-float')
-                                })
-                            .catch(err => console.log('bookmark promise not here'))
-                    }
-
-                    returnObj.resultsCont.push(tripContainer);
-                }
-            } else if (appLocation === 'my-trips') {
-                // Functionality for my-trips.js
-                // SHOW POSTED AND DRAFTS
+    returnObj.tripData.forEach(row => {
+        if (appLocation === 'search') {
+            // Functionality for public-homepage.js & explore.js
+            // ONLY SHOW POSTED
             if (row.trip_status === 'posted') {
                 const tripContainer = document.createElement('div');
-                    tripContainer.className = 'trip-result';
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'trip-image'
-                    imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
-                    imageContainer.style.backgroundSize = 'cover';
-                    const cityConversion = row.trip_cities.toString();
-                    const countryConversion = row.trip_countries.toString();
-                    const cities = cityConversion.replace(/,/g, ', ');
-                    const countries = countryConversion.replace(/,/g, ', ');
-                    const startDate = dateExtractor.formatDate(row.trip_start_date);
-                    const endDate = dateExtractor.formatDate(row.trip_end_date);
-                    const spanText = document.createElement('span');
-                    spanText.className = 'result-text';
-                    let dateLine = ''
-                    if (startDate) {dateLine = `${startDate} to ${endDate}`}
-                    spanText.innerHTML = `
+                tripContainer.className = 'trip-result';
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'trip-image'
+                imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
+                imageContainer.style.backgroundSize = 'cover';
+                const cityConversion = row.trip_cities.toString();
+                const countryConversion = row.trip_countries.toString();
+                const cities = cityConversion.replace(/,/g, ', ');
+                const countries = countryConversion.replace(/,/g, ', ');
+                const startDate = dateExtractor.formatDate(row.trip_start_date);
+                const endDate = dateExtractor.formatDate(row.trip_end_date);
+                const spanText = document.createElement('span');
+                spanText.className = 'result-text'
+                let dateLine = ''
+                if (startDate) { dateLine = `${startDate} to ${endDate}` }
+                spanText.innerHTML = `
                     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
                     <h3>${cities}</h3>
                     <h3>${dateLine}</h3>
                     <p>${row.trip_descr}</p>`
-                    tripContainer.append(spanText, imageContainer);
-                    tripContainer.addEventListener('click', () => {
-                        if (user_id) {
-                            renderSearchBar(page);
-                        }
-                        viewTrip(row.trip_id);
-                    })
-                    tripContainer.id = `trip${row.trip_id}`;
+                tripContainer.append(spanText, imageContainer);
+                tripContainer.addEventListener('click', () => {
+                    if (user_id) {
+                        renderSearchBar(page);
+                    }
+                    viewTrip(row.trip_id);
+                })
+                tripContainer.id = `trip${row.trip_id}`;
+
+
+                if (loggedInUserId) {
+
+                    createBookmarkIcon(row.trip_id)
+                        .then(response => {
+                            createFloatingElement(tripContainer, response.innerHTML, 'bookmark-float')
+                        })
+                        .catch(err => console.log('bookmark promise not here'))
+                }
+
+                returnObj.resultsCont.push(tripContainer);
+            }
+        } else if (appLocation === 'my-trips') {
+            // Functionality for my-trips.js
+            // SHOW POSTED AND DRAFTS
+            if (row.trip_status === 'posted') {
+                const tripContainer = document.createElement('div');
+                tripContainer.className = 'trip-result';
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'trip-image'
+                imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
+                imageContainer.style.backgroundSize = 'cover';
+                const cityConversion = row.trip_cities.toString();
+                const countryConversion = row.trip_countries.toString();
+                const cities = cityConversion.replace(/,/g, ', ');
+                const countries = countryConversion.replace(/,/g, ', ');
+                const startDate = dateExtractor.formatDate(row.trip_start_date);
+                const endDate = dateExtractor.formatDate(row.trip_end_date);
+                const spanText = document.createElement('span');
+                spanText.className = 'result-text';
+                let dateLine = ''
+                if (startDate) { dateLine = `${startDate} to ${endDate}` }
+                spanText.innerHTML = `
+                    <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
+                    <h3>${cities}</h3>
+                    <h3>${dateLine}</h3>
+                    <p>${row.trip_descr}</p>`
+                tripContainer.append(spanText, imageContainer);
+                tripContainer.addEventListener('click', () => {
+                    if (user_id) {
+                        renderSearchBar(page);
+                    }
+                    viewTrip(row.trip_id);
+                })
+                tripContainer.id = `trip${row.trip_id}`;
                 returnObj.resultsCont.push(tripContainer);
             } else if (row.trip_status === 'draft') {
                 const tripContainer = document.createElement('div');
@@ -300,44 +301,44 @@ export const renderTrips = (data, appLocation) => {
                 tripContainer.id = `trip${row.trip_id}`;
                 returnObj.resultsCont.push(tripContainer);
             }
-            } else if (appLocation === 'bookmarks') {
-                // Functionality for bookmarks.js
-                // SHOW ONLY POSTED BOOKMARKS
-                if (row.trip_status === 'posted') {
-                    const tripContainer = document.createElement('div');
-                    tripContainer.className = 'trip-result';
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'trip-image'
-                    imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
-                    imageContainer.style.backgroundSize = 'cover';
-                    const cityConversion = row.trip_cities.toString();
-                    const countryConversion = row.trip_countries.toString();
-                    const cities = cityConversion.replace(/,/g, ', ');
-                    const countries = countryConversion.replace(/,/g, ', ');
-                    const startDate = dateExtractor.formatDate(row.trip_start_date);
-                    const endDate = dateExtractor.formatDate(row.trip_end_date);
-                    const spanText = document.createElement('span');
-                    spanText.className = 'result-text';
-                    let dateLine = ''
-                    if (startDate) {dateLine = `${startDate} to ${endDate}`}
-                    spanText.innerHTML = `
+        } else if (appLocation === 'bookmarks') {
+            // Functionality for bookmarks.js
+            // SHOW ONLY POSTED BOOKMARKS
+            if (row.trip_status === 'posted') {
+                const tripContainer = document.createElement('div');
+                tripContainer.className = 'trip-result';
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'trip-image'
+                imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
+                imageContainer.style.backgroundSize = 'cover';
+                const cityConversion = row.trip_cities.toString();
+                const countryConversion = row.trip_countries.toString();
+                const cities = cityConversion.replace(/,/g, ', ');
+                const countries = countryConversion.replace(/,/g, ', ');
+                const startDate = dateExtractor.formatDate(row.trip_start_date);
+                const endDate = dateExtractor.formatDate(row.trip_end_date);
+                const spanText = document.createElement('span');
+                spanText.className = 'result-text';
+                let dateLine = ''
+                if (startDate) { dateLine = `${startDate} to ${endDate}` }
+                spanText.innerHTML = `
                     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
                     <h3>${cities}</h3>
                     <h3>${dateLine}</h3>
                     <p>${row.trip_descr}</p>`
-                    tripContainer.append(spanText, imageContainer);
-                    tripContainer.addEventListener('click', () => {
-                        if (user_id) {
-                            renderSearchBar(page);
-                        }
-                        viewTrip(row.trip_id);
-                    })
-                    tripContainer.id = `trip${row.trip_id}`;
-                    returnObj.resultsCont.push(tripContainer);
-                }
+                tripContainer.append(spanText, imageContainer);
+                tripContainer.addEventListener('click', () => {
+                    if (user_id) {
+                        renderSearchBar(page);
+                    }
+                    viewTrip(row.trip_id);
+                })
+                tripContainer.id = `trip${row.trip_id}`;
+                returnObj.resultsCont.push(tripContainer);
             }
-        });
-        return returnObj;
+        }
+    });
+    return returnObj;
 }
 
 

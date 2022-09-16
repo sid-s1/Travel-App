@@ -6,6 +6,7 @@ import { createBookmarkIcon } from './bookmarks.js';
 import { renderNewTrip } from './new-trip.js';
 import { renderMyTrips } from './my-trips.js';
 import { layout } from './layout.js';
+import { showcaseLikeDislikeAction } from './public-like-dislike.js';
 
 export const countVotes = (tripId) => {
     return axios.get(`/user/votes/${tripId}`)
@@ -64,6 +65,7 @@ export const viewTrip = (id) => {
             voteCount = countResponse;
 
             likeDislikeAction(likeButton, dislikeButton, loggedInUserId, id);
+            showcaseLikeDislikeAction(showcaseLikeButton, showcasedislikeButton);
 
             // adding classes to cover-photo and activities container (this container holds all itinerary item logos and details)
             coverPhoto.className = 'trip-page-cover-pic';
@@ -130,9 +132,9 @@ export const viewTrip = (id) => {
                             photoContainer.id = 'likeDislike-and-coverPhoto';
                         }
 
-                                editTripButton.addEventListener('click', () => {
-                                    renderNewTrip(id);
-                                })
+                        editTripButton.addEventListener('click', () => {
+                            renderNewTrip(id);
+                        })
                         deleteTripButton.textContent = 'Delete';
 
                         deleteTripButton.addEventListener('click', (e) => {

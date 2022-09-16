@@ -8,6 +8,9 @@ export const renderPublicHomepage = () => {
     const resultsContainer = document.createElement('div');
     resultsContainer.id = 'results';
     pageContainer.appendChild(resultsContainer);
+    if (resultsContainer.textContent.length < 1) {
+        pageContainer.style.display = 'none';
+    }
     const searchBar = renderSearchBar();
     worldMap.appendChild(searchBar);
 }

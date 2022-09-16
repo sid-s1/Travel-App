@@ -19,9 +19,16 @@ router.get('/countryNumber/:userId', (request, response) => {
         .catch(err => console.log(err))
 });
 
-router.get('/achievementNumber/:userId', (request, response) => {
+router.get('/activityNumber/:userId', (request, response) => {
     const userId = request.params.userId;
-    UserStats.achievementNumber(userId)
+    UserStats.activityNumber(userId)
+        .then(dbRes => response.json(dbRes.rows))
+        .catch(err => console.log(err))
+});
+
+router.get('/likesNumber/:userId', (request, response) => {
+    const userId = request.params.userId;
+    UserStats.likesNumber(userId)
         .then(dbRes => response.json(dbRes.rows))
         .catch(err => console.log(err))
 });

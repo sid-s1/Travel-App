@@ -66,6 +66,7 @@ const createLoginForm = () => {
                 loading.src = 'https://media1.giphy.com/media/5AtXMjjrTMwvK/200w.webp?cid=ecf05e47j17yxlz64soc3pnluiirarma32n9f89qzmsz25o2&rid=200w.webp&ct=s';
                 loading.alt = 'Loading...';
                 loading.style.height = '100px';
+                message.style.color = 'black';
                 message.textContent = 'Success - Logging in...';
                 form.replaceChildren(loading, message);
                 setTimeout(() => {
@@ -79,6 +80,7 @@ const createLoginForm = () => {
                     alert('Something went wrong. Please try again.');
                 } else {
                     message.textContent = err.response.data.message;
+                    message.style.color = 'red';
                     inputEmail.focus();
                     inputEmail.select();
                 }
