@@ -9,7 +9,6 @@ router.post('/', (request, response) => {
     const password = request.body.password;
     User.checkExists(email)
         .then(dbRes => {
-            console.log(dbRes)
             if (dbRes.rowCount === 0) {
                 return response.status(400).json({ message: 'The username and/or password you have entered is incorrect.' })
             }
@@ -42,11 +41,49 @@ router.get('/', (request, response) => {
     if (!email) {
         return response.status(401).json({ message: 'Please login to access this page' });
     } else {
-        User.getIdAndUsername(email)
+        User.getIdUsernameAdmin(email)
             .then(dbRes => response.json(dbRes))
             .catch(err => response.json(err))
     }
 })
+
+// Get all users and their info
+router.get('/allUsers', (request, response) => {
+    User.getAllUsers()
+        .then(dbRes => response.json(dbRes.rows))
+        .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+});
+
+// Update user details
+router.put('/updateUser', (request, response) => {
+    const { id, email, username, password, secQns, secAns, admin } = request.body;
+    if (password === 'undefined' && secAns === 'undefined') {
+        User.updateUserWithoutPasswordOrSecAnswer(id, email, username, secQns, admin)
+            .then(dbRes => response.json({ message: 'Updated user details without password and security answer!' }))
+            .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+    }
+    else {
+        if (password === 'undefined') {
+            const hashedSecurityAnswer = generateHash(secAns);
+            User.updateUserWithoutPassword(id, email, username, secQns, hashedSecurityAnswer, admin)
+                .then(dbRes => response.json({ message: 'Updated user details without password!' }))
+                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+        }
+        else if (secAns === 'undefined') {
+            const hashedPassword = generateHash(password);
+            User.updateUserWithoutSecAnswer(id, email, username, hashedPassword, secQns, admin)
+                .then(dbRes => response.json({ message: 'Updated user details without security answer!' }))
+                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+        }
+        else {
+            const hashedPassword = generateHash(password);
+            const hashedSecurityAnswer = generateHash(secAns);
+            User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
+                .then(dbRes => response.json({ message: 'Updated user details!' }))
+                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+        }
+    }
+});
 
 // Sign up new user
 router.post('/signup', (request, response) => {
@@ -85,6 +122,14 @@ router.post('/signup', (request, response) => {
             console.log(err);
             return response.sendStatus(500);
         })
-})
+});
+
+router.delete('/:id', (request, response) => {
+    const id = request.params.id;
+    console.log('user id in controller - ', id);
+    User.deleteUser(id)
+        .then(dbRes => response.json({ message: `User id ${id} deleted!` }))
+        .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+});
 
 module.exports = router;
