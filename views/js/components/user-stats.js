@@ -16,7 +16,7 @@ export const userStats = (userId) => {
                 totalCountries.textContent = result.country_count;
             }
         })
-        .catch()
+        .catch(err => console.log(err))
     axios.get(`/user/stats/achievementNumber/${userId}`)
         .then(response => {
             const result = response.data[0];
@@ -25,5 +25,5 @@ export const userStats = (userId) => {
                 totalAchievements.textContent = result.achievement_count;
             }
         })
-        .catch()
+        .catch(err => console.log(err))
 };
