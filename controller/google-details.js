@@ -31,7 +31,7 @@ router.get('/:place', (request, response) => {
                         if (component.types.includes('country')) {
                             placeDetails['country'] = component.long_name;
                         }
-                        if (component.types.includes('locality')) {
+                        if (component.types.includes('locality') || component.types.includes('administrative_area_level_1')) {
                             placeDetails['city'] = component.long_name;
                         }
                     }
