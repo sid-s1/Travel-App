@@ -29,6 +29,7 @@ export const modal = {
             setTimeout(() => {
                 modal.remove();
             }, 350);
+            renderAdminPanel();
         });
     }
 };

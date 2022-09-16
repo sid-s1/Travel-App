@@ -20,6 +20,7 @@ export const renderAdminPanel = (loggedInUserId) => {
     // ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
     // collaps other sections when you come to this page DONE
     // airline or activity - no end date VIEW TRIP
+    // my trips instead of profile when delete trip
 
     axios.get('/user/session/allUsers')
         .then(response => {
@@ -43,7 +44,8 @@ export const renderAdminPanel = (loggedInUserId) => {
                     securityQuestionOption.text = securityQuestions[key];
                     securityQuestionOption.value = key;
                     if (key == user.security_qn) {
-                        securityQuestionOption.setAttribute('selected', '')
+                        securityQuestionOption.setAttribute('selected', '');
+                        securityQuestionField.setAttribute('value', key);
                     }
                     securityQuestionField.appendChild(securityQuestionOption);
                 }
@@ -133,26 +135,35 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                     console.log(data);
 
-                    axios.put('/user/session/updateUser', data)
-                        .then(response => {
-                            const emailForm = {
-                                email: email
-                            };
-                            if (data.id == loggedInUserId) {
-                                if (data.username !== localStorage.getItem('username')) {
-                                    console.log('am i not coming here?');
-                                    localStorage.setItem('username', username);
-                                    userStats.updateUsernameDisplay(username);
+                    const checkChange = (data.email !== user.email) || (data.username !== user.username) || (securityQn !== String(user.security_qn)) || (user.admin !== checkNewAdminStatus);
+
+                    if (checkChange === 1 || checkChange === true) {
+                        axios.put('/user/session/updateUser', data)
+                            .then(response => {
+                                console.log('axios call');
+                                const emailForm = {
+                                    email: email
+                                };
+                                if (data.id == loggedInUserId) {
+                                    if (data.username !== localStorage.getItem('username')) {
+                                        localStorage.setItem('username', username);
+                                        userStats.updateUsernameDisplay(username);
+                                    }
+                                    axios.put('/user/session/updateSessionEmail', emailForm)
+                                        .then()
+                                        .catch()
                                 }
-                                console.log('should i really be here?');
-                                axios.put('/user/session/updateSessionEmail', emailForm)
-                                    .then()
-                                    .catch()
-                            }
-                            const modalElement = modal.create(response.data.message);
-                            modal.display(modalElement);
-                        })
-                        .catch(err => console.log(err))
+                                const modalElement = modal.create(response.data.message);
+                                modal.display(modalElement);
+                            })
+                            .catch(err => console.log(err))
+                    }
+                    else {
+                        const message = `You have not updated anything, ${localStorage.getItem('username')}!`
+                        const modalElement = modal.create(message);
+                        modal.display(modalElement);
+                    }
+
                 });
 
                 const deleteUser = document.createElement('li');
