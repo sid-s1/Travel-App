@@ -28,7 +28,7 @@ router.get('/status/:tripId', (request, response) => {
                     console.log(`~~~~~ MAX DATE: ${maxDate} ~~~~~`)
                         Trip.postTrip(tripId, minDate, maxDate)
                             .then(() => response.json(`Trip Id posted: ${tripId}`))
-                            .catch(() => response.json(`Trip could not be posted`))                
+                            .catch(() => response.json(`Trip could not be posted`))
                 })
         })
         .catch(() => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
@@ -58,13 +58,6 @@ router.delete('/:itineraryId', (request, response) => {
         })
 });
 
-router.patch('/:tripId', (request, response) => {
-    const tripId = request.params.tripId;
-    Trip.postTrip(tripId)
-        .then(() => response.json(`Trip posted! ${tripId}`))
-        .catch(() => response.json('Trip could not be posted!'))
-});
-
 router.patch('/activity/:activityId', (request, response) => {
     const activityId = request.params.activityId;
     const startDate = request.body.startDate;
@@ -88,7 +81,8 @@ router.post('/', (request, response) => {
                         const airlineId = dbRes.rows[0].id;
                         console.log(`~~~~~ AIRLINE ACTIVITY ID: ${airlineId} ~~~~~`)
                         Trip.writeAirlineLocation(tripId)
-                            .then(() => {
+                            .then((dbRes) => {
+                                console.log(dbRes);
                                 Trip.getAirlineLocation(tripId)
                                     .then(dbRes => {
                                         const locationId = dbRes.rows[0].id;
@@ -159,6 +153,7 @@ router.post('/', (request, response) => {
 // STATIC FIELDS SAVE ON BLUR
 router.patch('/static', (request, response) => {
     const { route, userInput, tripId } = request.body;
+    console.log(`${route}, ${userInput}, ${tripId}`)
     Trip.write(route, userInput, tripId)
         .then(dbRes => response.json(dbRes.rows))
         .catch(err => response.json(err))

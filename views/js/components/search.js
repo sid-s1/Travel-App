@@ -153,6 +153,7 @@ export const renderResults = (data, searchString, searchType) => {
 }
 
 export const renderTrips = (data, appLocation) => {
+    console.log(data);
     const returnObj = {
         resultsCont: [],
         tripData: []
@@ -169,6 +170,7 @@ export const renderTrips = (data, appLocation) => {
                 trip_name: data.trips[i].trip_name,
                 trip_descr: data.trips[i].description,
                 trip_status: data.trips[i].trip_status,
+                trip_image: data.trips[i].hero_image_url,
                 trip_start_date: data.trips[i].trip_start_date,
                 trip_end_date: data.trips[i].trip_end_date,
             }
@@ -203,17 +205,26 @@ export const renderTrips = (data, appLocation) => {
                 if (row.trip_status === 'posted') {
                     const tripContainer = document.createElement('div');
                     tripContainer.className = 'trip-result';
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'trip-image'
+                    imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
+                    imageContainer.style.backgroundSize = 'cover';
                     const cityConversion = row.trip_cities.toString();
                     const countryConversion = row.trip_countries.toString();
                     const cities = cityConversion.replace(/,/g, ', ');
                     const countries = countryConversion.replace(/,/g, ', ');
                     const startDate = dateExtractor.formatDate(row.trip_start_date);
                     const endDate = dateExtractor.formatDate(row.trip_end_date);
-                    tripContainer.innerHTML = `
+                    const spanText = document.createElement('span');
+                    spanText.className = 'result-text'
+                    let dateLine = ''
+                    if (startDate) {dateLine = `${startDate} to ${endDate}`}
+                    spanText.innerHTML = `
                     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
                     <h3>${cities}</h3>
-                    <h3>${startDate} to ${endDate}</h3>
+                    <h3>${dateLine}</h3>
                     <p>${row.trip_descr}</p>`
+                    tripContainer.append(spanText, imageContainer);
                     tripContainer.addEventListener('click', () => {
                         if (user_id) {
                             renderSearchBar(page);
@@ -221,6 +232,7 @@ export const renderTrips = (data, appLocation) => {
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
+
 
                     if (loggedInUserId) {
 
@@ -238,23 +250,34 @@ export const renderTrips = (data, appLocation) => {
                 // SHOW POSTED AND DRAFTS
             if (row.trip_status === 'posted') {
                 const tripContainer = document.createElement('div');
-                tripContainer.className = 'trip-result';
-                const cityConversion = row.trip_cities.toString();
-                const countryConversion = row.trip_countries.toString();
-                const cities = cityConversion.replace(/,/g, ', ');
-                const countries = countryConversion.replace(/,/g, ', ');
-                const startDate = dateExtractor.formatDate(row.trip_start_date);
-                const endDate = dateExtractor.formatDate(row.trip_end_date);
-                tripContainer.innerHTML = `
-                <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
-                <h3>${cities}</h3>
-                <h3>${startDate} to ${endDate}</h3>
-                <p>${row.trip_descr}</p>
-                `
-                tripContainer.addEventListener('click', () => {
-                    viewTrip(row.trip_id);
-                })
-                tripContainer.id = `trip${row.trip_id}`;
+                    tripContainer.className = 'trip-result';
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'trip-image'
+                    imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
+                    imageContainer.style.backgroundSize = 'cover';
+                    const cityConversion = row.trip_cities.toString();
+                    const countryConversion = row.trip_countries.toString();
+                    const cities = cityConversion.replace(/,/g, ', ');
+                    const countries = countryConversion.replace(/,/g, ', ');
+                    const startDate = dateExtractor.formatDate(row.trip_start_date);
+                    const endDate = dateExtractor.formatDate(row.trip_end_date);
+                    const spanText = document.createElement('span');
+                    spanText.className = 'result-text';
+                    let dateLine = ''
+                    if (startDate) {dateLine = `${startDate} to ${endDate}`}
+                    spanText.innerHTML = `
+                    <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
+                    <h3>${cities}</h3>
+                    <h3>${dateLine}</h3>
+                    <p>${row.trip_descr}</p>`
+                    tripContainer.append(spanText, imageContainer);
+                    tripContainer.addEventListener('click', () => {
+                        if (user_id) {
+                            renderSearchBar(page);
+                        }
+                        viewTrip(row.trip_id);
+                    })
+                    tripContainer.id = `trip${row.trip_id}`;
                 returnObj.resultsCont.push(tripContainer);
             } else if (row.trip_status === 'draft') {
                 const tripContainer = document.createElement('div');
@@ -284,19 +307,30 @@ export const renderTrips = (data, appLocation) => {
                 if (row.trip_status === 'posted') {
                     const tripContainer = document.createElement('div');
                     tripContainer.className = 'trip-result';
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'trip-image'
+                    imageContainer.style.backgroundImage = `url('${row.trip_image}')`;
+                    imageContainer.style.backgroundSize = 'cover';
                     const cityConversion = row.trip_cities.toString();
                     const countryConversion = row.trip_countries.toString();
                     const cities = cityConversion.replace(/,/g, ', ');
                     const countries = countryConversion.replace(/,/g, ', ');
                     const startDate = dateExtractor.formatDate(row.trip_start_date);
                     const endDate = dateExtractor.formatDate(row.trip_end_date);
-                    tripContainer.innerHTML = `
+                    const spanText = document.createElement('span');
+                    spanText.className = 'result-text';
+                    let dateLine = ''
+                    if (startDate) {dateLine = `${startDate} to ${endDate}`}
+                    spanText.innerHTML = `
                     <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries}</h2>
                     <h3>${cities}</h3>
-                    <h3>${startDate} to ${endDate}</h3>
-                    <p>${row.trip_descr}</p>
-                    `
+                    <h3>${dateLine}</h3>
+                    <p>${row.trip_descr}</p>`
+                    tripContainer.append(spanText, imageContainer);
                     tripContainer.addEventListener('click', () => {
+                        if (user_id) {
+                            renderSearchBar(page);
+                        }
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
@@ -354,8 +388,8 @@ const renderActivities = (data) => {
         `
         activityContainer.addEventListener('click', () => {
             console.log(`activity ${row.activity_name} clicked`);
+            viewTrip(row.trip_id);
             console.log(row);
-            // PLACE ACTIVITY LINK HERE
         })
         resultsArr.push(activityContainer);
     });

@@ -48,7 +48,7 @@ export const renderNewTrip = (tripId=null) => {
         ]
 
     if (!tripId) {
-    axios.put(`user/trips/${userId}`)
+    axios.put(`/user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
             console.log(tripId)
@@ -148,8 +148,10 @@ export const initBlurEvent = (element, route) => {
             const addQuotes = userInput.replaceAll('"', '')
             e.target.value = `"${addQuotes}"`
         }
+        console.log('initBlurEvent')
+        console.log(requireSave);
         if (requireSave) {
-            return axios.patch(`user/trips/static`, data)
+            return axios.patch(`/user/trips/static`, data)
                 .then(() => requireSave = false)
                 .catch(err => err)
         }
@@ -458,8 +460,6 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         rating: formData.get('rating')
         }
 
-        console.log(data);
-
         const combinedData = {
             ...data,
             ...googleApiData
@@ -483,7 +483,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
             alert(`Please enter a valid ${itineraryType}`)
             return
         }
-
+        console.log(combinedData);
         axios.post('/user/trips', combinedData)
             .then(dbRes => {
                 const itineraryId = dbRes.data.itineraryId;

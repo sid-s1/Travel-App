@@ -1,5 +1,5 @@
 .results {
-    width: 100%;
+    width: 70vw;
     display: grid;
     grid-template-columns: auto;
 }
@@ -11,6 +11,22 @@ border: 1px solid black;
 margin: 20px;
 padding: 20px;
 cursor: pointer;
+border-radius: 10px;
+}
+
+.trip-result {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.trip-result > .result-text {
+    grid-column: 1/2;
+}
+
+.trip-image {
+    grid-column: 2/3;
+    border: 2px solid black;
+    border-radius: 8px;
 }
 
 #search-form {
