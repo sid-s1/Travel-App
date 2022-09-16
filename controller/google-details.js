@@ -9,8 +9,9 @@ router.get('/:place', (request, response) => {
     const placeTrial = `${place.split(',')[0]},${place.split(',')[1]}`;
     // console.log(`${place.split(',')[0]}, ${place.split(',')[0]}`);
 
-    place = place.replaceAll(' ', '%20');
-    place = place.replaceAll(',', '%2C');
+    // place = place.replaceAll(' ', '%20');
+    // place = place.replaceAll(',', '%2C');
+    place = encodeURIComponent(place);
 
     const placeDetails = {};
 
@@ -21,8 +22,8 @@ router.get('/:place', (request, response) => {
             // console.log(place_id);
             // store place id into db for that store/activity - COMPLETE AFTER ADD TRIP PAGE
             placeDetails['country'] = '';
-            placeDetails['place_id'] = place_id;
-            placeDetails['activity_name'] = placeTrial;
+            placeDetails['placeId'] = place_id;
+            placeDetails['name'] = placeTrial;
             // use place id to get place details like country
             axios.get(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&key=${process.env.api_key}`)
                 .then(placeResponse => {

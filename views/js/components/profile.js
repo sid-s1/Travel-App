@@ -4,7 +4,7 @@ import { userStats } from "./user-stats.js";
 import { renderExploreSearch } from "./explore.js";
 import { renderMyTrips } from "./my-trips.js";
 
-export const renderProfile = (userId) => {
+export const renderProfile = (targetUserId) => {
     // Set view
     layout.reset();
     layout.profile();
@@ -16,22 +16,31 @@ export const renderProfile = (userId) => {
     worldMap.innerHTML = '';
 
     // get user ID and display stats if it is the same as the user who's profile is being displayed
-    axios.get('/user/session')
-        .then(response => {
-            const result = response.data.rows[0];
-            const loggedInUserId = result.id;
-            const statsDiv = document.createElement('div');
+    let userId = localStorage.getItem('userId');
+    let username = localStorage.getItem('username');
 
-            statsDiv.innerHTML = `
-                     <div>Number of trips: <span id="total-trips"></span></div>
-                    <div>Number of countries: <span id="total-countries"></span></div>
-                    <div>Achievements: <span id="total-achievements"></span></div>
-                    `;
-            const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
+    if (!userId) {
+        // if not logged in, create session data
+        axios.get('/user/session')
+            .then(response => {
+                const result = response.data.rows[0];
+                username = result.username;
+                userId = result.id;
+                localStorage.setItem('userId', userId) //store in local for future reference
+                localStorage.setItem('username', username)
+            })
+    }
 
-            userStats(loggedInUserId);
-            worldMap.appendChild(profileStats);
-        })
+    // Populate user stats
+    const statsDiv = document.createElement('div');
+    statsDiv.innerHTML = `
+            <div>Number of trips: <span id="total-trips"></span></div>
+            <div>Number of countries: <span id="total-countries"></span></div>
+            <div>Achievements: <span id="total-achievements"></span></div>
+            `;
+    const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
+    userStats(userId);
+    worldMap.appendChild(profileStats);
 
     // Render side panel
     const sidePanelOptions = document.createElement('ul');
@@ -46,7 +55,7 @@ export const renderProfile = (userId) => {
     const homeFrame = layout.wrap([homeIcon, home], 'side-panel-options');
 
     homeFrame.addEventListener('click', () => {
-        renderProfile(userId);
+        renderProfile(targetUserId);
     })
     sidePanelOptions.appendChild(homeFrame);
 
@@ -102,12 +111,12 @@ export const renderProfile = (userId) => {
     addTripIcon.className = 'side-panel-icon';
     const addTripFrame = layout.wrap([addTripIcon, addTrip], 'side-panel-options');
     let clicked = false;
-    addTripFrame.addEventListener('click', () => {        
+    addTripFrame.addEventListener('click', () => {
         if (!clicked) {
             clicked = true;
             changeSidePanelFocus(addTripFrame);
-            renderNewTrip(); 
-        }        
+            renderNewTrip();
+        }
     })
     sidePanelOptions.appendChild(addTripFrame);
 
