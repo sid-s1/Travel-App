@@ -169,11 +169,13 @@ const createContainer = (data, parentClass) => {
             })
         } else if (type === 'post') {
             // event lisenter for post trip button
+            
             wrappedElement.addEventListener('click', () => {
+                const tripId = pageContainer.name;
+                // axios.get('user/trips')
                 console.log('click')
             })
         }
-
    
         arr.push(wrappedElement);
     }
@@ -394,8 +396,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-
-
+              
         const formData = new FormData(form)
         const data = {
         tripId: tripId,
@@ -416,7 +417,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         if (activityRow) {
             wrappedForm.id = activityRow.id;
             axios.patch(`/user/trips/edit/activity/${activityRow.id}`, data)
-            .then(dbRes => {
+            .then(() => {
                 saveButton.classList.toggle('saved')
                 saveButton.textContent = 'Saved'
                 saveButton.disabled = true;
@@ -431,7 +432,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
             return
         }
 
-            axios.post('/user/trips', combinedData)
+        axios.post('/user/trips', combinedData)
             .then(dbRes => {
                 const itineraryId = dbRes.data.itineraryId;
                 wrappedForm.id = itineraryId;
