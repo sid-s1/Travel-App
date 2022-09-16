@@ -36,6 +36,6 @@ export const userStats = {
     },
     updateUsernameDisplay: (username) => {
         const statsUsername = document.querySelector('#stats-username');
-        statsUsername.innerHTML = `<h2>${username}'s Stats</h2>`;
+        statsUsername.innerHTML = `<h1>${username}'s Stats</h1>`;
     }
 };

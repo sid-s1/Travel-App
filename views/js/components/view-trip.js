@@ -3,6 +3,7 @@ import { renderProfile } from './profile.js';
 import { likeDislikeAction } from './like-dislike.js';
 import { createBookmarkIcon } from './bookmarks.js';
 import { renderEditTripForm } from './edit-trip.js';
+import { renderMyTrips } from './my-trips.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
@@ -96,8 +97,8 @@ export const viewTrip = (id) => {
 
                         // INSERT BOOKMARK
                         createBookmarkIcon(id)
-                        .then(response => tripHeader.appendChild(response))
-                        .catch(err => console.log('bookmark promise not here'))
+                            .then(response => tripHeader.appendChild(response))
+                            .catch(err => console.log('bookmark promise not here'))
 
                         coverPhoto.src = tripDetails[0].hero_image_url;
 
@@ -126,9 +127,9 @@ export const viewTrip = (id) => {
                             photoContainer.id = 'likeDislike-and-coverPhoto';
                         }
 
-                                editTripButton.addEventListener('click', () => {
-                                    renderEditTripForm(id);
-                                })
+                        editTripButton.addEventListener('click', () => {
+                            renderEditTripForm(id);
+                        })
                         deleteTripButton.textContent = 'Delete';
 
                         deleteTripButton.addEventListener('click', (e) => {
@@ -143,10 +144,10 @@ export const viewTrip = (id) => {
                             }
                             else {
                                 axios.delete(`/user/trips/delete/${id}`)
-                                    .then(response => console.log(response.data))
+                                    .then(response => {
+                                        renderMyTrips();
+                                    })
                                     .catch(err => console.log(err))
-
-                                renderProfile(loggedInUserId);
                             }
                         })
 

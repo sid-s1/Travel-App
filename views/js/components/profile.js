@@ -24,7 +24,7 @@ export const renderProfile = (targetUserId) => {
     // Populate user stats
     const statsDiv = document.createElement('div');
     statsDiv.innerHTML = `
-    <div id="stats-username"><h2>${username}'s Stats</h2></div>
+    <div id="stats-username"><h1>${username}'s Stats</h1></div>
     <div>Trips: <span id="total-trips"></span></div>
     <div>Countries: <span id="total-countries"></span></div>
     <div>Achievements: <span id="total-achievements"></span></div>
@@ -39,8 +39,7 @@ export const renderProfile = (targetUserId) => {
                 userId = result.id;
                 localStorage.setItem('userId', userId) //store in local for future reference
                 localStorage.setItem('username', username)
-                const usernameDivStats = document.getElementById('stats-username');
-                usernameDivStats.innerHTML = `<h2>${username}'s Stats</h2>`;
+                userStats.updateUsernameDisplay(username);
             })
     }
 
