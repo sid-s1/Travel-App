@@ -152,13 +152,6 @@
     margin: 5px 20px;
     width: 80px;
 }
-.new-trip-description {
-    width: 80%;
-    height: 200px;
-    min-height: 200px;
-    resize: none;
-    margin: 20px auto;
-}
 .post-trip {
     height: 65px;
     width: 65px;
@@ -177,17 +170,26 @@
 .new-trip-title, .new-trip-url, .new-trip-takeaway {
     margin: 10px 0;
     width: 60%;
-}
-.new-trip-title {
     text-align: center;
     min-width: 100px;
     font-size: 20px;
     border: none;
 }
-.new-trip-url {
-    /* width: 80%; */
+.new-trip-description {
+    text-align: center;
+    width: 80%;
+    height: 200px;
+    min-height: 200px;
+    resize: none;
+    font-size: 14px;
+    padding: 20px;
+    margin: 20px auto;
 }
 .new-trip-takeaway {
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+    border: none;
     /* width: 60%; */
 }
 

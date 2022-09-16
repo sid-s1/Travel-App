@@ -5,6 +5,9 @@ label {
 * {
     transition: 1s ease all;
 }
+h1 {
+    font-family: 'DynaPuff', cursive;
+}
 /* BODY */
 body {
     margin: 0;
