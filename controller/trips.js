@@ -22,16 +22,29 @@ router.put('/:userId', (request, response) => {
         .then(dbRes => response.json(dbRes))
         .catch(err => response.json(err))
 });
-
+// Delete entire trip
 router.delete('/delete/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.delete(tripId)
-        .then(dbRes => response.json(`Trip deleted! ${tripId}`))
-        .catch(err => response.json('Trip could not be deleted!'))
+        .then(() => response.json(`Trip deleted! ${tripId}`))
+        .catch(() => response.json('Trip could not be deleted!'))
+});
+// Delete location row if only used once in table, otherwise only delete itinerary item
+router.delete('/:itineraryId', (request, response) => {
+    const itineraryId = request.params.itineraryId;
+    Trip.deleteLocation(itineraryId)
+        .then(() => {
+            Trip.deleteItinItem(itineraryId)
+                .then(() => response.json(`Itinerary Item deleted: ${itineraryId}`))
+                .catch(() => response.json('Itinerary Item could not be deleted!'))
+        })
 });
 
-router.patch('/edit/:tripId', (request, response) => {
-    return response.json('Editing trip...');
+router.patch('/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    Trip.postTrip(tripId)
+        .then(() => response.json(`Trip posted! ${tripId}`))
+        .catch(() => response.json('Trip could not be posted!'))
 });
 
 router.patch('/edit/activity/:activityId', (request, response) => {
@@ -40,8 +53,8 @@ router.patch('/edit/activity/:activityId', (request, response) => {
     const endDate = request.body.endDate;
     const rating = request.body.rating;
     Trip.updateActivity(activityId, startDate, endDate, rating)
-    .then(dbRes => response.json(`Activity ${activityId} updated successfully`))
-    .catch(err => response.json(`Activity ${activityId} not updated`))
+    .then(() => response.json(`Activity ${activityId} updated successfully`))
+    .catch(() => response.json(`Activity ${activityId} not updated`))
 })
 
 // ADD NEW TRIP
@@ -70,10 +83,7 @@ router.post('/', (request, response) => {
                                                         console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
                                                         return response.json({itineraryId: itinItemId})
                                                     })
-
-
                                             })
-
                                     })
                             })
                     })
@@ -118,7 +128,6 @@ router.post('/', (request, response) => {
                                                                 })
                                                         })
                                                 })
-
                                         })
                                 })
                         })
