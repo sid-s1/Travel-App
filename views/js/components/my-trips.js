@@ -12,8 +12,7 @@ export const renderMyTrips = () => {
             resultsContainer.id = 'results';
             const form = document.createElement('form');
             const userIdInput = document.createElement('input');
-            userIdInput.type = 'hidden';
-            userIdInput.name = 'search-bar';
+            userIdInput.type = 'hidden';            userIdInput.name = 'search-bar';
             userIdInput.id = 'search-bar';
             userIdInput.value = loggedInUserId;
             const searchType = document.createElement('input');

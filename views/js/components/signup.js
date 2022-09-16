@@ -1,4 +1,5 @@
 import { layout } from "./layout.js";
+import { HtmlElements } from './html-elements.js';
 import { renderLogin } from "./login.js";
 
 const securityQuestions = {
@@ -15,8 +16,7 @@ export const renderSignup = () => {
     layout.signup();
     const pageContainer = document.getElementById('page-container');
 
-    const signupContainer = document.createElement('div');
-    signupContainer.id = 'signup-container';
+    const signupContainer = HtmlElements.createDiv(id='signup-container');
 
     const signupHeading = document.createElement('h2');
     signupHeading.innerHTML = 'Sign up';
@@ -24,50 +24,19 @@ export const renderSignup = () => {
     const signupForm = document.createElement('form');
     signupForm.id = 'signup-form';
 
-    const usernameLabel = document.createElement('label');
-    usernameLabel.setAttribute('for','username');
-    usernameLabel.innerHTML = 'Username';
-    usernameLabel.className = 'signup-label';
-    const usernameInput = document.createElement('input');
-    usernameInput.type = 'text';
-    usernameInput.id = 'username';
-    usernameInput.name = 'username';
-    usernameInput.className = 'signup-input';
+    const usernameLabel = HtmlElements.createLabel('username','Username','signup-label');
+    const usernameInput = HtmlElements.createInput('text','username','username','signup-input');
 
-    const emailLabel = document.createElement('label');
-    emailLabel.setAttribute('for', 'email');
-    emailLabel.innerHTML = 'Email';
-    emailLabel.className = 'signup-label';
-    const emailInput = document.createElement('input');
-    emailInput.type = 'email';
-    emailInput.id = 'email';
-    emailInput.name = 'email';
-    emailInput.className = 'signup-input';
+    const emailLabel = HtmlElements.createLabel('email','Email','signup-label');
+    const emailInput = HtmlElements.createInput('email','email','email','signup-input');
 
-    const passwordLabel = document.createElement('label');
-    passwordLabel.setAttribute('for', 'password');
-    passwordLabel.innerHTML = 'Password';
-    passwordLabel.className = 'signup-label';
-    const passwordInput = document.createElement('input');
-    passwordInput.type = 'password';
-    passwordInput.id = 'password';
-    passwordInput.name = 'password';
-    passwordInput.className = 'signup-input';
+    const passwordLabel = HtmlElements.createLabel('password','Password','signup-label');
+    const passwordInput = HtmlElements.createInput('password','password','password','signup-input');
 
-    const confirmPasswordLabel = document.createElement('label');
-    confirmPasswordLabel.setAttribute('for', 'confirm-password');
-    confirmPasswordLabel.innerHTML = 'Confirm Password';
-    confirmPasswordLabel.className = 'signup-label';
-    const confirmPasswordInput = document.createElement('input');
-    confirmPasswordInput.type = 'password';
-    confirmPasswordInput.id = 'confirm-password';
-    confirmPasswordInput.name = 'confirm-password';
-    confirmPasswordInput.className = 'signup-input';
+    const confirmPasswordLabel = HtmlElements.createLabel('confirm-password','Confirm Password','signup-label');
+    const confirmPasswordInput = HtmlElements.createInput('password','confirm-password','confirm-password','signup-input');
 
-    const securityQuestionLabel = document.createElement('label');
-    securityQuestionLabel.setAttribute('for', 'security-question');
-    securityQuestionLabel.innerHTML = 'Select a security question';
-    securityQuestionLabel.className = 'signup-label';
+    const securityQuestionLabel = HtmlElements.createLabel('security-question','Select a security question','signup-label');
     const securityQuestionInput = document.createElement('select');
     securityQuestionInput.id = 'security-question';
     securityQuestionInput.name = 'security-question';
@@ -80,34 +49,12 @@ export const renderSignup = () => {
         securityQuestionInput.appendChild(option);
     }
 
-    const securityAnswerLabel = document.createElement('label');
-    securityAnswerLabel.setAttribute('for', 'security-answer');
-    securityAnswerLabel.innerHTML = 'Answer';
-    securityAnswerLabel.className = 'signup-label';
-    const securityAnswerInput = document.createElement('input');
-    securityAnswerInput.type = 'text';
-    securityAnswerInput.id = 'security-answer';
-    securityAnswerInput.name = 'security-answer';
-    securityAnswerInput.className = 'signup-input';
+    const securityAnswerLabel = HtmlElements.createLabel('security-answer','Answer','signup-label');
+    const securityAnswerInput = HtmlElements.createInput('text','security-answer','security-answer','signup-input');
 
-    const submitButton = document.createElement('button');
-    submitButton.type = 'submit';
-    submitButton.id = 'signup-button';
-    submitButton.innerHTML = 'Sign up';
+    const submitButton = HtmlElements.createButton('submit', 'Sign up', 'signup-button')
 
-    signupForm.appendChild(usernameLabel);
-    signupForm.appendChild(usernameInput);
-    signupForm.appendChild(emailLabel);
-    signupForm.appendChild(emailInput);
-    signupForm.appendChild(passwordLabel);
-    signupForm.appendChild(passwordInput);
-    signupForm.appendChild(confirmPasswordLabel);
-    signupForm.appendChild(confirmPasswordInput);
-    signupForm.appendChild(securityQuestionLabel);
-    signupForm.appendChild(securityQuestionInput);
-    signupForm.appendChild(securityAnswerLabel);
-    signupForm.appendChild(securityAnswerInput);
-    signupForm.appendChild(submitButton);
+    signupForm.append(usernameLabel, usernameInput, emailLabel, emailInput, passwordLabel, passwordInput, confirmPasswordLabel, confirmPasswordInput, securityQuestionLabel, securityQuestionInput, securityAnswerLabel, securityAnswerInput, submitButton);
 
     signupForm.addEventListener('submit', event => {
         event.preventDefault();

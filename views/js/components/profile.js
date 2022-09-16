@@ -3,6 +3,7 @@ import { renderNewTrip } from './new-trip.js';
 import { userStats } from "./user-stats.js";
 import { renderExploreSearch } from "./explore.js";
 import { renderMyTrips } from "./my-trips.js";
+import { renderBookmarks } from "./bookmarks.js";
 
 export const renderProfile = (targetUserId) => {
     // Set view
@@ -39,7 +40,7 @@ export const renderProfile = (targetUserId) => {
             <div>Achievements: <span id="total-achievements"></span></div>
             `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    userStats(userId);
+    userStats(targetUserId);
     worldMap.appendChild(profileStats);
 
     // Render side panel
@@ -86,8 +87,7 @@ export const renderProfile = (targetUserId) => {
     const bookmarkFrame = layout.wrap([bookmarksIcon, bookmarks], 'side-panel-options');
     bookmarkFrame.addEventListener('click', (e) => {
         // Render page-container to display existing bookmarks
-        // -- insert function --
-        console.log(e)
+        renderBookmarks();
         changeSidePanelFocus(bookmarkFrame);
     })
     sidePanelOptions.appendChild(bookmarkFrame);

@@ -22,23 +22,12 @@ router.put('/:userId', (request, response) => {
         .then(dbRes => response.json(dbRes))
         .catch(err => response.json(err))
 });
-// Delete entire trip Id
+
 router.delete('/delete/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.delete(tripId)
         .then(dbRes => response.json(`Trip deleted! ${tripId}`))
         .catch(err => response.json('Trip could not be deleted!'))
-});
-// Delete location row if only used once in table, otherwise only delete itinerary item
-router.delete('/:itineraryId', (request, response) => {
-    console.log(`>>>> ITINERARY ITEM - DELETE REQUESTED <<<<<`)
-    const itineraryId = request.params.itineraryId;
-    Trip.deleteLocation(itineraryId)
-        .then(() => {
-            Trip.deleteItinItem(itineraryId)
-                .then(dbRes => response.json(`Itinerary Item deleted: ${itineraryId}`))
-                .catch(err => response.json('Itinerary Item could not be deleted!'))
-        })
 });
 
 router.put('/edit/:tripId', (request, response) => {
@@ -48,7 +37,7 @@ router.put('/edit/:tripId', (request, response) => {
 // ADD NEW TRIP
 router.post('/', (request, response) => {
     const { tripId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
-    
+
     // Save pathway for AIRLINE
     if (type === 'airline') {
         Trip.writeAirline(name, type)
@@ -71,8 +60,8 @@ router.post('/', (request, response) => {
                                                         console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
                                                         return response.json({itineraryId: itinItemId})
                                                     })
-                                       
-                                    
+
+
                                             })
 
                                     })
@@ -80,7 +69,7 @@ router.post('/', (request, response) => {
                     })
             })
             .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
-    } else {        
+    } else {
     // Save pathway for HOTEL & ACTIVITY
     Trip.writeCountry(country)
         .then(() => {
@@ -114,7 +103,7 @@ router.post('/', (request, response) => {
                                                                                     const itinItemId = dbRes.rows[0].id;
                                                                                     console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
                                                                                     return response.json({itineraryId: itinItemId})
-                                                                                })                                                                            
+                                                                                })
                                                                         })
                                                                 })
                                                         })
