@@ -39,7 +39,7 @@ export const renderProfile = (targetUserId) => {
             <div>Achievements: <span id="total-achievements"></span></div>
             `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
-    userStats(userId);
+    userStats(targetUserId);
     worldMap.appendChild(profileStats);
 
     // Render side panel
@@ -71,7 +71,6 @@ export const renderProfile = (targetUserId) => {
     tripFrame.addEventListener('click', (e) => {
         // Render page-container to display existing trips
         renderMyTrips();
-        console.log(e.target)
         changeSidePanelFocus(tripFrame);
     });
     sidePanelOptions.appendChild(tripFrame);

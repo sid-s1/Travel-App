@@ -187,9 +187,6 @@ body {
     .side-panel-list-item {
         display: none;
     }
-    #side-panel {
-        /* padding: 0px; */
-    }
     .side-panel-icon {
         height: 30px;
         width: 30px;
