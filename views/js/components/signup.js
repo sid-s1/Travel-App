@@ -16,7 +16,7 @@ export const renderSignup = () => {
     layout.signup();
     const pageContainer = document.getElementById('page-container');
 
-    const signupContainer = HtmlElements.createDiv(id = 'signup-container');
+    const signupContainer = HtmlElements.createDiv('signup-container');
 
     const signupHeading = document.createElement('h2');
     signupHeading.innerHTML = 'Sign up';

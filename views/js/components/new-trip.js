@@ -1,6 +1,7 @@
 import { layout, page, pageContainer, worldMap } from './layout.js';
 import { airlines } from './airlines.js';
 import { initAutocomplete } from './autocomplete.js';
+import { dateExtractor } from './date-extractor.js';
 
 export const renderNewTrip = () => {
     // set view
@@ -65,8 +66,10 @@ export const renderNewTrip = () => {
     };
 }
 
+
+
 // attach Blur event listener to automatically update db
-const initBlurEvent = (element, route) => {
+export const initBlurEvent = (element, route) => {
     if (!route) return
     let requireSave = false;
     element.addEventListener('change', () => {
@@ -90,7 +93,7 @@ const initBlurEvent = (element, route) => {
     });
 }
 
-const renderOptionsBar = () => {
+export const renderOptionsBar = () => {
     // data to render buttons for adding items to itinerary
     const data = [
         {
@@ -163,7 +166,7 @@ export const createFloatingElement = (attachTo, content, floatClass) => {
     return float
 }
 
-export const generateForm = (dataType, icon, dataExists) => {
+export const generateForm = (dataType, icon, activityRow=null) => {
     // data to control which inputs get rendered
     const data =
     {
@@ -214,8 +217,19 @@ export const generateForm = (dataType, icon, dataExists) => {
 
     const renderItem = data.renderItem;
 
+    if (activityRow) {
+        renderItem[0].value = activityRow.activity_name;
+        if (renderItem[0].name === 'airline' || renderItem[0].name === 'activity' || renderItem[0].name === 'hotel') {
+            renderItem[0].element = 'p'
+            renderItem[0].textContent = activityRow.activity_name;
+        }
+        renderItem[1].value = dateExtractor.htmlInputDate(activityRow.activity_start_date);
+        renderItem[2].value = dateExtractor.htmlInputDate(activityRow.activity_end_date);
+        renderItem[3].value = activityRow.activity_rating;
+    }
+
     for (const i in renderItem) {
-        const { element, type, placeholder, name, inputClass, required } = renderItem[i];
+        const { element, type, placeholder, name, inputClass, required, value, textContent } = renderItem[i];
         if ((itineraryType !== 'airline' || name !== 'end-date') && (itineraryType !== 'activity' || name !== 'end-date')) {
             const newElement = document.createElement(element);
             if (type) newElement.type = type;
@@ -223,6 +237,8 @@ export const generateForm = (dataType, icon, dataExists) => {
             if (name) newElement.name = name;
             if (inputClass) newElement.className = `${inputClass} input-autocomplete`;
             if (required) newElement.required = true;
+            if (value) newElement.value = value;
+            if (textContent) newElement.textContent = textContent;
 
             const label = document.createElement('label');
             const labelContent = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
