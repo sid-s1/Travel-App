@@ -144,7 +144,43 @@ const Trip = {
         return db.query(sql, [itineraryId])
         .then(res => res)
         .catch(err => err)
-    }
+    },
+    writeAirline: (name, type) => {
+        const sql = 'INSERT INTO activities (activity_name, gm_type) SELECT $1, $2 WHERE NOT EXISTS (SELECT id FROM activities WHERE activity_name = $1)';
+        return db.query(sql, [name, type])
+            .then(res => res)
+            .catch(err => err)
+    },
+    getAirline: (name) => {
+        const sql = 'SELECT id FROM activities WHERE activity_name=$1';
+        return db.query(sql, [name])
+        .then(res => res)
+        .catch(err => err)
+    },
+    writeAirlineLocation: (tripId) => {
+        const sql = 'INSERT INTO trip_locations (trip_id, airline) SELECT $1, true WHERE NOT EXISTS (SELECT id FROM trip_locations WHERE trip_id = $1 AND airline = true)';
+        return db.query(sql, [tripId])
+            .then(res => res)
+            .catch(err => err)
+    },
+    getAirlineLocation: (tripId) => {
+        const sql = 'SELECT id FROM trip_locations WHERE trip_id=$1 AND airline = true';
+        return db.query(sql, [tripId])
+            .then(res => res)
+            .catch(err => err)
+    },
+    writeAirlineItinItem: (locationId, airlineId, startDate, rating) => {
+        const sql = 'INSERT INTO itinerary_items (trip_location_id, activity_id, activity_start_date, activity_rating) SELECT $1, $2, $3, $4 WHERE NOT EXISTS (SELECT id FROM itinerary_items WHERE trip_location_id = $1 AND activity_id = $2 AND activity_start_date = $3)';
+        return db.query(sql, [locationId, airlineId, startDate, rating])
+        .then(res => res)
+        .catch(err => err)
+    },
+    getAirlineItinItem: (locationId, airlineId, startDate) => {
+        const sql = 'SELECT id FROM itinerary_items WHERE trip_location_id = $1 AND activity_id = $2 AND activity_start_date = $3';
+        return db.query(sql, [locationId, airlineId, startDate])
+        .then(res => res)
+        .catch(err => err)
+    },
 }
 
 module.exports = Trip;
