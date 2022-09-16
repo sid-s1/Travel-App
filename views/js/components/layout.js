@@ -26,6 +26,7 @@ export const layout = {
         badges.style.display = 'none';
         sidePanel.style.display = 'none';
         page.style.display = 'none';
+        pageContainer.style.display = 'flex';
         worldMap.style.gridArea = '1/1/1/3';
         badges.style.gridArea = '2/2/2/3';
         sidePanel.style.gridArea = '2/1/4/2';
