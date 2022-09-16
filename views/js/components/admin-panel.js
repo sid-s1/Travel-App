@@ -17,10 +17,8 @@ export const renderAdminPanel = (loggedInUserId) => {
     // add check to make sure currently logged in user is not turned to normal user DONE
     // add check to make sure the user currently logged in is not deleted DONE
     // bring up a modal for feedback on when something is done DONE
-    // ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
     // collaps other sections when you come to this page DONE
-    // airline or activity - no end date VIEW TRIP
-    // my trips instead of profile when delete trip
+    // my trips instead of profile when delete trip DONE
 
     axios.get('/user/session/allUsers')
         .then(response => {
