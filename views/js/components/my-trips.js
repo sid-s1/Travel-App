@@ -2,6 +2,10 @@ import { layout, pageContainer } from "./layout.js"
 import { renderTrips, executeSearch } from "./search.js"
 
 export const renderMyTrips = () => {
+    // set view
+    layout.reset();
+    layout.myTrips();
+
     axios.get('/user/session')
         .then(response => {
             const result = response.data.rows[0];

@@ -38,6 +38,7 @@ router.delete('/', (request, response) => {
 // Get session data to confirm if user is logged in
 router.get('/', (request, response) => {
     const email = request.session.email;
+    console.log(`email being checked before going into model is - ${email}`);
     if (!email) {
         return response.status(401).json({ message: 'Please login to access this page' });
     } else {
@@ -56,32 +57,55 @@ router.get('/allUsers', (request, response) => {
 
 // Update user details
 router.put('/updateUser', (request, response) => {
-    const { id, email, username, password, secQns, secAns, admin } = request.body;
-    if (password === 'undefined' && secAns === 'undefined') {
-        User.updateUserWithoutPasswordOrSecAnswer(id, email, username, secQns, admin)
-            .then(dbRes => response.json({ message: 'Updated user details without password and security answer!' }))
-            .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
-    }
-    else {
-        if (password === 'undefined') {
-            const hashedSecurityAnswer = generateHash(secAns);
-            User.updateUserWithoutPassword(id, email, username, secQns, hashedSecurityAnswer, admin)
-                .then(dbRes => response.json({ message: 'Updated user details without password!' }))
-                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
-        }
-        else if (secAns === 'undefined') {
-            const hashedPassword = generateHash(password);
-            User.updateUserWithoutSecAnswer(id, email, username, hashedPassword, secQns, admin)
-                .then(dbRes => response.json({ message: 'Updated user details without security answer!' }))
+    const { id, email, username, password, secQns, secAns, admin, loggedInUserId } = request.body;
+    const updateUserFunctions = (id, email, username, password, secQns, secAns, admin) => {
+        if (password === 'undefined' && secAns === 'undefined') {
+            User.updateUserWithoutPasswordOrSecAnswer(id, email, username, secQns, admin)
+                .then(dbRes => response.json({ message: 'Updated user details without password and security answer!' }))
                 .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
         }
         else {
-            const hashedPassword = generateHash(password);
-            const hashedSecurityAnswer = generateHash(secAns);
-            User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
-                .then(dbRes => response.json({ message: 'Updated user details!' }))
-                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+            if (password === 'undefined') {
+                const hashedSecurityAnswer = generateHash(secAns);
+                User.updateUserWithoutPassword(id, email, username, secQns, hashedSecurityAnswer, admin)
+                    .then(dbRes => response.json({ message: 'Updated user details without password!' }))
+                    .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+            }
+            else if (secAns === 'undefined') {
+                const hashedPassword = generateHash(password);
+                User.updateUserWithoutSecAnswer(id, email, username, hashedPassword, secQns, admin)
+                    .then(dbRes => response.json({ message: 'Updated user details without security answer!' }))
+                    .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+            }
+            else {
+                const hashedPassword = generateHash(password);
+                const hashedSecurityAnswer = generateHash(secAns);
+                User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
+                    .then(dbRes => response.json({ message: 'Updated user details!' }))
+                    .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+            }
         }
+    };
+    if (admin === 'false') {
+        User.checkAtleastOneAdmin()
+            .then(dbRes => {
+                const adminCount = dbRes.rows[0].count;
+                if (id === loggedInUserId) {
+                    return response.json({ message: 'You cannot unset your own admin status! - please stay an admin!' })
+                }
+                else {
+                    if (adminCount > 1) {
+                        updateUserFunctions(id, email, username, password, secQns, secAns, admin);
+                    }
+                    else {
+                        return response.json({ message: 'You cannot unset the last admin!' })
+                    }
+                }
+            })
+            .catch(err => err)
+    }
+    else {
+        updateUserFunctions(id, email, username, password, secQns, secAns, admin);
     }
 });
 
@@ -122,6 +146,14 @@ router.post('/signup', (request, response) => {
             console.log(err);
             return response.sendStatus(500);
         })
+});
+
+router.put('/updateSessionEmail', (request, response) => {
+    const { email } = request.body;
+    if (email !== request.session.email) {
+        request.session.email = email;
+        request.session.save();
+    }
 });
 
 router.delete('/:id', (request, response) => {

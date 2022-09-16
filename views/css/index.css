@@ -170,6 +170,9 @@ body {
     border-radius: 25px;
     background-color: rgba(255, 255, 255, 0.80);    
 }
+#stats-username {
+    margin-bottom: 1rem;
+}
 
 /* GENERAL REUSABLE CLASSES */
 .allow-float {
@@ -189,9 +192,6 @@ body {
 @media screen and (max-width: 650px) {
     .side-panel-list-item {
         display: none;
-    }
-    #side-panel {
-        /* padding: 0px; */
     }
     .side-panel-icon {
         height: 30px;

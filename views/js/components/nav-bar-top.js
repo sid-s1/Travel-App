@@ -24,10 +24,7 @@ export const renderNavBar = () => {
         .then(response => {
             if (response) {
                 const userId = response.data.rows[0].id;
-                const userName = response.data.rows[0].username;
                 const adminStatus = response.data.rows[0].admin;
-
-                h1.textContent = `TRIPT - ${userName}`;
 
                 // LOGGED IN:
                 renderProfile(userId);
@@ -53,7 +50,9 @@ export const renderNavBar = () => {
                 if (adminStatus) {
                     const adminButton = document.createElement('li');
                     adminButton.textContent = 'Admin Panel';
-                    adminButton.addEventListener('click', renderAdminPanel);
+                    adminButton.addEventListener('click', () => {
+                        renderAdminPanel(userId);
+                    });
                     navList.appendChild(adminButton);
                 }
 

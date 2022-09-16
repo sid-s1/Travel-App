@@ -2,7 +2,7 @@ import { layout } from "./layout.js";
 import { HtmlElements } from './html-elements.js';
 import { renderLogin } from "./login.js";
 
-const securityQuestions = {
+export const securityQuestions = {
     1: 'What city were you born in?',
     2: 'What is the name of your first pet?',
     3: 'What is your oldest sibling\'s middle name?',
@@ -16,7 +16,7 @@ export const renderSignup = () => {
     layout.signup();
     const pageContainer = document.getElementById('page-container');
 
-    const signupContainer = HtmlElements.createDiv(id='signup-container');
+    const signupContainer = HtmlElements.createDiv(id = 'signup-container');
 
     const signupHeading = document.createElement('h2');
     signupHeading.innerHTML = 'Sign up';
@@ -24,33 +24,34 @@ export const renderSignup = () => {
     const signupForm = document.createElement('form');
     signupForm.id = 'signup-form';
 
-    const usernameLabel = HtmlElements.createLabel('username','Username','signup-label');
-    const usernameInput = HtmlElements.createInput('text','username','username','signup-input');
+    const usernameLabel = HtmlElements.createLabel('username', 'Username', 'signup-label');
+    const usernameInput = HtmlElements.createInput('text', 'username', 'username', 'signup-input');
 
-    const emailLabel = HtmlElements.createLabel('email','Email','signup-label');
-    const emailInput = HtmlElements.createInput('email','email','email','signup-input');
+    const emailLabel = HtmlElements.createLabel('email', 'Email', 'signup-label');
+    const emailInput = HtmlElements.createInput('email', 'email', 'email', 'signup-input');
 
-    const passwordLabel = HtmlElements.createLabel('password','Password','signup-label');
-    const passwordInput = HtmlElements.createInput('password','password','password','signup-input');
+    const passwordLabel = HtmlElements.createLabel('password', 'Password', 'signup-label');
+    const passwordInput = HtmlElements.createInput('password', 'password', 'password', 'signup-input');
 
-    const confirmPasswordLabel = HtmlElements.createLabel('confirm-password','Confirm Password','signup-label');
-    const confirmPasswordInput = HtmlElements.createInput('password','confirm-password','confirm-password','signup-input');
+    const confirmPasswordLabel = HtmlElements.createLabel('confirm-password', 'Confirm Password', 'signup-label');
+    const confirmPasswordInput = HtmlElements.createInput('password', 'confirm-password', 'confirm-password', 'signup-input');
 
-    const securityQuestionLabel = HtmlElements.createLabel('security-question','Select a security question','signup-label');
+    const securityQuestionLabel = HtmlElements.createLabel('security-question', 'Select a security question', 'signup-label');
     const securityQuestionInput = document.createElement('select');
+
     securityQuestionInput.id = 'security-question';
     securityQuestionInput.name = 'security-question';
     securityQuestionInput.className = 'signup-input';
 
-    for(const [key, question] of Object.entries(securityQuestions)) {
+    for (const [key, question] of Object.entries(securityQuestions)) {
         const option = document.createElement('option');
         option.value = key;
         option.innerHTML = question;
         securityQuestionInput.appendChild(option);
     }
 
-    const securityAnswerLabel = HtmlElements.createLabel('security-answer','Answer','signup-label');
-    const securityAnswerInput = HtmlElements.createInput('text','security-answer','security-answer','signup-input');
+    const securityAnswerLabel = HtmlElements.createLabel('security-answer', 'Answer', 'signup-label');
+    const securityAnswerInput = HtmlElements.createInput('text', 'security-answer', 'security-answer', 'signup-input');
 
     const submitButton = HtmlElements.createButton('submit', 'Sign up', 'signup-button')
 
@@ -71,17 +72,17 @@ export const renderSignup = () => {
             alert('Passwords do not match');
         } else {
             axios.post('/user/session/signup', data)
-            .then(() => {
-                console.log('signup successful');
-                renderLogin();
-            })
-            .catch((err) => {
-                if(err.response.status === 500) {
-                    alert('Sign up failed. Please try again.');
-                } else {
-                    alert(err.response.data.message);
-                }
-            })
+                .then(() => {
+                    console.log('signup successful');
+                    renderLogin();
+                })
+                .catch((err) => {
+                    if (err.response.status === 500) {
+                        alert('Sign up failed. Please try again.');
+                    } else {
+                        alert(err.response.data.message);
+                    }
+                })
         }
     })
 

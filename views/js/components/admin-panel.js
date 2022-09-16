@@ -1,4 +1,7 @@
-export const renderAdminPanel = () => {
+import { securityQuestions } from './signup.js';
+import { userStats } from './user-stats.js';
+
+export const renderAdminPanel = (loggedInUserId) => {
     const pageContainer = document.getElementById('page-container');
     pageContainer.innerHTML = '';
 
@@ -6,6 +9,13 @@ export const renderAdminPanel = () => {
     adminPanel.id = 'admin-panel';
 
     adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
+
+    // add check to make sure not all admins are turned into normal users
+    // add check to make sure currently logged in user is not turned to normal user
+    // add check to make sure the user currently logged in is not deleted
+    // bring up a modal for feedback on when something is done -  ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
+    // collaps other sections when you come to this page
+    // airline or activity - no end date VIEW TRIP
 
     axios.get('/user/session/allUsers')
         .then(response => {
@@ -19,11 +29,20 @@ export const renderAdminPanel = () => {
                 emailField.classList.add('user-details');
                 emailField.required = true;
 
-                const securityQuestionField = document.createElement('input');
-                securityQuestionField.value = user.security_qn;
+                const securityQuestionField = document.createElement('select');
                 securityQuestionField.classList.add('user-details');
+                securityQuestionField.classList.add('security-qn-dropdown');
                 securityQuestionField.required = true;
-                securityQuestionField.setAttribute('type', 'text');
+
+                for (const key in securityQuestions) {
+                    const securityQuestionOption = document.createElement('option');
+                    securityQuestionOption.text = securityQuestions[key];
+                    securityQuestionOption.value = key;
+                    if (key == user.security_qn) {
+                        securityQuestionOption.setAttribute('selected', '')
+                    }
+                    securityQuestionField.appendChild(securityQuestionOption);
+                }
 
                 const securityAnswerField = document.createElement('input');
                 securityAnswerField.classList.add('user-details');
@@ -93,6 +112,7 @@ export const renderAdminPanel = () => {
                         <input name="secQns" value="${securityQn}">
                         <input name="secAns" value="${newSecurityAnswer}">
                         <input name="admin" value=${checkNewAdminStatus}>
+                        <input name="loggedIn" value=${loggedInUserId}>
                         `;
 
                     const formdata = new FormData(form);
@@ -103,11 +123,25 @@ export const renderAdminPanel = () => {
                         password: formdata.get('password'),
                         secQns: formdata.get('secQns'),
                         secAns: formdata.get('secAns'),
-                        admin: formdata.get('admin')
+                        admin: formdata.get('admin'),
+                        loggedInUserId: formdata.get('loggedIn')
                     };
 
+                    console.log(data);
+
                     axios.put('/user/session/updateUser', data)
-                        .then(response => console.log(response.data))
+                        .then(response => {
+                            if (username !== localStorage.getItem('username')) {
+                                localStorage.setItem('username', username);
+                                userStats.updateUsernameDisplay(username);
+                            }
+                            const emailForm = {
+                                email: email
+                            };
+                            axios.put('/user/session/updateSessionEmail', emailForm)
+                                .then()
+                                .catch()
+                        })
                         .catch(err => console.log(err))
                 });
 
@@ -119,12 +153,17 @@ export const renderAdminPanel = () => {
                     const userId = user.id;
 
                     if (e.target.textContent == 'Delete') {
-                        e.target.textContent = 'Confirm';
-                        e.target.classList.add('confirm-delete-user');
-                        setTimeout(() => {
-                            e.target.textContent = 'Delete';
-                            e.target.classList.remove('confirm-delete-user');
-                        }, 3000)
+                        if (userId === loggedInUserId) {
+                            alert('You cannot delete yourself!');
+                        }
+                        else {
+                            e.target.textContent = 'Confirm';
+                            e.target.classList.add('confirm-delete-user');
+                            setTimeout(() => {
+                                e.target.textContent = 'Delete';
+                                e.target.classList.remove('confirm-delete-user');
+                            }, 3000)
+                        }
                     }
                     else {
                         axios.delete(`/user/session/${userId}`)
@@ -133,7 +172,6 @@ export const renderAdminPanel = () => {
                                 console.log(response.data);
                             })
                             .catch(err => console.log(err))
-
                     }
                 });
 
