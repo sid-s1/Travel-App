@@ -38,13 +38,13 @@ export const renderNavBar = () => {
                 navList.appendChild(profileButton);
 
                 // Button - Settings
-                const settingsButton = document.createElement('li');
-                settingsButton.textContent = 'Settings';
-                settingsButton.style.backgroundColor = 'red' // **remove once functionality added
-                settingsButton.addEventListener('click', () => {
-                    // Render user settings (modal?)
-                });
-                navList.appendChild(settingsButton);
+                // const settingsButton = document.createElement('li');
+                // settingsButton.textContent = 'Settings';
+                // settingsButton.style.backgroundColor = 'red' // **remove once functionality added
+                // settingsButton.addEventListener('click', () => {
+                //     // Render user settings (modal?)
+                // });
+                // navList.appendChild(settingsButton);
 
                 // Admin Panel
                 if (adminStatus) {

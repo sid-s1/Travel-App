@@ -12,10 +12,9 @@ export const renderNewTrip = () => {
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
 
-    axios.put(`user/trips/${userId}`)
+    axios.put(`/user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
-            console.log(tripId)
             pageContainer.name = tripId;
         }).catch(err => err)
 
@@ -88,9 +87,10 @@ export const initBlurEvent = (element, route) => {
         const userInput = e.target.value
         const data = {
             route: route,
-            userInput: userInput,
+            userInput: e.target.value,
             tripId: pageContainer.name
         }
+        
         if (route === 'hero_image_url') {
             if (checkURL(userInput)) {
                 worldMap.style.backgroundImage = `url("${userInput}")`
@@ -104,8 +104,10 @@ export const initBlurEvent = (element, route) => {
             e.target.value = `"${addQuotes}"`
         }
         if (requireSave) {
-            return axios.patch(`user/trips/static`, data)
-                .then(() => requireSave = false)
+            axios.patch(`/user/trips/static`, data)
+                .then(() => {
+                    requireSave = false}
+                    )
                 .catch(err => err)
         }
     });
@@ -151,7 +153,6 @@ export const renderOptionsBar = () => {
 // Use data to store elements inside a container
 const createContainer = (data, parentClass) => {
     const arr = [];
-    console.log(data)
     for (const i in data) {
         const { type, element, elementContent, elementClass, containerClass, includeFloat } = data[i];
         const newElement = document.createElement(element);
@@ -168,8 +169,11 @@ const createContainer = (data, parentClass) => {
             pageContainer.insertBefore(form, pageContainer.lastChild);
             })
         } else if (type === 'post') {
-            // event lisenter for post trip button            
+            // event lisenter for post trip button - also get min and max dates to add to db          
             wrappedElement.addEventListener('click', () => {
+                newElement.textContent = 'POSTED'
+                newElement.disabled = true;
+                newElement.classList.replace('post-trip', 'posted')
                 const tripId = pageContainer.name;
                 axios.get(`user/trips/status/${tripId}`)
                     .then(() => console.log('trip POSTED'))
