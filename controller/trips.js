@@ -58,7 +58,7 @@ router.delete('/:itineraryId', (request, response) => {
         })
 });
 
-router.patch('/edit/activity/:activityId', (request, response) => {
+router.patch('/activity/:activityId', (request, response) => {
     const activityId = request.params.activityId;
     const startDate = request.body.startDate;
     const endDate = request.body.endDate;

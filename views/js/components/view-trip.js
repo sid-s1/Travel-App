@@ -2,7 +2,8 @@ import { dateExtractor } from './date-extractor.js';
 import { renderProfile } from './profile.js';
 import { likeDislikeAction } from './like-dislike.js';
 import { createBookmarkIcon } from './bookmarks.js';
-import { renderEditTripForm } from './edit-trip.js';
+// import { renderEditTripForm } from './edit-trip.js';
+import { renderNewTrip } from './new-trip.js';
 
 // if session does not return anything, display default trip view without modify buttons or like-dislike buttons
 
@@ -127,7 +128,7 @@ export const viewTrip = (id) => {
                         }
 
                                 editTripButton.addEventListener('click', () => {
-                                    renderEditTripForm(id);
+                                    renderNewTrip(id);
                                 })
                         deleteTripButton.textContent = 'Delete';
 
