@@ -162,12 +162,19 @@ const createContainer = (data, parentClass) => {
 
         if (type === 'airline' || type === 'hotel' || type === 'activity') {
             if (includeFloat) createFloatingElement(wrappedElement, '+', 'new-trip-icon-float')
-        };
-
-        wrappedElement.addEventListener('click', () => {
+            // event listener to buttons to generate relevant form
+            wrappedElement.addEventListener('click', () => {
             const form = generateForm(type, newElement);
             pageContainer.insertBefore(form, pageContainer.lastChild);
-        })
+            })
+        } else if (type === 'post') {
+            // event lisenter for post trip button
+            wrappedElement.addEventListener('click', () => {
+                console.log('click')
+            })
+        }
+
+   
         arr.push(wrappedElement);
     }
     return layout.wrap(arr, parentClass);
