@@ -11,7 +11,7 @@ export const renderNewTrip = (tripId=null) => {
     // create new trip row in db and return trip id
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
-
+    
         // render static fields
         const staticFields = [
             {
@@ -51,7 +51,6 @@ export const renderNewTrip = (tripId=null) => {
     axios.put(`/user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
-            console.log(tripId)
             pageContainer.name = tripId;
         }).catch(err => err)
 

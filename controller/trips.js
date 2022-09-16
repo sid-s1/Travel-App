@@ -158,13 +158,4 @@ router.post('/', (request, response) => {
 })
 
 
-// STATIC FIELDS SAVE ON BLUR
-router.patch('/static', (request, response) => {
-    const { route, userInput, tripId } = request.body;
-    Trip.write(route, userInput, tripId)
-        .then(dbRes => response.json(dbRes.rows))
-        .catch(err => response.json(err))
-})
-
-
 module.exports = router;

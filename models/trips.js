@@ -223,7 +223,7 @@ const Trip = {
         .then(res => res)
         .catch(err => err)
     },
-    postTrip: (tripId, minDate, maxDate) => { 
+    postTrip: (tripId, minDate, maxDate) => {
         const sql = `UPDATE trips SET trip_status='posted', trip_start_date=$1, trip_end_date=$2 WHERE id=$3`;
         return db.query(sql, [minDate, maxDate, tripId])
         .then(res => res)
