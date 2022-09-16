@@ -4,6 +4,7 @@ label {
 }
 * {
     transition: 1s ease all;
+    font-family: Arial, Helvetica, sans-serif;
 }
 h1 {
     font-family: 'DynaPuff', cursive;
@@ -129,7 +130,7 @@ body {
     align-items: center;
     background-image: url('https://images.pexels.com/photos/3155666/pexels-photo-3155666.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
     background-size: cover;
-    
+
 }
 #page-container {
     flex-direction: column;
@@ -176,7 +177,7 @@ body {
     width: fit-content;
     border: solid rgba(241, 241, 241, 0.649) 3px;
     border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.80);    
+    background-color: rgba(255, 255, 255, 0.80);
 }
 #profile-stats > div > div {
     font-size: 1vw;

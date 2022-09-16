@@ -152,7 +152,7 @@ const Trip = {
         .catch(err => err)
     },
     deleteLocation: (itineraryId) => {
-        const sql = 'DELETE FROM trip_locations WHERE (SELECT COUNT(*) FROM itinerary_items WHERE trip_location_id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)) = 1 AND id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)';        
+        const sql = 'DELETE FROM trip_locations WHERE (SELECT COUNT(*) FROM itinerary_items WHERE trip_location_id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)) = 1 AND id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)';
         return db.query(sql, [itineraryId])
         .then(res => res)
         .catch(err => err)
@@ -182,7 +182,7 @@ const Trip = {
         .catch(err => err)
     },
     deleteItinItem: (itineraryId) => {
-        const sql = 'DELETE FROM itinerary_items WHERE id = $1';        
+        const sql = 'DELETE FROM itinerary_items WHERE id = $1';
         return db.query(sql, [itineraryId])
         .then(res => res)
         .catch(err => err)
