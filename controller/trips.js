@@ -15,6 +15,24 @@ router.get('/activities/:tripId', (request, response) => {
         .then(dbRes => response.json(dbRes.rows))
         .catch(err => response.json(err))
 });
+// Set trip to 'Posted' status
+router.get('/status/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    Trip.getMinDate(tripId)
+        .then(dbRes => {
+            const minDate = dbRes.rows[0].min;
+            console.log(`~~~~~ MIN DATE: ${minDate} ~~~~~`)
+            Trip.getMaxDate(tripId)
+                .then(dbRes => {
+                    const maxDate = dbRes.rows[0].max
+                    console.log(`~~~~~ MAX DATE: ${maxDate} ~~~~~`)
+                        Trip.postTrip(tripId, minDate, maxDate)
+                            .then(() => response.json(`Trip Id posted: ${tripId}`))
+                            .catch(() => response.json(`Trip could not be posted`))                
+                })
+        })
+        .catch(() => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+})
 
 router.put('/:userId', (request, response) => {
     const userId = request.params.userId;
@@ -40,13 +58,6 @@ router.delete('/:itineraryId', (request, response) => {
         })
 });
 
-router.patch('/:tripId', (request, response) => {
-    const tripId = request.params.tripId;
-    Trip.postTrip(tripId)
-        .then(() => response.json(`Trip posted! ${tripId}`))
-        .catch(() => response.json('Trip could not be posted!'))
-});
-
 router.patch('/edit/activity/:activityId', (request, response) => {
     const activityId = request.params.activityId;
     const startDate = request.body.startDate;
@@ -55,6 +66,14 @@ router.patch('/edit/activity/:activityId', (request, response) => {
     Trip.updateActivity(activityId, startDate, endDate, rating)
     .then(() => response.json(`Activity ${activityId} updated successfully`))
     .catch(() => response.json(`Activity ${activityId} not updated`))
+})
+
+// STATIC FIELDS SAVE ON BLUR
+router.patch('/static', (request, response) => {
+    const { route, userInput, tripId } = request.body;
+    Trip.write(route, userInput, tripId)
+        .then(dbRes => response.json(dbRes.rows))
+        .catch(err => response.json(err))
 })
 
 // ADD NEW TRIP
@@ -135,15 +154,6 @@ router.post('/', (request, response) => {
         })
         .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
     }
-})
-
-
-// STATIC FIELDS SAVE ON BLUR
-router.patch('/static', (request, response) => {
-    const { route, userInput, tripId } = request.body;
-    Trip.write(route, userInput, tripId)
-        .then(dbRes => response.json(dbRes.rows))
-        .catch(err => response.json(err))
 })
 
 
