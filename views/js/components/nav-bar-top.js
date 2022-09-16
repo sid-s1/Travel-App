@@ -27,8 +27,6 @@ export const renderNavBar = () => {
                 const userName = response.data.rows[0].username;
                 const adminStatus = response.data.rows[0].admin;
 
-                h1.textContent = `TRIPT - ${userName}`;
-
                 // LOGGED IN:
                 renderProfile(userId);
 
