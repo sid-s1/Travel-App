@@ -5,7 +5,10 @@ const UserStats = require('../models/user-stats');
 router.get('/tripNumber/:userId', (request, response) => {
     const userId = request.params.userId;
     UserStats.tripNumber(userId)
-        .then(dbRes => response.json(dbRes.rows))
+        .then(dbRes => {
+            if (dbRes.rowCount === 0) return response.json(0);
+            else return response.json(dbRes.rows)
+        })
         .catch(err => console.log(err))
 });
 

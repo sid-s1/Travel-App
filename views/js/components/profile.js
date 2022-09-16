@@ -21,6 +21,15 @@ export const renderProfile = (targetUserId) => {
     let userId = localStorage.getItem('userId');
     let username = localStorage.getItem('username');
 
+    // Populate user stats
+    const statsDiv = document.createElement('div');
+    statsDiv.innerHTML = `
+    <div id="stats-username">Logged in as - ${username}</div>
+    <div>Number of trips: <span id="total-trips"></span></div>
+    <div>Number of countries: <span id="total-countries"></span></div>
+    <div>Achievements: <span id="total-achievements"></span></div>
+    `;
+
     if (!userId) {
         // if not logged in, create session data
         axios.get('/user/session')
@@ -30,16 +39,11 @@ export const renderProfile = (targetUserId) => {
                 userId = result.id;
                 localStorage.setItem('userId', userId) //store in local for future reference
                 localStorage.setItem('username', username)
+                const usernameDivStats = document.getElementById('stats-username');
+                usernameDivStats.textContent = `Logged in as - ${username}`;
             })
     }
 
-    // Populate user stats
-    const statsDiv = document.createElement('div');
-    statsDiv.innerHTML = `
-            <div>Number of trips: <span id="total-trips"></span></div>
-            <div>Number of countries: <span id="total-countries"></span></div>
-            <div>Achievements: <span id="total-achievements"></span></div>
-            `;
     const profileStats = layout.wrap([statsDiv], 'profile-stats', 'id')
     userStats(targetUserId);
     worldMap.appendChild(profileStats);
