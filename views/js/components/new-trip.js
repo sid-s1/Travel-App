@@ -76,7 +76,7 @@ export const renderNewTrip = () => {
 
 // attach Blur event listener to automatically update db
 export const initBlurEvent = (element, route) => {
-    if (!route) return    
+    if (!route) return
     let requireSave = false;
     element.addEventListener('change', () => {
          requireSave = true;
@@ -97,7 +97,7 @@ export const initBlurEvent = (element, route) => {
                 worldMap.style.minHeight = '300px'
             } else {
                 e.target.value = 'invalid URL'
-            }            
+            }
         }
         if (route === 'key_takeaway') {
             const addQuotes = userInput.replaceAll('"', '')
@@ -192,11 +192,11 @@ export const createFloatingElement = (attachTo, content, floatClass) => {
 }
 
 export const checkURL = (url) => {
-    try { 
-        new URL(url); 
+    try {
+        new URL(url);
     }
-    catch(e) { 
-      return false; 
+    catch(e) {
+      return false;
     }
     return true;
 }
@@ -395,14 +395,6 @@ export const generateForm = (dataType, icon, activityRow=null) => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // error prevention - ensure user has entered a valid airline/hotel or activity
-        if (!isValidItem) {
-            const firstInput = form.childNodes[0].childNodes[1]
-            firstInput.focus()
-            firstInput.select()
-            alert(`Please enter a valid ${itineraryType}`)
-            return
-        }
 
         const formData = new FormData(form)
         const data = {
@@ -421,9 +413,25 @@ export const generateForm = (dataType, icon, activityRow=null) => {
             ...googleApiData
         }
 
-        console.log(combinedData)
+        if (activityRow) {
+            wrappedForm.id = activityRow.id;
+            axios.patch(`/user/trips/edit/activity/${activityRow.id}`, data)
+            .then(dbRes => {
+                saveButton.classList.toggle('saved')
+                saveButton.textContent = 'Saved'
+                saveButton.disabled = true;
+            })
+        } else {
+        // error prevention - ensure user has entered a valid airline/hotel or activity
+        if (!isValidItem) {
+            const firstInput = form.childNodes[0].childNodes[1]
+            firstInput.focus()
+            firstInput.select()
+            alert(`Please enter a valid ${itineraryType}`)
+            return
+        }
 
-        axios.post('/user/trips', combinedData)
+            axios.post('/user/trips', combinedData)
             .then(dbRes => {
                 const itineraryId = dbRes.data.itineraryId;
                 wrappedForm.id = itineraryId;
@@ -431,6 +439,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
                 saveButton.textContent = 'Saved'
                 saveButton.disabled = true;
             });
+        }
     })
 
     const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');
