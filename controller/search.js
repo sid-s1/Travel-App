@@ -11,6 +11,7 @@ router.post('/', (request, response) => {
     const results = {
         users: [],
         trips: [],
+        cities: [],
         activities: []
     };
     tripIds = [];
@@ -135,12 +136,22 @@ router.post('/', (request, response) => {
                 for (let i=0; i < dbRes.rowCount; i++) {
                     userTripArr.push(dbRes.rows[i]['id']);
                 }
-                Trip.detailsMultiple(userTripArr)
+                Trip.tripOnlyDetails(userTripArr)
                 .then(dbRes => {
-                        for (let i=0; i < dbRes.rowCount; i++) {
-                            results.trips.push(dbRes.rows[i]);
+                        if (dbRes.rowCount > 0) {
+                            for (let i=0; i < dbRes.rowCount; i++) {
+                                results.trips.push(dbRes.rows[i]);
+                            }
                         }
-                    return response.json(results);
+                        Trip.tripCityAndCountry(userTripArr)
+                        .then(dbRes => {
+                            if (dbRes.rowCount > 0) {
+                                for (let i=0; i < dbRes.rowCount; i++) {
+                                    results.cities.push(dbRes.rows[i]);
+                                }
+                            }
+                            return response.json(results);
+                        })
                 })
             })
     }

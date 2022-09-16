@@ -56,6 +56,7 @@ export const executeSearch = (form) => {
     resultsContainer.innerHTML = '';
     axios.post('/search', data)
     .then((dbRes) => {
+        console.log(dbRes.data);
         const results = renderResults(dbRes.data, data.searchString, data.searchType);
         resultsContainer.appendChild(results);
     })
@@ -65,6 +66,9 @@ export const executeSearch = (form) => {
 }
 
 export const renderResults = (data, searchString, searchType) => {
+    // data is an object of arrays: 'users', 'trips', 'cities', 'activites' (& 'user_id' single variable).
+    // searchString is a string in most cases and a username in the case of the 'bookmarks'
+    // searchType passes in what type of search, but in some cases is also used to denote 'my-trips' or 'bookmarks' etc
     const user_id = data.user_id;
     const resultsHeading = document.createElement('h2');
     resultsHeading.id = 'results-heading';
@@ -74,7 +78,6 @@ export const renderResults = (data, searchString, searchType) => {
     if (searchType === 'user') {
         resultsHeading.textContent = `Search for '${searchString}' in Users:`;
         resultsCount.textContent = `${data.users.length} results found`;
-        console.log(data.users.length);
         const arrUser = renderUsers(data.users);
         for (let i = 0; i < arrUser.length; i++) {
             resultsContainer.appendChild(arrUser[i]);
@@ -137,14 +140,12 @@ export const renderResults = (data, searchString, searchType) => {
     } else if (searchType === 'my-trips') {
         resultsHeading.textContent = `My Trips`;
         const tripInfo = renderTrips(data, 'my-trips');
-        console.log(tripInfo)
         for (let i = 0; i < tripInfo.resultsCont.length; i++) {
             resultsContainer.appendChild(tripInfo.resultsCont[i]);
         }
     } else if (searchType === 'bookmarks') {
         resultsHeading.textContent = `Bookmarks`;
         const tripInfo = renderTrips(data.data, 'bookmarks');
-        console.log(tripInfo);
         for (let i = 0; i < tripInfo.resultsCont.length; i++) {
             resultsContainer.appendChild(tripInfo.resultsCont[i]);
         }
@@ -215,7 +216,6 @@ export const renderTrips = (data, appLocation) => {
                     <h3>${startDate} to ${endDate}</h3>
                     <p>${row.trip_descr}</p>`
                     tripContainer.addEventListener('click', () => {
-                        console.log(`Trip id '${row.trip_id}' clicked`);
                         if (user_id) {
                             renderSearchBar(page);
                         }
@@ -227,10 +227,8 @@ export const renderTrips = (data, appLocation) => {
 
                         createBookmarkIcon(row.trip_id)
                             .then(response => {
-                                console.log(response.innerHTML)
-                                console.log(tripContainer)
                                 createFloatingElement(tripContainer, response.innerHTML, 'bookmark-float')
-                                })                                    
+                                })
                             .catch(err => console.log('bookmark promise not here'))
                     }
 
@@ -255,7 +253,6 @@ export const renderTrips = (data, appLocation) => {
                 <p>${row.trip_descr}</p>
                 `
                 tripContainer.addEventListener('click', () => {
-                    console.log(`Trip id '${row.trip_id}' clicked`);
                     viewTrip(row.trip_id);
                 })
                 tripContainer.id = `trip${row.trip_id}`;

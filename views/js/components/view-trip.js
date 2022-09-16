@@ -78,6 +78,7 @@ export const viewTrip = (id) => {
             let p = new Promise((resolve, reject) => {
                 axios.get(`/user/trips/${id}`)
                     .then(tripDetailsResponse => {
+                        console.log(tripDetailsResponse.data);
                         // tripDetails will be an array of objects with trip title, description, status, start date, end date and cities visited for the trip id used in our axios call
                         const tripDetails = tripDetailsResponse.data;
 

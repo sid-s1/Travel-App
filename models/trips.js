@@ -2,13 +2,36 @@ const db = require('../database/db');
 
 const Trip = {
     details: (id) => {
-        const sql = 'SELECT trips.trip_name,trips.user_id,trips.trip_status,trips.trip_start_date,trips.trip_end_date,trips.hero_image_url,trips.description,trips.key_takeaway,cities.city_name FROM trips INNER JOIN trip_locations ON trips.id = trip_locations.trip_id INNER JOIN cities ON trip_locations.city_id = cities.id WHERE trip_id = $1';
+        const sql = `SELECT trips.trip_name, trips.user_id, trips.trip_status, trips.trip_start_date, trips.trip_end_date, trips.hero_image_url, trips.description, trips.key_takeaway, cities.city_name
+        FROM trips
+        LEFT JOIN trip_locations ON trips.id = trip_locations.trip_id
+        LEFT JOIN cities ON trip_locations.city_id = cities.id
+        WHERE trips.id = $1`;
         return db.query(sql, [id])
             .then(dbRes => dbRes)
             .catch(err => err)
     },
     detailsMultiple: (ids) => {
         const sql = `SELECT trips.id,trips.user_id,trips.trip_name,trips.trip_status,trips.trip_start_date,trips.trip_end_date,trips.hero_image_url,trips.description,trips.key_takeaway,cities.city_name,countries.country_name
+        FROM trips
+        LEFT JOIN trip_locations ON trips.id = trip_locations.trip_id
+        LEFT JOIN cities ON trip_locations.city_id = cities.id
+        LEFT JOIN countries ON cities.country_id = countries.id
+        WHERE trips.id = ANY ($1)`;
+        return db.query(sql, [ids])
+            .then(dbRes => dbRes)
+            .catch(err => err)
+    },
+    tripOnlyDetails: (ids) => {
+        const sql = `SELECT id, user_id, trip_name, trip_status, trip_start_date,trip_end_date, hero_image_url, description, key_takeaway
+        FROM trips
+        WHERE id = ANY ($1)`;
+        return db.query(sql, [ids])
+            .then(dbRes => dbRes)
+            .catch(err => err)
+    },
+    tripCityAndCountry: (ids) => {
+        const sql = `SELECT trips.id trip_id,cities.city_name,countries.country_name
         FROM trips
         INNER JOIN trip_locations ON trips.id = trip_locations.trip_id
         LEFT JOIN cities ON trip_locations.city_id = cities.id
