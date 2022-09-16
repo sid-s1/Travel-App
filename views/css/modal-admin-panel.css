@@ -28,7 +28,7 @@
     justify-content: center;
     align-items: center;
 }
-#close-modal {
+#close-modal, #login-action-modal {
     display: flex;
     padding: 1rem 2rem;
     border-radius: 0.5rem;
@@ -37,10 +37,10 @@
     box-shadow: 0.2rem 0.2rem grey;
     transition: linear 0.1s;
 }
-#close-modal:hover {
+#close-modal:hover, #login-action-modal:hover {
     background-color: green;
 }
-#close-modal:active {
+#close-modal:active, #login-action-modal:active {
     box-shadow: 0 0;
     transition: linear 0.1s;
 }
@@ -48,4 +48,13 @@
     z-index: 1;
     opacity: 1;
     transform: scale(1.0);
+}
+.multi-btn-modal {
+    margin: 1rem;
+}
+#modal-action-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }

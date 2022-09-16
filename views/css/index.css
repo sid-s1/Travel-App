@@ -245,4 +245,7 @@ body {
         height: 55px;
         width: 55px;
     }
+    #close-modal.multi-btn-modal, #login-action-modal.multi-btn-modal {
+        padding: 2vw 3vw;
+    }
 }
