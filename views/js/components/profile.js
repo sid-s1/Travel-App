@@ -15,6 +15,7 @@ export const renderProfile = (targetUserId) => {
 
     // Render world map
     worldMap.innerHTML = '';
+    worldMap.style.backgroundImage = `url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1')`;
 
     // get user ID and display stats if it is the same as the user who's profile is being displayed
     let userId = localStorage.getItem('userId');

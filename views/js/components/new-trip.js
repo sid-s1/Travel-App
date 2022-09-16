@@ -87,7 +87,6 @@ const initBlurEvent = (element, route) => {
                 .then(() => requireSave = false)
                 .catch(err => err)
         }
-
     });
 }
 
@@ -119,6 +118,7 @@ const renderOptionsBar = () => {
             type: 'post',
             element: 'button',
             elementContent: 'POST TRIP',
+            elementClass: 'post-trip',
             ContainerClass: 'new-trip-icon-box',
         }
     ]
