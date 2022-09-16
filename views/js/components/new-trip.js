@@ -3,7 +3,7 @@ import { airlines } from './airlines.js';
 import { initAutocomplete } from './autocomplete.js';
 import { dateExtractor } from './date-extractor.js';
 
-export const renderNewTrip = () => {
+export const renderNewTrip = (tripId=null) => {
     // set view
     layout.reset();
     layout.newtrip();
@@ -12,6 +12,42 @@ export const renderNewTrip = () => {
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
 
+        // render static fields
+        const staticFields = [
+            {
+                element: 'h1',
+                textContent: (tripId) ? `HI ${username.toUpperCase()}! LET'S EDIT THAT TRIP!` : `HI ${username.toUpperCase()}! LET'S BUILD THAT TRIP!`
+            },
+            {
+                name: 'trip_name',
+                element: 'input',
+                placeholder: '- Click to enter Trip Title -',
+                maxLength: '50',
+                className: 'new-trip-title'
+            },
+            {
+                name: 'hero_image_url',
+                element: 'input',
+                placeholder: '- Click to add Image URL -',
+                className: 'new-trip-url'
+            },
+            {
+                name: 'description',
+                element: 'textarea',
+                placeholder: 'Enter details about your trip here...',
+                maxLength: '1200',
+                className: 'new-trip-description'
+            },
+            {
+                name: 'key_takeaway',
+                element: 'input',
+                placeholder: '- Click to add a Trip Quote or Top Tip -',
+                maxLength: '50',
+                className: 'new-trip-takeaway'
+            }
+        ]
+
+    if (!tripId) {
     axios.put(`user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
@@ -19,40 +55,6 @@ export const renderNewTrip = () => {
             pageContainer.name = tripId;
         }).catch(err => err)
 
-    // render static fields
-    const staticFields = [
-        {
-            element: 'h1',
-            textContent: `HI ${username.toUpperCase()}! LET'S BUILD THAT TRIP!`
-        },
-        {
-            name: 'trip_name',
-            element: 'input',
-            placeholder: '- Click to enter Trip Title -',
-            maxLength: '50',
-            className: 'new-trip-title'
-        },
-        {
-            name: 'hero_image_url',
-            element: 'input',
-            placeholder: '- Click to add Image URL -',
-            className: 'new-trip-url'
-        },
-        {
-            name: 'description',
-            element: 'textarea',
-            placeholder: 'Enter details about your trip here...',
-            maxLength: '1200',
-            className: 'new-trip-description'
-        },
-        {
-            name: 'key_takeaway',
-            element: 'input',
-            placeholder: '- Click to add a Trip Quote or Top Tip -',
-            maxLength: '50',
-            className: 'new-trip-takeaway'
-        }
-    ]
 
     for (const item of staticFields) {
         const { name, element, textContent, placeholder, maxLength, className } = item;
@@ -65,11 +67,50 @@ export const renderNewTrip = () => {
         initBlurEvent(newElement, name)
         pageContainer.appendChild(newElement)
     }
+    } else {
+    // set pageContainer
+    pageContainer.name = tripId;
 
+    // get trip data & set input fields with trip values
+    axios.get(`/user/trips/${tripId}`)
+    .then(dbRes => {
+        console.log(dbRes);
+
+        staticFields[1].value = dbRes.data[0].trip_name;
+        staticFields[2].value = dbRes.data[0].hero_image_url;
+        staticFields[3].value = dbRes.data[0].description;
+        staticFields[4].value = dbRes.data[0].key_takeaway;
+
+        for (const item of staticFields) {
+            const { name, element, textContent, placeholder, maxLength, className, value } = item;
+            const newElement = document.createElement(element);
+            if (name) newElement.name = name;
+            if (textContent) newElement.textContent = textContent;
+            if (placeholder) newElement.placeholder = placeholder;
+            if (maxLength) newElement.maxLength = maxLength;
+            if (className) newElement.className = className;
+            if (value) newElement.value = value;
+            initBlurEvent(newElement, name)
+            pageContainer.appendChild(newElement)
+        }
+        worldMap.style.backgroundImage = `url("${dbRes.data[0].hero_image_url}")`
+
+        axios.get(`/user/trips/activities/${tripId}`)
+        .then(dbRes => {
+            dbRes.data.forEach(row => {
+                const newDiv = document.createElement('div');
+                const form = generateForm(row.gm_type, newDiv, row);
+                pageContainer.insertBefore(form, pageContainer.lastChild);
+            })
+        })
+        .catch(err => console.log(err));
+    })
+}
     // render options bar
     if (page.childElementCount <= 2) {
         renderOptionsBar();
     };
+
 }
 
 
@@ -162,12 +203,21 @@ const createContainer = (data, parentClass) => {
 
         if (type === 'airline' || type === 'hotel' || type === 'activity') {
             if (includeFloat) createFloatingElement(wrappedElement, '+', 'new-trip-icon-float')
-        };
-
-        wrappedElement.addEventListener('click', () => {
+            // event listener to buttons to generate relevant form
+            wrappedElement.addEventListener('click', () => {
             const form = generateForm(type, newElement);
             pageContainer.insertBefore(form, pageContainer.lastChild);
-        })
+            })
+        } else if (type === 'post') {
+            // event lisenter for post trip button
+
+            wrappedElement.addEventListener('click', () => {
+                const tripId = pageContainer.name;
+                // axios.get('user/trips')
+                console.log('click')
+            })
+        }
+
         arr.push(wrappedElement);
     }
     return layout.wrap(arr, parentClass);
@@ -356,8 +406,6 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         if (activityRow) {
             wrappedForm.id = activityRow.id;
         }
-        console.log(wrappedForm.id);
-        console.log(activityRow.id);
         if (e.target.textContent == 'Delete') {
             e.target.textContent = 'Confirm'
             e.target.classList.add('confirm')
@@ -395,7 +443,6 @@ export const generateForm = (dataType, icon, activityRow=null) => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-
         const formData = new FormData(form)
         const data = {
         tripId: tripId,
@@ -432,7 +479,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
             return
         }
 
-            axios.post('/user/trips', combinedData)
+        axios.post('/user/trips', combinedData)
             .then(dbRes => {
                 const itineraryId = dbRes.data.itineraryId;
                 wrappedForm.id = itineraryId;
