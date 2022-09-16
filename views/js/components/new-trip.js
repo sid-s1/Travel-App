@@ -168,12 +168,12 @@ const createContainer = (data, parentClass) => {
             pageContainer.insertBefore(form, pageContainer.lastChild);
             })
         } else if (type === 'post') {
-            // event lisenter for post trip button
-            
+            // event lisenter for post trip button            
             wrappedElement.addEventListener('click', () => {
                 const tripId = pageContainer.name;
-                // axios.get('user/trips')
-                console.log('click')
+                axios.get(`user/trips/status/${tripId}`)
+                    .then(() => console.log('trip POSTED'))
+                    .catch(() => console.log('Trip could not be posted'))
             })
         }
    
