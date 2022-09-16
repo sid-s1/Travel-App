@@ -154,11 +154,11 @@ const createContainer = (data, parentClass) => {
 
 // create Floating element and attach it to the target element
 // pass in 3 paramaters - element to attach to, what content you'd like to appear in the float, class to attach for styling
-const createFloatingElement = (attachTo, content, floatClass) => {
+export const createFloatingElement = (attachTo, content, floatClass) => {
     attachTo.classList.add('allow-float');
     const float = document.createElement('div');
     float.className = `float ${floatClass}`;
-    float.textContent = content;
+    float.innerHTML = content;
     attachTo.appendChild(float);
     return float
 }

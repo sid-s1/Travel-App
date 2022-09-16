@@ -3,6 +3,7 @@ import { dateExtractor } from "./date-extractor.js"
 import { viewTrip } from "./view-trip.js"
 import { createBookmarkIcon } from "./bookmarks.js"
 import { HtmlElements } from "./html-elements.js"
+import { createFloatingElement } from "./new-trip.js"
 
 export const renderSearchBar = () => {
 
@@ -221,11 +222,18 @@ export const renderTrips = (data, appLocation) => {
                         viewTrip(row.trip_id);
                     })
                     tripContainer.id = `trip${row.trip_id}`;
-                    // if (loggedInUserId) {
-                    //     const bookmark = createBookmarkIcon(row.trip_id)
-                    //     console.log(bookmark);
-                    //     tripContainer.appendChild(bookmark);
-                    // }
+
+                    if (loggedInUserId) {
+
+                        createBookmarkIcon(row.trip_id)
+                            .then(response => {
+                                console.log(response.innerHTML)
+                                console.log(tripContainer)
+                                createFloatingElement(tripContainer, response.innerHTML, 'bookmark-float')
+                                })                                    
+                            .catch(err => console.log('bookmark promise not here'))
+                    }
+
                     returnObj.resultsCont.push(tripContainer);
                 }
             } else if (appLocation === 'my-trips') {
@@ -267,7 +275,8 @@ export const renderTrips = (data, appLocation) => {
                 <h3>${startDate} to ${endDate}</h3>
                 <p>${row.trip_descr}</p>
                 `
-                tripContainer.addEventListener('click', () => {
+                tripContainer.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     console.log(`Trip id '${row.trip_id}' clicked`);
                     viewTrip(row.trip_id);
                 })

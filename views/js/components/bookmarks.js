@@ -31,13 +31,13 @@ export const createBookmarkIcon = async (tripId) => {
     const bookmarkOnIcon = document.createElement('i');
     bookmarkOnIcon.className = 'fa-solid fa-star bookmark-on';
     bookmarkOnIcon.title = 'un-Bookmark trip';
+    
     bookmarkSpan.addEventListener('click', (e) => {
         console.log('toggle Bookmark');
         toggleBookmark(tripId);
     });
     const bookmarkCheck = await checkBookmarkExistsForUser(tripId);
     console.log('bookmark check here:');
-    console.log(bookmarkCheck);
     if (bookmarkCheck.data.length === 0) {
         bookmarkOffIcon.style.display = 'inline';
         bookmarkOnIcon.style.display = 'none';
@@ -47,7 +47,6 @@ export const createBookmarkIcon = async (tripId) => {
     }
     bookmarkSpan.appendChild(bookmarkOffIcon);
     bookmarkSpan.appendChild(bookmarkOnIcon);
-    console.log(bookmarkSpan);
     return bookmarkSpan;
 }
 
