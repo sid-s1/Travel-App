@@ -12,6 +12,7 @@ export const countVotes = (tripId) => {
         .catch(err => console.log(err))
 };
 
+
 export const viewTrip = (id) => {
     const loggedInUserId = Number(localStorage.getItem('userId'));
     console.log(`logged in as user ${loggedInUserId} looking at trip ${id}`);
@@ -38,6 +39,7 @@ export const viewTrip = (id) => {
 
     const showcaseLikeButton = document.createElement('span');
     const showcasedislikeButton = document.createElement('span');
+    let bookmark;
 
     showcaseLikeButton.innerHTML = `
     <i class="fa-thin fa-thumbs-up showcase-like-dislike-icons"></i>
@@ -52,7 +54,6 @@ export const viewTrip = (id) => {
 
     editTripButton.textContent = 'Edit Trip';
     deleteTripButton.textContent = 'Delete Trip';
-
 
     countVotes(id)
         .then(countResponse => {
@@ -91,13 +92,11 @@ export const viewTrip = (id) => {
                                 <h4>${tripDetails[0].trip_name}</h4>
                                 <h5>${formattedStartDate} - ${formattedEndDate}</h5>
                                 `;
-                                const bookmark = createBookmarkIcon(id);
-                                bookmark.then(result => {
-                                    console.log(result);
-                                    tripHeader.appendChild(result);
-                                })
-                                // console.log(bookmark);
-                                // tripHeader.appendChild(bookmark);
+
+                        // INSERT BOOKMARK
+                        createBookmarkIcon(id)
+                        .then(response => tripHeader.appendChild(response))
+                        .catch(err => console.log('bookmark promise not here'))
 
                         coverPhoto.src = tripDetails[0].hero_image_url;
 
@@ -208,6 +207,7 @@ export const viewTrip = (id) => {
                     })
                     .catch(error => reject(error))
             });
+
             p.then(() => {
                 descriptionContainer.appendChild(descriptionContent);
                 pageContainer.append(tripHeader, modifyTripContainer, photoContainer, descriptionContainer, keyTakeaway, activitiesContainer);

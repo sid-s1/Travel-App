@@ -24,6 +24,14 @@ const Bookmarks = {
         return db.query(sql,[userId, tripId])
         .then(dbRes => dbRes)
     },
+    getBookmark: (userId, tripId) => {
+        const sql = `SELECT id
+        FROM bookmarked
+        WHERE user_id =$1
+        AND trip_id = $2`
+        return db.query(sql,[userId, tripId])
+        .then(dbRes => dbRes)
+    },
     deleteBookmark: (userId, tripId) => {
         const sql = `DELETE FROM bookmarked
         WHERE user_id = $1

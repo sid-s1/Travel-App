@@ -15,33 +15,30 @@ export const renderBookmarks = () => {
     })
 }
 
-const checkBookmarkExistsForUser = (tripId, loggedInUserId) => {
-    axios.get(`/user/bookmarks/${tripId}/${loggedInUserId}`)
-    .then(dbRes => {
-        return dbRes;
-    })
+const checkBookmarkExistsForUser = (tripId) => {
+    return axios.get(`/user/bookmarks/check/${tripId}`)
+    .then(dbRes => dbRes)
     .catch(err => console.log(err));
 }
 
 export const createBookmarkIcon = async (tripId) => {
-    const loggedInUserId = localStorage.getItem('userId');
     const bookmarkSpan = document.createElement('span');
     bookmarkSpan.className = 'bookmark';
     bookmarkSpan.id = `bookmark-trip${tripId}`;
     const bookmarkOffIcon = document.createElement('i');
     bookmarkOffIcon.className = 'fa-light fa-star bookmark-off';
+    bookmarkOffIcon.title = 'Bookmark trip';
     const bookmarkOnIcon = document.createElement('i');
     bookmarkOnIcon.className = 'fa-solid fa-star bookmark-on';
+    bookmarkOnIcon.title = 'un-Bookmark trip';
     bookmarkSpan.addEventListener('click', (e) => {
         console.log('toggle Bookmark');
         toggleBookmark(tripId);
     });
-    const response = await checkBookmarkExistsForUser(tripId, loggedInUserId);
-    // const response = {
-    //     rowCount: 0
-    // }
-    console.log(`async response: ${response}`)
-    if (response.length === 0) {
+    const bookmarkCheck = await checkBookmarkExistsForUser(tripId);
+    console.log('bookmark check here:');
+    console.log(bookmarkCheck);
+    if (bookmarkCheck.data.length === 0) {
         bookmarkOffIcon.style.display = 'inline';
         bookmarkOnIcon.style.display = 'none';
     } else {
@@ -50,6 +47,7 @@ export const createBookmarkIcon = async (tripId) => {
     }
     bookmarkSpan.appendChild(bookmarkOffIcon);
     bookmarkSpan.appendChild(bookmarkOnIcon);
+    console.log(bookmarkSpan);
     return bookmarkSpan;
 }
 
@@ -70,16 +68,7 @@ const toggleBookmark = (tripId) => {
 }
 
 const createBookmark = (tripId) => {
-    const userId = localStorage.getItem('userId');
-    const form = document.createElement('form');
-    form.innerHTML = `<input type='hidden' name='user-id' value='${userId}'>
-    <input type='hidden' name='trip-id' value='${tripId}'>`
-    const formData = new FormData(form);
-    const data = {
-        tripId: formData.get('trip-id'),
-        userId: formData.get('user-id')
-      };
-    axios.post('/user/bookmarks', data)
+    axios.post(`/user/bookmarks/${tripId}`)
     .then(response => {
         console.log('bookmark created');
         console.log(response);
@@ -90,16 +79,7 @@ const createBookmark = (tripId) => {
 }
 
 const deleteBookmark = (tripId) => {
-    const userId = localStorage.getItem('userId');
-    const form = document.createElement('form');
-    form.innerHTML = `<input type='hidden' name='user-id' value='${userId}'>
-    <input type='hidden' name='trip-id' value='${tripId}'>`
-    const formData = new FormData(form);
-    const data = {
-        tripId: formData.get('trip-id'),
-        userId: formData.get('user-id')
-      };
-    axios.delete('/user/bookmarks', data)
+    axios.delete(`/user/bookmarks/${tripId}`)
     .then(response => {
         console.log('bookmark deleted');
         console.log(response);

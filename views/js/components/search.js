@@ -223,6 +223,7 @@ export const renderTrips = (data, appLocation) => {
                     tripContainer.id = `trip${row.trip_id}`;
                     // if (loggedInUserId) {
                     //     const bookmark = createBookmarkIcon(row.trip_id)
+                    //     console.log(bookmark);
                     //     tripContainer.appendChild(bookmark);
                     // }
                     returnObj.resultsCont.push(tripContainer);

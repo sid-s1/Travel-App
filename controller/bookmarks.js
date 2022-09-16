@@ -33,24 +33,30 @@ router.get('/all/:userId', (request, response) => {
     })
 });
 
-router.get('/:tripId/:userId', (request, response) => {
-    const userId = request.params.userId;
+router.get('/check/:tripId', (request, response) => {
+    const userId = request.session.user_id;
     const tripId = request.params.tripId;
+    console.log(`user: ${userId}, trip: ${tripId}`)
     Bookmarks.checkBookmarkExists(userId, tripId)
     .then(dbRes => {
-        return dbRes;
+        console.log(`match: ${dbRes.rowCount}`)
+        return response.json(dbRes.rows)
     })
+    .catch(err => console.log(err))
 });
 
-router.post('/', (request, response) => {
-    const tripId = request.body.tripId;
-    const userId = request.body.userId;
+router.post('/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    const userId = request.session.user_id;
     Bookmarks.checkBookmarkExists(userId, tripId)
     .then(dbRes => {
         if (dbRes.rowCount === 0) {
             Bookmarks.createBookmark(userId, tripId)
             .then(dbRes => {
-                return response.json({message: 'bookmark created ok'})
+                Bookmarks.getBookmark(userId, tripId)
+                .then(dbRes => {
+                    return response.json({BookmarkId: dbRes.rows[0].id})
+                })
             })
             .catch(err => console.log(err))
         } else {
@@ -60,21 +66,22 @@ router.post('/', (request, response) => {
     })
 })
 
-router.delete('/', (request, response) => {
-    const tripId = request.body.tripId;
-    const userId = request.body.userId;
+router.delete('/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    const userId = request.session.user_id;
+    console.log(`about to delete bookmark of trip ${tripId} for user ${userId}`)
     Bookmarks.checkBookmarkExists(userId, tripId)
     .then(dbRes => {
         if (dbRes.rowCount > 0) {
             Bookmarks.deleteBookmark(userId, tripId)
             .then(dbRes => {
+                console.log(dbRes.rows);
                 return response.json({message: 'bookmark successfully deleted'})
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log(err));
         } else {
             return response.json({message: 'bookmark doesn\'t exist'})
         }
-        console.log(dbRes.rows);
     })
 })
 
