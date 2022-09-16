@@ -346,11 +346,18 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         }
     }
 
+
+
     const deleteButton = document.createElement('button');
     deleteButton.className = 'float new-trip-delete-button';
     deleteButton.innerText = 'Delete'
     deleteButton.classList.add('delete');
     deleteButton.addEventListener('click', (e) => {
+        if (activityRow) {
+            wrappedForm.id = activityRow.id;
+        }
+        console.log(wrappedForm.id);
+        console.log(activityRow.id);
         if (e.target.textContent == 'Delete') {
             e.target.textContent = 'Confirm'
             e.target.classList.add('confirm')
@@ -399,7 +406,7 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         rating: formData.get('rating')
         }
 
-        console.log(data)
+        console.log(data);
 
         const combinedData = {
             ...data,
@@ -408,8 +415,9 @@ export const generateForm = (dataType, icon, activityRow=null) => {
 
         if (activityRow) {
             wrappedForm.id = activityRow.id;
-            axios.patch(`/user/trips/edit/activity/${activityRow.id}`, data)
+            axios.patch(`/user/trips/activity/${activityRow.id}`, data)
             .then(dbRes => {
+                console.log(dbRes);
                 saveButton.classList.toggle('saved')
                 saveButton.textContent = 'Saved'
                 saveButton.disabled = true;

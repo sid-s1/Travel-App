@@ -30,11 +30,7 @@ router.delete('/delete/:tripId', (request, response) => {
         .catch(err => response.json('Trip could not be deleted!'))
 });
 
-router.patch('/edit/:tripId', (request, response) => {
-    return response.json('Editing trip...');
-});
-
-router.patch('/edit/activity/:activityId', (request, response) => {
+router.patch('/activity/:activityId', (request, response) => {
     const activityId = request.params.activityId;
     const startDate = request.body.startDate;
     const endDate = request.body.endDate;
@@ -42,7 +38,7 @@ router.patch('/edit/activity/:activityId', (request, response) => {
     Trip.updateActivity(activityId, startDate, endDate, rating)
     .then(dbRes => response.json(`Activity ${activityId} updated successfully`))
     .catch(err => response.json(`Activity ${activityId} not updated`))
-})
+});
 
 // ADD NEW TRIP
 router.post('/', (request, response) => {
