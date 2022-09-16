@@ -360,14 +360,6 @@ export const generateForm = (dataType, icon, activityRow=null) => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // error prevention - ensure user has entered a valid airline/hotel or activity
-        if (!isValidItem) {
-            const firstInput = form.childNodes[0].childNodes[1]
-            firstInput.focus()
-            firstInput.select()
-            alert(`Please enter a valid ${itineraryType}`)
-            return
-        }
 
         const formData = new FormData(form)
         const data = {
@@ -386,8 +378,22 @@ export const generateForm = (dataType, icon, activityRow=null) => {
 
         if (activityRow) {
             wrappedForm.id = activityRow.id;
-            // axios patch here
+            axios.patch(`/user/trips/edit/activity/${activityRow.id}`, data)
+            .then(dbRes => {
+                saveButton.classList.toggle('saved')
+                saveButton.textContent = 'Saved'
+                saveButton.disabled = true;
+            })
         } else {
+        // error prevention - ensure user has entered a valid airline/hotel or activity
+        if (!isValidItem) {
+            const firstInput = form.childNodes[0].childNodes[1]
+            firstInput.focus()
+            firstInput.select()
+            alert(`Please enter a valid ${itineraryType}`)
+            return
+        }
+
             axios.post('/user/trips', combinedData)
             .then(dbRes => {
                 const itineraryId = dbRes.data.itineraryId;
