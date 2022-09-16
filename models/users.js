@@ -59,6 +59,12 @@ const User = {
     return db.query(sql, [id])
       .then(dbRes => dbRes)
       .catch(err => err)
+  },
+  checkAtleastOneAdmin: () => {
+    const sql = 'SELECT COUNT(*) FROM users WHERE admin = true';
+    return db.query(sql)
+      .then(dbRes => dbRes)
+      .catch(err => err)
   }
 }
 

@@ -9,6 +9,11 @@ export const renderAdminPanel = () => {
 
     adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
 
+    // add check to make sure not all admins are turned into normal users
+    // add check to make sure the user currently logged in is not deleted
+    // bring up a modal for feedback on when something is done
+    // collaps other sections when you come to this page
+
     axios.get('/user/session/allUsers')
         .then(response => {
             const users = response.data;
@@ -22,7 +27,6 @@ export const renderAdminPanel = () => {
                 emailField.required = true;
 
                 const securityQuestionField = document.createElement('select');
-                console.log(securityQuestions[user.security_qn]);
                 securityQuestionField.classList.add('user-details');
                 securityQuestionField.classList.add('security-qn-dropdown');
                 securityQuestionField.required = true;

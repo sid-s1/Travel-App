@@ -57,31 +57,43 @@ router.get('/allUsers', (request, response) => {
 // Update user details
 router.put('/updateUser', (request, response) => {
     const { id, email, username, password, secQns, secAns, admin } = request.body;
-    if (password === 'undefined' && secAns === 'undefined') {
-        User.updateUserWithoutPasswordOrSecAnswer(id, email, username, secQns, admin)
-            .then(dbRes => response.json({ message: 'Updated user details without password and security answer!' }))
-            .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
-    }
-    else {
-        if (password === 'undefined') {
-            const hashedSecurityAnswer = generateHash(secAns);
-            User.updateUserWithoutPassword(id, email, username, secQns, hashedSecurityAnswer, admin)
-                .then(dbRes => response.json({ message: 'Updated user details without password!' }))
-                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
-        }
-        else if (secAns === 'undefined') {
-            const hashedPassword = generateHash(password);
-            User.updateUserWithoutSecAnswer(id, email, username, hashedPassword, secQns, admin)
-                .then(dbRes => response.json({ message: 'Updated user details without security answer!' }))
-                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
-        }
-        else {
-            const hashedPassword = generateHash(password);
-            const hashedSecurityAnswer = generateHash(secAns);
-            User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
-                .then(dbRes => response.json({ message: 'Updated user details!' }))
-                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
-        }
+    if (admin === 'false') {
+        User.checkAtleastOneAdmin()
+            .then(dbRes => {
+                const adminCount = dbRes.rows[0].count;
+                if (adminCount > 1) {
+                    if (password === 'undefined' && secAns === 'undefined') {
+                        User.updateUserWithoutPasswordOrSecAnswer(id, email, username, secQns, admin)
+                            .then(dbRes => response.json({ message: 'Updated user details without password and security answer!' }))
+                            .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+                    }
+                    else {
+                        if (password === 'undefined') {
+                            const hashedSecurityAnswer = generateHash(secAns);
+                            User.updateUserWithoutPassword(id, email, username, secQns, hashedSecurityAnswer, admin)
+                                .then(dbRes => response.json({ message: 'Updated user details without password!' }))
+                                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+                        }
+                        else if (secAns === 'undefined') {
+                            const hashedPassword = generateHash(password);
+                            User.updateUserWithoutSecAnswer(id, email, username, hashedPassword, secQns, admin)
+                                .then(dbRes => response.json({ message: 'Updated user details without security answer!' }))
+                                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+                        }
+                        else {
+                            const hashedPassword = generateHash(password);
+                            const hashedSecurityAnswer = generateHash(secAns);
+                            User.updateUser(id, email, username, hashedPassword, secQns, hashedSecurityAnswer, admin)
+                                .then(dbRes => response.json({ message: 'Updated user details!' }))
+                                .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+                        }
+                    }
+                }
+                else {
+                    return response.json({ message: 'You cannot unset the last admin!' })
+                }
+            })
+            .catch(err => err)
     }
 });
 
