@@ -5,6 +5,7 @@ import { createBookmarkIcon } from './bookmarks.js';
 // import { renderEditTripForm } from './edit-trip.js';
 import { renderNewTrip } from './new-trip.js';
 import { renderMyTrips } from './my-trips.js';
+import { layout } from './layout.js';
 
 export const countVotes = (tripId) => {
     return axios.get(`/user/votes/${tripId}`)
@@ -36,6 +37,7 @@ export const viewTrip = (id) => {
     const coverPhoto = document.createElement('img');
     const descriptionContainer = document.createElement('div');
     const descriptionContent = document.createElement('p');
+    descriptionContent.className = 'view-trip-text'
     const keyTakeaway = document.createElement('p');
     const activitiesContainer = document.createElement('div');
 
@@ -92,8 +94,8 @@ export const viewTrip = (id) => {
                         const citiesForHeader = document.createElement('p');
 
                         tripHeader.innerHTML = `
-                                <h4>${tripDetails[0].trip_name}</h4>
-                                <h5>${formattedStartDate} - ${formattedEndDate}</h5>
+                                <h1>${tripDetails[0].trip_name}</h1>
+                                <h3>${formattedStartDate} - ${formattedEndDate}</h3>
                                 `;
 
                         // INSERT BOOKMARK
@@ -153,11 +155,11 @@ export const viewTrip = (id) => {
                         })
 
                         descriptionContent.innerHTML = `
-                                <h4>Description</h4>
+                                <h2>Description</h2>
                                 ${tripDetails[0].description}
                                 `;
                         keyTakeaway.innerHTML = `
-                                <h4> | ${tripDetails[0].key_takeaway} | </h4>
+                                <h2 style='color:cadetblue'><i> "${tripDetails[0].key_takeaway}"</i></h2>
                                 `;
 
                         // adding city names that the user has visited in this trip; if it was the last city in the loop we do not need the final comma
@@ -212,7 +214,8 @@ export const viewTrip = (id) => {
                             }
 
                             activitiesDiv.append(activityLogo, activityDetails);
-                            activitiesContainer.appendChild(activitiesDiv);
+                            const wrappedDiv = layout.wrap([activitiesDiv], 'view-trip-itin-item')
+                            activitiesContainer.appendChild(wrappedDiv);
                         }
                         resolve();
                     })
