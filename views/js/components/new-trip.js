@@ -10,6 +10,7 @@ export const renderNewTrip = () => {
 
     // create new trip row in db and return trip id
     const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
     axios.put(`user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
@@ -20,18 +21,20 @@ export const renderNewTrip = () => {
     const staticFields = [
         {
             element: 'h1',
-            textContent: '- ADD NEW TRIP -'
+            textContent: `HI ${username.toUpperCase()}! LET'S BUILD THAT TRIP!`
         },
         {
             name: 'trip_name',
             element: 'input',
-            placeholder: 'Enter trip title',
-            maxLength: '100'
+            placeholder: '- Click to enter Trip Title -',
+            maxLength: '100',
+            className: 'new-trip-title'
         },
         {
             name: 'hero_image_url',
             element: 'input',
-            placeholder: 'Enter image url'
+            placeholder: '- Click to add Image URL -',
+            className: 'new-trip-url'
         },
         {
             name: 'description',
@@ -43,8 +46,9 @@ export const renderNewTrip = () => {
         {
             name: 'key_takeaway',
             element: 'input',
-            placeholder: 'Your key takeaway from the trip',
-            maxLength: '50'
+            placeholder: '- Click to add a Trip Quote or Top Tip -',
+            maxLength: '50',
+            className: 'new-trip-takeaway'
         }
     ]
 
@@ -370,6 +374,8 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         endDate: formData.get('end-date'),
         rating: formData.get('rating')
         }
+
+        console.log(data)
 
         const combinedData = {
             ...data,

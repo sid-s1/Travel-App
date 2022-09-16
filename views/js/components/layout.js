@@ -30,6 +30,7 @@ export const layout = {
         badges.style.gridArea = '2/2/2/3';
         sidePanel.style.gridArea = '2/1/4/2';
         page.style.gridArea = '3/2/3/3';
+        pageContainer.style.width = '90%';
     },
     login: () => {
         page.style.display = 'flex';

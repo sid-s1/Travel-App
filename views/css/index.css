@@ -5,6 +5,9 @@ label {
 * {
     transition: 1s ease all;
 }
+h1 {
+    font-family: 'DynaPuff', cursive;
+}
 /* BODY */
 body {
     margin: 0;
@@ -121,6 +124,9 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    background-image: url('https://images.pexels.com/photos/3155666/pexels-photo-3155666.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+    background-size: cover;
+    
 }
 #page-container {
     flex-direction: column;
