@@ -67,6 +67,10 @@ export const renderNewTrip = (tripId=null) => {
         initBlurEvent(newElement, name)
         pageContainer.appendChild(newElement)
     }
+        // render options bar for new trip
+        if (page.childElementCount <= 2) {
+            renderOptionsBar();
+        };
     } else {
     // set pageContainer
     pageContainer.name = tripId;
@@ -104,13 +108,13 @@ export const renderNewTrip = (tripId=null) => {
             })
         })
         .catch(err => console.log(err));
-    })
-}
-    // render options bar
-    if (page.childElementCount <= 2) {
-        renderOptionsBar();
-    };
+        // render options bar for edit trip
+        if (page.childElementCount <= 2) {
+            renderOptionsBar();
+        };
 
+        })
+    }
 }
 
 
