@@ -115,6 +115,28 @@ export const renderAdminPanel = () => {
                 deleteUser.textContent = 'Delete';
                 deleteUser.classList.add('user-edit-action-btn');
 
+                deleteUser.addEventListener('click', (e) => {
+                    const userId = user.id;
+
+                    if (e.target.textContent == 'Delete') {
+                        e.target.textContent = 'Confirm';
+                        e.target.classList.add('confirm-delete-user');
+                        setTimeout(() => {
+                            e.target.textContent = 'Delete';
+                            e.target.classList.remove('confirm-delete-user');
+                        }, 3000)
+                    }
+                    else {
+                        axios.delete(`/user/session/${userId}`)
+                            .then(response => {
+                                renderAdminPanel();
+                                console.log(response.data);
+                            })
+                            .catch(err => console.log(err))
+
+                    }
+                });
+
                 userEditActionList.append(updateUserDetails, deleteUser);
 
                 userRow.append(emailField, usernameField, newPasswordField, securityQuestionField, securityAnswerField, adminInputTrue, adminInputFalse, userEditActionList);

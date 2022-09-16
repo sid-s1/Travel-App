@@ -46,3 +46,9 @@
 .user-edit-action-btn:hover {
     background-color: aqua;
 }
+.confirm-delete-user {
+    background-color: rgb(251, 130, 130);
+}
+.confirm-delete-user:hover {
+    background-color: red;
+}

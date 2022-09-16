@@ -122,6 +122,14 @@ router.post('/signup', (request, response) => {
             console.log(err);
             return response.sendStatus(500);
         })
-})
+});
+
+router.delete('/:id', (request, response) => {
+    const id = request.params.id;
+    console.log('user id in controller - ', id);
+    User.deleteUser(id)
+        .then(dbRes => response.json({ message: `User id ${id} deleted!` }))
+        .catch(err => response.status(500).json({ message: 'Something went wrong on our end' }))
+});
 
 module.exports = router;

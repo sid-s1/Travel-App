@@ -53,6 +53,12 @@ const User = {
     return db.query(sql, [username, email, secQns, admin, id])
       .then(dbRes => dbRes)
       .catch(err => err)
+  },
+  deleteUser: (id) => {
+    const sql = 'DELETE FROM users WHERE id = $1';
+    return db.query(sql, [id])
+      .then(dbRes => dbRes)
+      .catch(err => err)
   }
 }
 
