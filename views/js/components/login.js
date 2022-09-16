@@ -6,6 +6,8 @@ export const renderLogin = () => {
     // set view
     layout.reset();
     layout.login();
+    pageContainer.style.width = '65%'
+    pageContainer.style.border = '2px solid black'
 
     const form = createLoginForm()
     const wrapped = layout.wrap([form], 'form-container');
