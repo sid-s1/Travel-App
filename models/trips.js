@@ -109,6 +109,12 @@ const Trip = {
         .then(res => res)
         .catch(err => err)
     },
+    deleteLocation: (itineraryId) => {
+        const sql = 'DELETE FROM trip_locations WHERE (SELECT COUNT(*) FROM itinerary_items WHERE trip_location_id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)) = 1 AND id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)';        
+        return db.query(sql, [itineraryId])
+        .then(res => res)
+        .catch(err => err)
+    },
     writeActivity: (name, gm_api_city_id, type) => {
         const sql = 'INSERT INTO activities (activity_name, gm_api_place_id, gm_type) SELECT $1, $2, $3 WHERE NOT EXISTS (SELECT id FROM activities WHERE gm_api_place_id = $2)';
         return db.query(sql, [name, gm_api_city_id, type])
@@ -133,7 +139,15 @@ const Trip = {
         .then(res => res)
         .catch(err => err)
     },
-
+    deleteItinItem: (itineraryId) => {
+        const sql = 'DELETE FROM itinerary_items WHERE id = $1';        
+        return db.query(sql, [itineraryId])
+        .then(res => res)
+        .catch(err => err)
+    }
 }
 
 module.exports = Trip;
+
+
+
