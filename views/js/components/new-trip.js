@@ -1,6 +1,7 @@
 import { layout, page, pageContainer, worldMap } from './layout.js';
 import { airlines } from './airlines.js';
 import { initAutocomplete } from './autocomplete.js';
+import { dateExtractor } from './date-extractor.js';
 
 export const renderNewTrip = () => {
     // set view
@@ -9,9 +10,12 @@ export const renderNewTrip = () => {
 
     // create new trip row in db and return trip id
     const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
+
     axios.put(`user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
+            console.log(tripId)
             pageContainer.name = tripId;
         }).catch(err => err)
 
@@ -19,31 +23,34 @@ export const renderNewTrip = () => {
     const staticFields = [
         {
             element: 'h1',
-            textContent: '- ADD NEW TRIP -'
+            textContent: `HI ${username.toUpperCase()}! LET'S BUILD THAT TRIP!`
         },
         {
             name: 'trip_name',
             element: 'input',
-            placeholder: 'Enter trip title',
-            maxLength: '100'
+            placeholder: '- Click to enter Trip Title -',
+            maxLength: '50',
+            className: 'new-trip-title'
         },
         {
             name: 'hero_image_url',
             element: 'input',
-            placeholder: 'Enter image url'
+            placeholder: '- Click to add Image URL -',
+            className: 'new-trip-url'
         },
         {
             name: 'description',
             element: 'textarea',
-            placeholder: 'Tell us about your trip / experiences / free-text-field',
-            maxLength: '1500',
+            placeholder: 'Enter details about your trip here...',
+            maxLength: '1200',
             className: 'new-trip-description'
         },
         {
             name: 'key_takeaway',
             element: 'input',
-            placeholder: 'Your key takeaway from the trip',
-            maxLength: '50'
+            placeholder: '- Click to add a Trip Quote or Top Tip -',
+            maxLength: '50',
+            className: 'new-trip-takeaway'
         }
     ]
 
@@ -65,33 +72,46 @@ export const renderNewTrip = () => {
     };
 }
 
+
+
 // attach Blur event listener to automatically update db
-const initBlurEvent = (element, route) => {
+export const initBlurEvent = (element, route) => {
     if (!route) return
     let requireSave = false;
     element.addEventListener('change', () => {
          requireSave = true;
     })
+    element.addEventListener('click', (e) => {
+        e.target.select();
+    })
     return element.addEventListener('blur', (e) => {
+        const userInput = e.target.value
         const data = {
             route: route,
-            userInput: e.target.value,
+            userInput: userInput,
             tripId: pageContainer.name
         }
         if (route === 'hero_image_url') {
-            worldMap.style.backgroundImage = `url("${e.target.value}")`
-            worldMap.style.minHeight = '300px'
+            if (checkURL(userInput)) {
+                worldMap.style.backgroundImage = `url("${userInput}")`
+                worldMap.style.minHeight = '300px'
+            } else {
+                e.target.value = 'invalid URL'
+            }
+        }
+        if (route === 'key_takeaway') {
+            const addQuotes = userInput.replaceAll('"', '')
+            e.target.value = `"${addQuotes}"`
         }
         if (requireSave) {
             return axios.patch(`user/trips/static`, data)
                 .then(() => requireSave = false)
                 .catch(err => err)
         }
-
     });
 }
 
-const renderOptionsBar = () => {
+export const renderOptionsBar = () => {
     // data to render buttons for adding items to itinerary
     const data = [
         {
@@ -119,6 +139,7 @@ const renderOptionsBar = () => {
             type: 'post',
             element: 'button',
             elementContent: 'POST TRIP',
+            elementClass: 'post-trip',
             ContainerClass: 'new-trip-icon-box',
         }
     ]
@@ -141,12 +162,21 @@ const createContainer = (data, parentClass) => {
 
         if (type === 'airline' || type === 'hotel' || type === 'activity') {
             if (includeFloat) createFloatingElement(wrappedElement, '+', 'new-trip-icon-float')
-        };
-
-        wrappedElement.addEventListener('click', () => {
+            // event listener to buttons to generate relevant form
+            wrappedElement.addEventListener('click', () => {
             const form = generateForm(type, newElement);
             pageContainer.insertBefore(form, pageContainer.lastChild);
-        })
+            })
+        } else if (type === 'post') {
+            // event lisenter for post trip button
+            
+            wrappedElement.addEventListener('click', () => {
+                const tripId = pageContainer.name;
+                // axios.get('user/trips')
+                console.log('click')
+            })
+        }
+   
         arr.push(wrappedElement);
     }
     return layout.wrap(arr, parentClass);
@@ -163,7 +193,17 @@ export const createFloatingElement = (attachTo, content, floatClass) => {
     return float
 }
 
-export const generateForm = (dataType, icon, dataExists) => {
+export const checkURL = (url) => {
+    try {
+        new URL(url);
+    }
+    catch(e) {
+      return false;
+    }
+    return true;
+}
+
+export const generateForm = (dataType, icon, activityRow=null) => {
     // data to control which inputs get rendered
     const data =
     {
@@ -214,8 +254,19 @@ export const generateForm = (dataType, icon, dataExists) => {
 
     const renderItem = data.renderItem;
 
+    if (activityRow) {
+        renderItem[0].value = activityRow.activity_name;
+        if (renderItem[0].name === 'airline' || renderItem[0].name === 'activity' || renderItem[0].name === 'hotel') {
+            renderItem[0].element = 'p'
+            renderItem[0].textContent = activityRow.activity_name;
+        }
+        renderItem[1].value = dateExtractor.htmlInputDate(activityRow.activity_start_date);
+        renderItem[2].value = dateExtractor.htmlInputDate(activityRow.activity_end_date);
+        renderItem[3].value = activityRow.activity_rating;
+    }
+
     for (const i in renderItem) {
-        const { element, type, placeholder, name, inputClass, required } = renderItem[i];
+        const { element, type, placeholder, name, inputClass, required, value, textContent } = renderItem[i];
         if ((itineraryType !== 'airline' || name !== 'end-date') && (itineraryType !== 'activity' || name !== 'end-date')) {
             const newElement = document.createElement(element);
             if (type) newElement.type = type;
@@ -223,6 +274,8 @@ export const generateForm = (dataType, icon, dataExists) => {
             if (name) newElement.name = name;
             if (inputClass) newElement.className = `${inputClass} input-autocomplete`;
             if (required) newElement.required = true;
+            if (value) newElement.value = value;
+            if (textContent) newElement.textContent = textContent;
 
             const label = document.createElement('label');
             const labelContent = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
@@ -343,16 +396,7 @@ export const generateForm = (dataType, icon, dataExists) => {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        // error prevention - ensure user has entered a valid airline/hotel or activity
-        if (!isValidItem) {
-            const firstInput = form.childNodes[0].childNodes[1]
-            firstInput.focus()
-            firstInput.select()
-            alert(`Please enter a valid ${itineraryType}`)
-            return
-        }
-
+              
         const formData = new FormData(form)
         const data = {
         tripId: tripId,
@@ -363,9 +407,29 @@ export const generateForm = (dataType, icon, dataExists) => {
         rating: formData.get('rating')
         }
 
+        console.log(data)
+
         const combinedData = {
             ...data,
             ...googleApiData
+        }
+
+        if (activityRow) {
+            wrappedForm.id = activityRow.id;
+            axios.patch(`/user/trips/edit/activity/${activityRow.id}`, data)
+            .then(() => {
+                saveButton.classList.toggle('saved')
+                saveButton.textContent = 'Saved'
+                saveButton.disabled = true;
+            })
+        } else {
+        // error prevention - ensure user has entered a valid airline/hotel or activity
+        if (!isValidItem) {
+            const firstInput = form.childNodes[0].childNodes[1]
+            firstInput.focus()
+            firstInput.select()
+            alert(`Please enter a valid ${itineraryType}`)
+            return
         }
 
         axios.post('/user/trips', combinedData)
@@ -376,6 +440,7 @@ export const generateForm = (dataType, icon, dataExists) => {
                 saveButton.textContent = 'Saved'
                 saveButton.disabled = true;
             });
+        }
     })
 
     const gridIcon = layout.wrap([icon], 'new-trip-grid-icon');
