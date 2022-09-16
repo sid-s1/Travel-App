@@ -7,6 +7,8 @@ label {
 }
 h1 {
     font-family: 'DynaPuff', cursive;
+    font-size: 30px;
+    color: rgb(22, 94, 127);
 }
 /* BODY */
 body {
@@ -105,6 +107,7 @@ body {
 /* CORE DOM TARGETS */
 #logo {
     font-family: 'DynaPuff', cursive;
+
 }
 .container {
     padding-top: 75px;
@@ -151,8 +154,6 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
-    /* background-image: url('https://images.unsplash.com/photo-1566935843973-aed0ddcb0ecc'); */
-    /* background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1'); */
     background-position: center;
     background-size: cover;
     height: auto;

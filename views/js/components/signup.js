@@ -1,4 +1,4 @@
-import { layout } from "./layout.js";
+import { layout, pageContainer} from "./layout.js";
 import { HtmlElements } from './html-elements.js';
 import { renderLogin } from "./login.js";
 
@@ -14,7 +14,9 @@ export const securityQuestions = {
 export const renderSignup = () => {
     layout.reset();
     layout.signup();
-    const pageContainer = document.getElementById('page-container');
+    
+    pageContainer.style.width = '65%'
+    pageContainer.style.border = '2px solid black'
 
     const signupContainer = HtmlElements.createDiv('signup-container');
 
