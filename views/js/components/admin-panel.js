@@ -140,12 +140,17 @@ export const renderAdminPanel = (loggedInUserId) => {
                     const userId = user.id;
 
                     if (e.target.textContent == 'Delete') {
-                        e.target.textContent = 'Confirm';
-                        e.target.classList.add('confirm-delete-user');
-                        setTimeout(() => {
-                            e.target.textContent = 'Delete';
-                            e.target.classList.remove('confirm-delete-user');
-                        }, 3000)
+                        if (userId === loggedInUserId) {
+                            alert('You cannot delete yourself!');
+                        }
+                        else {
+                            e.target.textContent = 'Confirm';
+                            e.target.classList.add('confirm-delete-user');
+                            setTimeout(() => {
+                                e.target.textContent = 'Delete';
+                                e.target.classList.remove('confirm-delete-user');
+                            }, 3000)
+                        }
                     }
                     else {
                         axios.delete(`/user/session/${userId}`)
@@ -154,7 +159,6 @@ export const renderAdminPanel = (loggedInUserId) => {
                                 console.log(response.data);
                             })
                             .catch(err => console.log(err))
-
                     }
                 });
 
