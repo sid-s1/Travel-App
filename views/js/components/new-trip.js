@@ -157,7 +157,7 @@ const createFloatingElement = (attachTo, content, floatClass) => {
     return float
 }
 
-const generateForm = (dataType, icon, dataExists) => {
+export const generateForm = (dataType, icon, dataExists) => {
     // data to control which inputs get rendered
     const data =
     {

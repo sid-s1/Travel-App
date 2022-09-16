@@ -3,6 +3,7 @@ import { HtmlElements } from './html-elements.js';
 import { viewTrip } from './view-trip.js';
 import { initAutocomplete } from './autocomplete.js';
 import { dateExtractor } from './date-extractor.js';
+import { generateForm } from './new-trip.js'
 
 export const renderEditTripForm = (tripId) => {
     layout.reset();
@@ -65,12 +66,12 @@ export const renderEditTripForm = (tripId) => {
 
         axios.get(`/user/trips/activities/${tripId}`)
         .then(dbRes => {
-
+            console.log(dbRes);
 
             dbRes.data.forEach(row => {
                 const newDiv = document.createElement('div');
                 console.log(`${row.gm_type} start date ${dateExtractor.htmlInputDate(row.activity_start_date)}`);
-                const form = generateForm(row.gm_type, newDiv, row);
+                const form = generateEditForm(row.gm_type, newDiv, row);
                 pageContainer.insertBefore(form, pageContainer.lastChild);
             })
 
@@ -140,6 +141,12 @@ export const renderOptionsBar = () => {
     ]
 
     const optionsBar = createContainer(data, 'new-trip-options')
+    const saveTripButton = HtmlElements.createButton('button', 'Save changes', 'save-trip-button');
+    saveTripButton.addEventListener('click', (e) => {
+        e.preventDefault;
+        console.log('save trip form');
+    })
+    optionsBar.appendChild(saveTripButton);
     pageContainer.appendChild(optionsBar);
 }
 
@@ -179,7 +186,7 @@ const createFloatingElement = (attachTo, content, floatClass) => {
     return float
 }
 
-const generateForm = (dataType, icon, dataRow) => {
+const generateEditForm = (dataType, icon, dataRow) => {
     // data to control which inputs get rendered
     const data =
     {
@@ -191,7 +198,7 @@ const generateForm = (dataType, icon, dataRow) => {
                 placeholder: `Enter ${dataType} name...`,
                 element: 'input',
                 type: 'text',
-                inputClass: 'new-trip-input',
+                inputClass: (dataRow.id) ? 'edit-trip-input' : 'new-trip-input',
                 required: true,
                 value: dataRow.activity_name
             },
@@ -199,24 +206,24 @@ const generateForm = (dataType, icon, dataRow) => {
                 name: 'start-date',
                 element: 'input',
                 type: 'date',
-                inputClass: 'new-trip-input',
+                inputClass: (dataRow.id) ? 'edit-trip-input' : 'new-trip-input',
                 required: true,
-                defaultValue: dateExtractor.htmlInputDate(dataRow.activity_start_date)
+                value: dateExtractor.htmlInputDate(dataRow.activity_start_date)
             },
             {
                 name: 'end-date',
                 element: 'input',
                 type: 'date',
-                inputClass: 'new-trip-input',
+                inputClass: (dataRow.id) ? 'edit-trip-input' : 'new-trip-input',
                 required: true,
-                defaultValue: dateExtractor.htmlInputDate(dataRow.activity_end_date)
+                value: dateExtractor.htmlInputDate(dataRow.activity_end_date)
             },
             {
                 name: 'rating',
                 placeholder: 'Enter rating between 0 - 5',
                 element: 'input',
                 type: 'number',
-                inputClass: 'new-trip-input',
+                inputClass: (dataRow.id) ? 'edit-trip-input' : 'new-trip-input',
                 required: true,
                 value: dataRow.activity_rating
             }
@@ -225,6 +232,7 @@ const generateForm = (dataType, icon, dataRow) => {
 
     const form = document.createElement('form');
     form.className = `allow-float ${data.formClass}`;
+    form.id = `itin-${dataRow.id}`;
 
     // Function scope variables
     const tripId = pageContainer.name;
@@ -234,7 +242,7 @@ const generateForm = (dataType, icon, dataRow) => {
 
     const renderItem = data.renderItem;
     for (const i in renderItem) {
-        const { element, type, placeholder, name, inputClass, required, value, defaultValue } = renderItem[i];
+        const { element, type, placeholder, name, inputClass, required, value } = renderItem[i];
         if ((itineraryType !== 'airline' || name !== 'end-date') && (itineraryType !== 'activity' || name !== 'end-date')) {
             const newElement = document.createElement(element);
             if (type) newElement.type = type;
@@ -243,7 +251,6 @@ const generateForm = (dataType, icon, dataRow) => {
             if (inputClass) newElement.className = `${inputClass} input-autocomplete`;
             if (required) newElement.required = true;
             if (value) newElement.value = value;
-            if (defaultValue) newElement.defaultValue = defaultValue;
 
             const label = document.createElement('label');
             const labelContent = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
