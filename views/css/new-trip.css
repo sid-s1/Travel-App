@@ -156,16 +156,29 @@
     height: 65px;
     width: 65px;
     padding: 8px;
-    cursor: copy;
     border: solid black 1px;
     border-radius: 10px;
     transition: 0.3s ease all;
-    background-color: rgb(194, 255, 148);
+    background-color: rgb(244, 217, 131);
 }
 .post-trip:hover {
     font-weight: bold;
-    border: solid rgb(2, 217, 55) 3px;
+    border: solid rgb(182, 147, 5) 3px;
     cursor: pointer;
+}
+.posted {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 65px;
+    padding: 8px;
+    border: solid black 1px;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    background-color: rgb(176, 251, 163);
+    transition: 0.3s ease all;
 }
 .new-trip-title, .new-trip-url, .new-trip-takeaway {
     margin: 10px 0;

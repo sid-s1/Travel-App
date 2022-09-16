@@ -1,6 +1,12 @@
 .trip-page-cover-pic {
-    width: 50%;
     height: auto;
+    max-height: 250px;
+    width: 400px;
+    border-radius: 10px;
+    border: solid black 2px;
+    padding: 10px;
+    background-color: rgb(22, 27, 74);
+    margin: 0 60px;
 }
 
 #likeDislike-and-coverPhoto {
@@ -47,6 +53,8 @@
 
 .itinerary-row {
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .itinerary-column {
@@ -57,10 +65,25 @@
 .itinerary-item-details {
     display: flex;
     flex-direction: column;
+    width: 300px;
+    font-size: 16px;
 }
 
 .trip-addon-icon {
-    width: 5%;
+    width: 50px;
     height: auto;
     margin: 1rem;
+}
+.view-trip-itin-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+}
+.view-trip-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

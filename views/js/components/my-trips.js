@@ -1,5 +1,6 @@
 import { layout, pageContainer } from "./layout.js"
 import { renderTrips, executeSearch } from "./search.js"
+import { userStats } from "./user-stats.js";
 
 export const renderMyTrips = () => {
     // set view
@@ -10,6 +11,8 @@ export const renderMyTrips = () => {
         .then(response => {
             const result = response.data.rows[0];
             const loggedInUserId = result.id;
+
+            userStats.display(loggedInUserId);
 
             layout.myTrips();
             const resultsContainer = document.createElement('div');
@@ -29,5 +32,5 @@ export const renderMyTrips = () => {
             pageContainer.appendChild(resultsContainer);
             resultsContainer.innerHTML = 'test';
             executeSearch(form);
-    })
+        })
 }

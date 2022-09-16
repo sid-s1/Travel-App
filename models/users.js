@@ -25,7 +25,7 @@ const User = {
       .then(dbRes => dbRes)
   },
   getAllUsers: () => {
-    const sql = 'SELECT * FROM users';
+    const sql = 'SELECT * FROM users ORDER BY username ASC';
     return db.query(sql)
       .then(dbRes => dbRes)
       .catch(err => err)

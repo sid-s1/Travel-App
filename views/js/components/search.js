@@ -291,7 +291,6 @@ export const renderTrips = (data, appLocation) => {
                 tripContainer.innerHTML = `
                 <h2><i class="fa-light fa-suitcase"></i>  ${row.trip_name} - ${countries} (${row.trip_status})</h2>
                 <h3>${cities}</h3>
-                <h3>${startDate} to ${endDate}</h3>
                 <p>${row.trip_descr}</p>
                 `
                 tripContainer.addEventListener('click', (e) => {

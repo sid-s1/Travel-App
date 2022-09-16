@@ -173,14 +173,19 @@ body {
     left: 5px;
     bottom: 15px;
     padding: 10px;
-    height: 120px;
-    width: 160px;
+    height: fit-content;
+    width: fit-content;
     border: solid rgba(241, 241, 241, 0.649) 3px;
     border-radius: 25px;
     background-color: rgba(255, 255, 255, 0.80);
 }
-#stats-username {
-    margin-bottom: 1rem;
+#profile-stats > div > div {
+    font-size: 1vw;
+}
+#stats-username > h1 {
+    color: black;
+    font-size: 1.5vw;
+    margin: 0;
 }
 
 /* GENERAL REUSABLE CLASSES */
@@ -206,7 +211,6 @@ body {
         height: 30px;
         width: 30px;
         margin: 0px 10px;
-        /* margin: 8px 15px; */
     }
     .side-panel-options {
         justify-content: center;

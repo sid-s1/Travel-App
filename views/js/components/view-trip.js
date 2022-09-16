@@ -4,14 +4,16 @@ import { likeDislikeAction } from './like-dislike.js';
 import { createBookmarkIcon } from './bookmarks.js';
 // import { renderEditTripForm } from './edit-trip.js';
 import { renderNewTrip } from './new-trip.js';
-
-// if session does not return anything, display default trip view without modify buttons or like-dislike buttons
+import { renderMyTrips } from './my-trips.js';
+import { layout } from './layout.js';
 
 export const countVotes = (tripId) => {
     return axios.get(`/user/votes/${tripId}`)
         .then(response => response.data)
         .catch(err => console.log(err))
 };
+
+// ALSO IF THEY TRY TO LIKE/DISLIKE WHEN NOT LOGGED IN
 
 
 export const viewTrip = (id) => {
@@ -35,6 +37,7 @@ export const viewTrip = (id) => {
     const coverPhoto = document.createElement('img');
     const descriptionContainer = document.createElement('div');
     const descriptionContent = document.createElement('p');
+    descriptionContent.className = 'view-trip-text'
     const keyTakeaway = document.createElement('p');
     const activitiesContainer = document.createElement('div');
 
@@ -91,14 +94,14 @@ export const viewTrip = (id) => {
                         const citiesForHeader = document.createElement('p');
 
                         tripHeader.innerHTML = `
-                                <h4>${tripDetails[0].trip_name}</h4>
-                                <h5>${formattedStartDate} - ${formattedEndDate}</h5>
+                                <h1>${tripDetails[0].trip_name}</h1>
+                                <h3>${formattedStartDate} - ${formattedEndDate}</h3>
                                 `;
 
                         // INSERT BOOKMARK
                         createBookmarkIcon(id)
-                        .then(response => tripHeader.appendChild(response))
-                        .catch(err => console.log('bookmark promise not here'))
+                            .then(response => tripHeader.appendChild(response))
+                            .catch(err => console.log('bookmark promise not here'))
 
                         coverPhoto.src = tripDetails[0].hero_image_url;
 
@@ -144,19 +147,19 @@ export const viewTrip = (id) => {
                             }
                             else {
                                 axios.delete(`/user/trips/delete/${id}`)
-                                    .then(response => console.log(response.data))
+                                    .then(response => {
+                                        renderMyTrips();
+                                    })
                                     .catch(err => console.log(err))
-
-                                renderProfile(loggedInUserId);
                             }
                         })
 
                         descriptionContent.innerHTML = `
-                                <h4>Description</h4>
+                                <h2>Description</h2>
                                 ${tripDetails[0].description}
                                 `;
                         keyTakeaway.innerHTML = `
-                                <h4> | ${tripDetails[0].key_takeaway} | </h4>
+                                <h2 style='color:cadetblue'><i> "${tripDetails[0].key_takeaway}"</i></h2>
                                 `;
 
                         // adding city names that the user has visited in this trip; if it was the last city in the loop we do not need the final comma
@@ -190,20 +193,29 @@ export const viewTrip = (id) => {
 
                             if (activity.gm_type === 'activity') {
                                 activityLogo.src = '../assets/clipboard-list-solid.svg';
+                                activityDetails.innerHTML = `
+                                <p>${activity.activity_name}</p>
+                                <p>${formattedStartDate}</p>
+                                `;
                             }
                             else if (activity.gm_type === 'airline') {
                                 activityLogo.src = '../assets/jet-fighter-up-solid.svg';
+                                activityDetails.innerHTML = `
+                                <p>${activity.activity_name}</p>
+                                <p>${formattedStartDate}</p>
+                                `;
                             }
                             else if (activity.gm_type === 'hotel') {
                                 activityLogo.src = '../assets/bed-solid.svg';
+                                activityDetails.innerHTML = `
+                                <p>${activity.activity_name}</p>
+                                <p>${formattedStartDate} - ${formattedEndDate}</p>
+                                `;
                             }
-                            activityDetails.innerHTML = `
-                            <p>${activity.activity_name}</p>
-                            <p>${formattedStartDate} - ${formattedEndDate}</p>
-                            `;
 
                             activitiesDiv.append(activityLogo, activityDetails);
-                            activitiesContainer.appendChild(activitiesDiv);
+                            const wrappedDiv = layout.wrap([activitiesDiv], 'view-trip-itin-item')
+                            activitiesContainer.appendChild(wrappedDiv);
                         }
                         resolve();
                     })

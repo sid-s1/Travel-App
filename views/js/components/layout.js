@@ -49,7 +49,6 @@ export const layout = {
         page.style.display = 'flex';
         badges.innerHTML = '';
         sidePanel.innerHTML = '';
-        pageContainer.innerHTML = 'PROFILE VIEW / LOGGED IN'; //delete once functional
     },
     publicHomepage: () => {
         worldMap.style.display = 'flex';
@@ -59,7 +58,7 @@ export const layout = {
         worldMap.innerHTML = '';
         pageContainer.innerHTML = '';
     },
-    exploreSearch: ()  => {
+    exploreSearch: () => {
         worldMap.style.display = 'flex';
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
@@ -88,5 +87,9 @@ export const layout = {
         sidePanel.style.display = 'flex';
         page.style.display = 'flex';
         pageContainer.innerHTML = '';
+    },
+    adminPanel: () => {
+        page.style.display = 'flex';
+        page.style.gridArea = '2/1/3/3';
     }
 }
