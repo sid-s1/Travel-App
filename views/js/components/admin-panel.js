@@ -141,7 +141,7 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                     console.log(data);
 
-                    const checkChange = (data.email !== user.email) || (data.username !== user.username) || (securityQn !== String(user.security_qn)) || (user.admin !== checkNewAdminStatus);
+                    const checkChange = (data.email !== user.email) || (data.username !== user.username) || (securityQn !== String(user.security_qn)) || (user.admin !== checkNewAdminStatus) || (newPasswordField.value.length > 0) || (securityAnswerField.value.length > 0);
 
                     if (checkChange === 1 || checkChange === true) {
                         axios.put('/user/session/updateUser', data)

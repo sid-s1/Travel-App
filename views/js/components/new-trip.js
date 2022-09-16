@@ -3,7 +3,7 @@ import { airlines } from './airlines.js';
 import { initAutocomplete } from './autocomplete.js';
 import { dateExtractor } from './date-extractor.js';
 
-export const renderNewTrip = (tripId=null) => {
+export const renderNewTrip = (tripId = null) => {
     // set view
     layout.reset();
     layout.newtrip();
@@ -11,108 +11,108 @@ export const renderNewTrip = (tripId=null) => {
     // create new trip row in db and return trip id
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
-    
-        // render static fields
-        const staticFields = [
-            {
-                element: 'h1',
-                textContent: (tripId) ? `HI ${username.toUpperCase()}! LET'S EDIT THAT TRIP!` : `HI ${username.toUpperCase()}! LET'S BUILD THAT TRIP!`
-            },
-            {
-                name: 'trip_name',
-                element: 'input',
-                placeholder: '- Click to enter Trip Title -',
-                maxLength: '50',
-                className: 'new-trip-title'
-            },
-            {
-                name: 'hero_image_url',
-                element: 'input',
-                placeholder: '- Click to add Image URL -',
-                className: 'new-trip-url'
-            },
-            {
-                name: 'description',
-                element: 'textarea',
-                placeholder: 'Enter details about your trip here...',
-                maxLength: '1200',
-                className: 'new-trip-description'
-            },
-            {
-                name: 'key_takeaway',
-                element: 'input',
-                placeholder: '- Click to add a Trip Quote or Top Tip -',
-                maxLength: '50',
-                className: 'new-trip-takeaway'
-            }
-        ]
+
+    // render static fields
+    const staticFields = [
+        {
+            element: 'h1',
+            textContent: (tripId) ? `HI ${username.toUpperCase()}! LET'S EDIT THAT TRIP!` : `HI ${username.toUpperCase()}! LET'S BUILD THAT TRIP!`
+        },
+        {
+            name: 'trip_name',
+            element: 'input',
+            placeholder: '- Click to enter Trip Title -',
+            maxLength: '50',
+            className: 'new-trip-title'
+        },
+        {
+            name: 'hero_image_url',
+            element: 'input',
+            placeholder: '- Click to add Image URL -',
+            className: 'new-trip-url'
+        },
+        {
+            name: 'description',
+            element: 'textarea',
+            placeholder: 'Enter details about your trip here...',
+            maxLength: '1200',
+            className: 'new-trip-description'
+        },
+        {
+            name: 'key_takeaway',
+            element: 'input',
+            placeholder: '- Click to add a Trip Quote or Top Tip -',
+            maxLength: '50',
+            className: 'new-trip-takeaway'
+        }
+    ]
 
     if (!tripId) {
-    axios.put(`/user/trips/${userId}`)
-        .then(dbRes => {
-            const tripId = dbRes.data.rows[0].id;
-            pageContainer.name = tripId;
-        }).catch(err => err)
+        axios.put(`/user/trips/${userId}`)
+            .then(dbRes => {
+                const tripId = dbRes.data.rows[0].id;
+                pageContainer.name = tripId;
+            }).catch(err => err)
 
-
-    for (const item of staticFields) {
-        const { name, element, textContent, placeholder, maxLength, className } = item;
-        const newElement = document.createElement(element);
-        if (name) newElement.name = name;
-        if (textContent) newElement.textContent = textContent;
-        if (placeholder) newElement.placeholder = placeholder;
-        if (maxLength) newElement.maxLength = maxLength;
-        if (className) newElement.className = className;
-        initBlurEvent(newElement, name)
-        pageContainer.appendChild(newElement)
-    }
-        // render options bar for new trip
-        if (page.childElementCount <= 2) {
-            renderOptionsBar();
-        };
-    } else {
-    // set pageContainer
-    pageContainer.name = tripId;
-
-    // get trip data & set input fields with trip values
-    axios.get(`/user/trips/${tripId}`)
-    .then(dbRes => {
-        console.log(dbRes);
-
-        staticFields[1].value = dbRes.data[0].trip_name;
-        staticFields[2].value = dbRes.data[0].hero_image_url;
-        staticFields[3].value = dbRes.data[0].description;
-        staticFields[4].value = dbRes.data[0].key_takeaway;
 
         for (const item of staticFields) {
-            const { name, element, textContent, placeholder, maxLength, className, value } = item;
+            const { name, element, textContent, placeholder, maxLength, className } = item;
             const newElement = document.createElement(element);
             if (name) newElement.name = name;
             if (textContent) newElement.textContent = textContent;
             if (placeholder) newElement.placeholder = placeholder;
             if (maxLength) newElement.maxLength = maxLength;
             if (className) newElement.className = className;
-            if (value) newElement.value = value;
             initBlurEvent(newElement, name)
             pageContainer.appendChild(newElement)
         }
-        worldMap.style.backgroundImage = `url("${dbRes.data[0].hero_image_url}")`
-
-        axios.get(`/user/trips/activities/${tripId}`)
-        .then(dbRes => {
-            dbRes.data.forEach(row => {
-                const newDiv = document.createElement('div');
-                const form = generateForm(row.gm_type, newDiv, row);
-                pageContainer.insertBefore(form, pageContainer.lastChild);
-            })
-        })
-        .catch(err => console.log(err));
-        // render options bar for edit trip
+        // render options bar for new trip
         if (page.childElementCount <= 2) {
             renderOptionsBar();
         };
+    } else {
+        // set pageContainer
+        pageContainer.name = tripId;
 
-        })
+        // get trip data & set input fields with trip values
+        axios.get(`/user/trips/${tripId}`)
+            .then(dbRes => {
+                console.log(dbRes);
+
+                staticFields[1].value = dbRes.data[0].trip_name;
+                staticFields[2].value = dbRes.data[0].hero_image_url;
+                staticFields[3].value = dbRes.data[0].description;
+                staticFields[4].value = dbRes.data[0].key_takeaway;
+
+                for (const item of staticFields) {
+                    const { name, element, textContent, placeholder, maxLength, className, value } = item;
+                    const newElement = document.createElement(element);
+                    if (name) newElement.name = name;
+                    if (textContent) newElement.textContent = textContent;
+                    if (placeholder) newElement.placeholder = placeholder;
+                    if (maxLength) newElement.maxLength = maxLength;
+                    if (className) newElement.className = className;
+                    if (value) newElement.value = value;
+                    initBlurEvent(newElement, name)
+                    pageContainer.appendChild(newElement)
+                }
+                worldMap.style.backgroundImage = `url("${dbRes.data[0].hero_image_url}")`
+
+                axios.get(`/user/trips/activities/${tripId}`)
+                    .then(dbRes => {
+                        dbRes.data.forEach(row => {
+                            const newDiv = document.createElement('div');
+                            const form = generateForm(row.gm_type, newDiv, row);
+                            pageContainer.insertBefore(form, pageContainer.lastChild);
+                        })
+                    })
+                    .catch(err => console.log(err));
+                // render options bar for edit trip
+                if (page.childElementCount <= 2) {
+                    renderOptionsBar();
+                };
+
+            })
     }
 }
 
@@ -123,7 +123,7 @@ export const initBlurEvent = (element, route) => {
     if (!route) return
     let requireSave = false;
     element.addEventListener('change', () => {
-         requireSave = true;
+        requireSave = true;
     })
     element.addEventListener('click', (e) => {
         e.target.select();
@@ -135,7 +135,7 @@ export const initBlurEvent = (element, route) => {
             userInput: e.target.value,
             tripId: pageContainer.name
         }
-        
+
         if (route === 'hero_image_url') {
             if (checkURL(userInput)) {
                 worldMap.style.backgroundImage = `url("${userInput}")`
@@ -153,8 +153,9 @@ export const initBlurEvent = (element, route) => {
         if (requireSave) {
             axios.patch(`/user/trips/static`, data)
                 .then(() => {
-                    requireSave = false}
-                    )
+                    requireSave = false
+                }
+                )
                 .catch(err => err)
         }
     });
@@ -212,8 +213,8 @@ const createContainer = (data, parentClass) => {
             if (includeFloat) createFloatingElement(wrappedElement, '+', 'new-trip-icon-float')
             // event listener to buttons to generate relevant form
             wrappedElement.addEventListener('click', () => {
-            const form = generateForm(type, newElement);
-            pageContainer.insertBefore(form, pageContainer.lastChild);
+                const form = generateForm(type, newElement);
+                pageContainer.insertBefore(form, pageContainer.lastChild);
             })
         } else if (type === 'post') {
             // event lisenter for post trip button - also get min and max dates to add to db          
@@ -248,13 +249,13 @@ export const checkURL = (url) => {
     try {
         new URL(url);
     }
-    catch(e) {
-      return false;
+    catch (e) {
+        return false;
     }
     return true;
 }
 
-export const generateForm = (dataType, icon, activityRow=null) => {
+export const generateForm = (dataType, icon, activityRow = null) => {
     // data to control which inputs get rendered
     const data =
     {
@@ -455,12 +456,12 @@ export const generateForm = (dataType, icon, activityRow=null) => {
 
         const formData = new FormData(form)
         const data = {
-        tripId: tripId,
-        type: itineraryType,
-        name: formData.get(itineraryType),
-        startDate: formData.get('start-date'),
-        endDate: formData.get('end-date'),
-        rating: formData.get('rating')
+            tripId: tripId,
+            type: itineraryType,
+            name: formData.get(itineraryType),
+            startDate: formData.get('start-date'),
+            endDate: formData.get('end-date'),
+            rating: formData.get('rating')
         }
 
         const combinedData = {
@@ -471,30 +472,30 @@ export const generateForm = (dataType, icon, activityRow=null) => {
         if (activityRow) {
             wrappedForm.id = activityRow.id;
             axios.patch(`/user/trips/activity/${activityRow.id}`, data)
-            .then(dbRes => {
-                console.log(dbRes);
-                saveButton.classList.toggle('saved')
-                saveButton.textContent = 'Saved'
-                saveButton.disabled = true;
-            })
+                .then(dbRes => {
+                    console.log(dbRes);
+                    saveButton.classList.toggle('saved')
+                    saveButton.textContent = 'Saved'
+                    saveButton.disabled = true;
+                })
         } else {
-        // error prevention - ensure user has entered a valid airline/hotel or activity
-        if (!isValidItem) {
-            const firstInput = form.childNodes[0].childNodes[1]
-            firstInput.focus()
-            firstInput.select()
-            alert(`Please enter a valid ${itineraryType}`)
-            return
-        }
-        console.log(combinedData);
-        axios.post('/user/trips', combinedData)
-            .then(dbRes => {
-                const itineraryId = dbRes.data.itineraryId;
-                wrappedForm.id = itineraryId;
-                saveButton.classList.toggle('saved')
-                saveButton.textContent = 'Saved'
-                saveButton.disabled = true;
-            });
+            // error prevention - ensure user has entered a valid airline/hotel or activity
+            if (!isValidItem) {
+                const firstInput = form.childNodes[0].childNodes[1]
+                firstInput.focus()
+                firstInput.select()
+                alert(`Please enter a valid ${itineraryType}`)
+                return
+            }
+            console.log(combinedData);
+            axios.post('/user/trips', combinedData)
+                .then(dbRes => {
+                    const itineraryId = dbRes.data.itineraryId;
+                    wrappedForm.id = itineraryId;
+                    saveButton.classList.toggle('saved')
+                    saveButton.textContent = 'Saved'
+                    saveButton.disabled = true;
+                });
         }
     })
 

@@ -1,3 +1,4 @@
+import { userStats } from './user-stats.js';
 import { countVotes } from './view-trip.js';
 
 export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) => {
@@ -35,6 +36,7 @@ export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) =
             .then(voteCount => {
                 likeCount.textContent = `+ ${voteCount.likes}`;
                 dislikeCount.textContent = `- ${voteCount.dislikes}`;
+                userStats.updateLikesDisplay(loggedInUserId);
             })
     };
 
