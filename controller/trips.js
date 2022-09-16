@@ -20,11 +20,11 @@ router.get('/status/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.getMinDate(tripId)
         .then(dbRes => {
-            const minDate = dbRes.rows[0].min;
+            const minDate = dbRes.rows[0].max;
             console.log(`~~~~~ MIN DATE: ${minDate} ~~~~~`)
             Trip.getMaxDate(tripId)
                 .then(dbRes => {
-                    const maxDate = dbRes.rows[0].max
+                    const maxDate = dbRes.rows[0].min
                     console.log(`~~~~~ MAX DATE: ${maxDate} ~~~~~`)
                         Trip.postTrip(tripId, minDate, maxDate)
                             .then(() => response.json(`Trip Id posted: ${tripId}`))
