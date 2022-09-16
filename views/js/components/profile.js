@@ -49,6 +49,7 @@ export const renderProfile = (targetUserId) => {
     // Home frame
     const home = document.createElement('li');
     home.textContent = 'Home';
+    home.className = 'side-panel-list-item';
     const homeIcon = document.createElement('img');
     homeIcon.src = '../../assets/home_icon.png';
     homeIcon.className = 'side-panel-icon';
@@ -62,6 +63,7 @@ export const renderProfile = (targetUserId) => {
     // My Trips frame
     const trips = document.createElement('li');
     trips.textContent = 'My Trips';
+    trips.className = 'side-panel-list-item';
     const tripsIcon = document.createElement('img');
     tripsIcon.src = '../../assets/trips_icon.png';
     tripsIcon.className = 'side-panel-icon';
@@ -77,6 +79,7 @@ export const renderProfile = (targetUserId) => {
     // Bookmarks frame
     const bookmarks = document.createElement('li');
     bookmarks.textContent = 'Bookmarks';
+    bookmarks.className = 'side-panel-list-item';
     const bookmarksIcon = document.createElement('img');
     bookmarksIcon.src = '../../assets/bookmarks_icon.png';
     bookmarksIcon.className = 'side-panel-icon';
@@ -92,6 +95,7 @@ export const renderProfile = (targetUserId) => {
     // Explore frame
     const explore = document.createElement('li');
     explore.textContent = 'Explore';
+    explore.className = 'side-panel-list-item';
     const exploreIcon = document.createElement('img');
     exploreIcon.src = '../../assets/explore_icon.png'
     exploreIcon.className = 'side-panel-icon';
@@ -106,6 +110,7 @@ export const renderProfile = (targetUserId) => {
     // Add Trip frame
     const addTrip = document.createElement('li');
     addTrip.textContent = '+ Add Trip';
+    addTrip.className = 'side-panel-list-item';
     const addTripIcon = document.createElement('img');
     addTripIcon.src = '../../assets/newtrip_icon.png';
     addTripIcon.className = 'side-panel-icon';

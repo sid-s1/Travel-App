@@ -22,12 +22,23 @@ router.put('/:userId', (request, response) => {
         .then(dbRes => response.json(dbRes))
         .catch(err => response.json(err))
 });
-
+// Delete entire trip Id
 router.delete('/delete/:tripId', (request, response) => {
     const tripId = request.params.tripId;
     Trip.delete(tripId)
         .then(dbRes => response.json(`Trip deleted! ${tripId}`))
         .catch(err => response.json('Trip could not be deleted!'))
+});
+// Delete location row if only used once in table, otherwise only delete itinerary item
+router.delete('/:itineraryId', (request, response) => {
+    console.log(`>>>> ITINERARY ITEM - DELETE REQUESTED <<<<<`)
+    const itineraryId = request.params.itineraryId;
+    Trip.deleteLocation(itineraryId)
+        .then(() => {
+            Trip.deleteItinItem(itineraryId)
+                .then(dbRes => response.json(`Itinerary Item deleted: ${itineraryId}`))
+                .catch(err => response.json('Itinerary Item could not be deleted!'))
+        })
 });
 
 router.put('/edit/:tripId', (request, response) => {
@@ -36,12 +47,41 @@ router.put('/edit/:tripId', (request, response) => {
 
 // ADD NEW TRIP
 router.post('/', (request, response) => {
-    const { tripId, userId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
-
+    const { tripId, placeId, name, city, country, startDate, endDate, rating, type } = request.body;
+    
+    // Save pathway for AIRLINE
     if (type === 'airline') {
-        // Render save path
-    }
+        Trip.writeAirline(name, type)
+            .then(() => {
+                Trip.getAirline(name)
+                    .then(dbRes => {
+                        const airlineId = dbRes.rows[0].id;
+                        console.log(`~~~~~ AIRLINE ACTIVITY ID: ${airlineId} ~~~~~`)
+                        Trip.writeAirlineLocation(tripId)
+                            .then(() => {
+                                Trip.getAirlineLocation(tripId)
+                                    .then(dbRes => {
+                                        const locationId = dbRes.rows[0].id;
+                                        console.log(`~~~~~ AIRLINE LOCATION ID: ${locationId} ~~~~~`)
+                                        Trip.writeAirlineItinItem(locationId, airlineId, startDate, rating)
+                                            .then(() => {
+                                                Trip.getAirlineItinItem(locationId, airlineId, startDate)
+                                                    .then(dbRes => {
+                                                        const itinItemId = dbRes.rows[0].id;
+                                                        console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
+                                                        return response.json({itineraryId: itinItemId})
+                                                    })
+                                       
+                                    
+                                            })
 
+                                    })
+                            })
+                    })
+            })
+            .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+    } else {        
+    // Save pathway for HOTEL & ACTIVITY
     Trip.writeCountry(country)
         .then(() => {
             Trip.getCountry(country)
@@ -73,6 +113,7 @@ router.post('/', (request, response) => {
                                                                                 .then(dbRes => {
                                                                                     const itinItemId = dbRes.rows[0].id;
                                                                                     console.log(`~~~~~ ITINERARY ITEM ID: ${itinItemId} ~~~~~`)
+                                                                                    return response.json({itineraryId: itinItemId})
                                                                                 })                                                                            
                                                                         })
                                                                 })
@@ -85,7 +126,9 @@ router.post('/', (request, response) => {
                 })
         })
         .catch(err => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+    }
 })
+
 
 // STATIC FIELDS SAVE ON BLUR
 router.patch('/static', (request, response) => {
