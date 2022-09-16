@@ -11,9 +11,11 @@ export const renderNewTrip = () => {
     // create new trip row in db and return trip id
     const userId = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
+
     axios.put(`user/trips/${userId}`)
         .then(dbRes => {
             const tripId = dbRes.data.rows[0].id;
+            console.log(tripId)
             pageContainer.name = tripId;
         }).catch(err => err)
 
@@ -27,7 +29,7 @@ export const renderNewTrip = () => {
             name: 'trip_name',
             element: 'input',
             placeholder: '- Click to enter Trip Title -',
-            maxLength: '100',
+            maxLength: '50',
             className: 'new-trip-title'
         },
         {
@@ -39,8 +41,8 @@ export const renderNewTrip = () => {
         {
             name: 'description',
             element: 'textarea',
-            placeholder: 'Tell us about your trip / experiences / free-text-field',
-            maxLength: '1500',
+            placeholder: 'Enter details about your trip here...',
+            maxLength: '1200',
             className: 'new-trip-description'
         },
         {
@@ -74,20 +76,32 @@ export const renderNewTrip = () => {
 
 // attach Blur event listener to automatically update db
 export const initBlurEvent = (element, route) => {
-    if (!route) return
+    if (!route) return    
     let requireSave = false;
     element.addEventListener('change', () => {
          requireSave = true;
     })
+    element.addEventListener('click', (e) => {
+        e.target.select();
+    })
     return element.addEventListener('blur', (e) => {
+        const userInput = e.target.value
         const data = {
             route: route,
-            userInput: e.target.value,
+            userInput: userInput,
             tripId: pageContainer.name
         }
         if (route === 'hero_image_url') {
-            worldMap.style.backgroundImage = `url("${e.target.value}")`
-            worldMap.style.minHeight = '300px'
+            if (checkURL(userInput)) {
+                worldMap.style.backgroundImage = `url("${userInput}")`
+                worldMap.style.minHeight = '300px'
+            } else {
+                e.target.value = 'invalid URL'
+            }            
+        }
+        if (route === 'key_takeaway') {
+            const addQuotes = userInput.replaceAll('"', '')
+            e.target.value = `"${addQuotes}"`
         }
         if (requireSave) {
             return axios.patch(`user/trips/static`, data)
@@ -168,6 +182,16 @@ export const createFloatingElement = (attachTo, content, floatClass) => {
     float.innerHTML = content;
     attachTo.appendChild(float);
     return float
+}
+
+export const checkURL = (url) => {
+    try { 
+        new URL(url); 
+    }
+    catch(e) { 
+      return false; 
+    }
+    return true;
 }
 
 export const generateForm = (dataType, icon, activityRow=null) => {
@@ -389,6 +413,8 @@ export const generateForm = (dataType, icon, activityRow=null) => {
             ...data,
             ...googleApiData
         }
+
+        console.log(combinedData)
 
         axios.post('/user/trips', combinedData)
             .then(dbRes => {
