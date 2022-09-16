@@ -52,6 +52,8 @@ export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) =
 
     likeBtn.id = 'like-btn';
     dislikeBtn.id = 'dislike-btn';
+    likeBtn.setAttribute('title', 'Like Trip');
+    dislikeBtn.setAttribute('title', 'Dislike Trip');
     const buttonArray = [likeBtn, dislikeBtn];
 
     let likeBtnClicked = false;

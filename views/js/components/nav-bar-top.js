@@ -24,7 +24,6 @@ export const renderNavBar = () => {
         .then(response => {
             if (response) {
                 const userId = response.data.rows[0].id;
-                const userName = response.data.rows[0].username;
                 const adminStatus = response.data.rows[0].admin;
 
                 // LOGGED IN:
