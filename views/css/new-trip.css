@@ -159,3 +159,18 @@
     resize: none;
     margin: 20px auto;
 }
+.post-trip {
+    height: 65px;
+    width: 65px;
+    padding: 8px;
+    cursor: copy;
+    border: solid black 1px;
+    border-radius: 10px;
+    transition: 0.3s ease all;
+    background-color: rgb(194, 255, 148);
+}
+.post-trip:hover {
+    font-weight: bold;
+    border: solid rgb(2, 217, 55) 3px;
+    cursor: pointer;
+}
