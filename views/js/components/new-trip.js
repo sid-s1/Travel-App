@@ -115,6 +115,12 @@ const renderOptionsBar = () => {
             elementClass: 'fa-duotone fa-clipboard-list-check new-trip-icon',
             containerClass: 'new-trip-icon-box',
             includeFloat: true
+        },
+        {
+            type: 'post',
+            element: 'button',
+            elementContent: 'POST TRIP',
+            ContainerClass: 'new-trip-icon-box',
         }
     ]
 
@@ -125,6 +131,7 @@ const renderOptionsBar = () => {
 // Use data to store elements inside a container
 const createContainer = (data, parentClass) => {
     const arr = [];
+    console.log(data)
     for (const i in data) {
         const { type, element, elementContent, elementClass, containerClass, includeFloat } = data[i];
         const newElement = document.createElement(element);
@@ -207,6 +214,7 @@ export const generateForm = (dataType, icon, dataExists) => {
     let isValidItem = false; // use to track if suitable to enter into DB
 
     const renderItem = data.renderItem;
+
     for (const i in renderItem) {
         const { element, type, placeholder, name, inputClass, required } = renderItem[i];
         if ((itineraryType !== 'airline' || name !== 'end-date') && (itineraryType !== 'activity' || name !== 'end-date')) {
@@ -272,6 +280,9 @@ export const generateForm = (dataType, icon, dataExists) => {
                         .then(response => {
                             googleApiData = {};
                             googleApiData = response.data.location;
+                            if (!googleApiData.city) {
+                                googleApiData.city = 'notFound';
+                            }
                         })
                         .catch(err => console.log(err))
                 });
@@ -293,28 +304,44 @@ export const generateForm = (dataType, icon, dataExists) => {
     }
 
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
     deleteButton.className = 'float new-trip-delete-button';
-    deleteButton.addEventListener('click', () => {
-        // Change button state to 'Confirm' before deleting
-        // check if already saved and if so - remove from DB
-        // need to return & store itinerary_items ID number
-        let itinerary_item = true; // testing only
-        if (itinerary_item) {
-            console.log('itinerary id is present?');
-            wrappedForm.remove();
+    deleteButton.innerText = 'Delete'
+    deleteButton.classList.add('delete');
+    deleteButton.addEventListener('click', (e) => {
+        if (e.target.textContent == 'Delete') {
+            e.target.textContent = 'Confirm'
+            e.target.classList.add('confirm')
+            setTimeout(() => {
+                e.target.textContent = 'Delete'
+                e.target.classList.remove('confirm')
+            }, 3000)
         } else {
-            console.log('no id - remove safely');
-            wrappedForm.remove();
+            if (!wrappedForm.id) {
+                wrappedForm.remove();
+            } else {
+                // TARGET TRIP ID TO DELETE ITEMS FROM DB - not set up yet!
+                axios.delete(`/user/trips/${wrappedForm.id}`)
+                    .then(() => {
+                        wrappedForm.remove();
+                    }).catch(() => alert('Itinerary Item cannot be deleted'))
+            }
+
         }
-    });
+    })
 
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Save';
-    saveButton.className = 'float new-trip-save-button';
+    saveButton.className = 'float new-trip-save-button hidden';
 
     form.appendChild(saveButton)
     form.appendChild(deleteButton)
+
+    form.addEventListener('change', () => {
+        saveButton.classList.replace('hidden', 'visible')
+        saveButton.classList.remove('saved')
+        saveButton.textContent = 'Save'
+        saveButton.disabled = false;
+    })
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -339,14 +366,18 @@ export const generateForm = (dataType, icon, dataExists) => {
         rating: formData.get('rating')
         }
 
-        const combineData = {
+        const combinedData = {
             ...data,
             ...googleApiData
         }
 
-        axios.post('/user/trips', combineData)
+        axios.post('/user/trips', combinedData)
             .then(dbRes => {
-                console.log(`-*-*-*- ${dbRes.rows} -*-*-*-`)
+                const itineraryId = dbRes.data.itineraryId;
+                wrappedForm.id = itineraryId;
+                saveButton.classList.toggle('saved')
+                saveButton.textContent = 'Saved'
+                saveButton.disabled = true;
             });
     })
 
