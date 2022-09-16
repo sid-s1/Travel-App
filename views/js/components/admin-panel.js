@@ -11,14 +11,7 @@ export const renderAdminPanel = (loggedInUserId) => {
     const adminPanel = document.createElement('div');
     adminPanel.id = 'admin-panel';
 
-    adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
-
-    // add check to make sure not all admins are turned into normal users DONE
-    // add check to make sure currently logged in user is not turned to normal user DONE
-    // add check to make sure the user currently logged in is not deleted DONE
-    // bring up a modal for feedback on when something is done DONE
-    // collaps other sections when you come to this page DONE
-    // my trips instead of profile when delete trip DONE
+    adminPanel.innerHTML = '<h2 id="admin-panel-header">Admin Panel</h2>';
 
     axios.get('/user/session/allUsers')
         .then(response => {
@@ -64,12 +57,27 @@ export const renderAdminPanel = (loggedInUserId) => {
                 newPasswordField.placeholder = 'Enter new password';
                 newPasswordField.setAttribute('type', 'password');
 
+                const adminStatusDiv = document.createElement('div');
+                const adminStatusLabel = document.createElement('label');
+                adminStatusLabel.textContent = 'Admin';
+                adminStatusDiv.classList.add('admin-status-div');
+
                 const adminInputTrue = document.createElement('input');
                 adminInputTrue.setAttribute('type', 'radio');
                 adminInputTrue.setAttribute('name', `admin-status-${user.id}`);
+
+                adminStatusDiv.append(adminStatusLabel, adminInputTrue);
+
+                const userStatusDiv = document.createElement('div');
+                const userStatusLabel = document.createElement('label');
+                userStatusLabel.textContent = 'User';
+                userStatusDiv.classList.add('admin-status-div');
+
                 const adminInputFalse = document.createElement('input');
                 adminInputFalse.setAttribute('type', 'radio');
                 adminInputFalse.setAttribute('name', `admin-status-${user.id}`);
+
+                userStatusDiv.append(userStatusLabel, adminInputFalse);
 
                 adminInputTrue.classList.add('user-admin-radio');
                 adminInputFalse.classList.add('user-admin-radio');
@@ -202,7 +210,7 @@ export const renderAdminPanel = (loggedInUserId) => {
 
                 userEditActionList.append(updateUserDetails, deleteUser);
 
-                userRow.append(emailField, usernameField, newPasswordField, securityQuestionField, securityAnswerField, adminInputTrue, adminInputFalse, userEditActionList);
+                userRow.append(emailField, usernameField, newPasswordField, securityQuestionField, securityAnswerField, adminStatusDiv, userStatusDiv, userEditActionList);
                 adminPanel.appendChild(userRow);
             }
             pageContainer.appendChild(adminPanel);

@@ -11,26 +11,38 @@
 }
 .user-details-row {
     display: flex;
-    margin: 0.5rem;
+    margin: 0.2rem;
     border: 1px dotted grey;
+    font-size: 0.8rem;
     border-radius: 0.5em;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    transition: 0.2s ease all;
+    padding-inline-start: 1vw;
+    padding-inline-end: 1vw;
 }
 .user-edit-action-options {
     display: flex;
     padding-inline-start: 0;
 }
 .user-details {
-    margin: 0.2rem;
+    margin: 0rem;
+    border: 1px solid grey;
     border-radius: 0.5em;
     padding: 0.2rem;
-    width: 8rem;
-    height: 35%;
+    width: 10vw;
+    height: 25%;
+    font-size: 90%;
 }
 .security-qn-dropdown {
     width: fit-content;
+    height: fit-content;
+}
+.admin-status-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .user-admin-radio {
     width: 0.75rem;
@@ -41,7 +53,7 @@
     align-items: center;
     padding: 0.4rem;
     margin: 0.2rem;
-    border: 2px solid black;
+    border: 1px solid grey;
     border-radius: 0.5em;
     cursor: pointer;
     transition: 0.5s ease all;
