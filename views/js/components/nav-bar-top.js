@@ -50,7 +50,9 @@ export const renderNavBar = () => {
                 if (adminStatus) {
                     const adminButton = document.createElement('li');
                     adminButton.textContent = 'Admin Panel';
-                    adminButton.addEventListener('click', renderAdminPanel);
+                    adminButton.addEventListener('click', () => {
+                        renderAdminPanel(userId);
+                    });
                     navList.appendChild(adminButton);
                 }
 

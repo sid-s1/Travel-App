@@ -1,6 +1,6 @@
 import { securityQuestions } from './signup.js';
 
-export const renderAdminPanel = () => {
+export const renderAdminPanel = (loggedInUserId) => {
     const pageContainer = document.getElementById('page-container');
     pageContainer.innerHTML = '';
 
@@ -10,6 +10,7 @@ export const renderAdminPanel = () => {
     adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
 
     // add check to make sure not all admins are turned into normal users
+    // add check to make sure currently logged in user is not turned to normal user
     // add check to make sure the user currently logged in is not deleted
     // bring up a modal for feedback on when something is done
     // collaps other sections when you come to this page
@@ -109,6 +110,7 @@ export const renderAdminPanel = () => {
                         <input name="secQns" value="${securityQn}">
                         <input name="secAns" value="${newSecurityAnswer}">
                         <input name="admin" value=${checkNewAdminStatus}>
+                        <input name="loggedIn" value=${loggedInUserId}>
                         `;
 
                     const formdata = new FormData(form);
@@ -119,7 +121,8 @@ export const renderAdminPanel = () => {
                         password: formdata.get('password'),
                         secQns: formdata.get('secQns'),
                         secAns: formdata.get('secAns'),
-                        admin: formdata.get('admin')
+                        admin: formdata.get('admin'),
+                        loggedInUserId: formdata.get('loggedIn')
                     };
 
                     console.log(data);
