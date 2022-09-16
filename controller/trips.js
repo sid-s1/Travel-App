@@ -15,6 +15,24 @@ router.get('/activities/:tripId', (request, response) => {
         .then(dbRes => response.json(dbRes.rows))
         .catch(err => response.json(err))
 });
+// Set trip to 'Posted' status
+router.get('/status/:tripId', (request, response) => {
+    const tripId = request.params.tripId;
+    Trip.getMinDate(tripId)
+        .then(dbRes => {
+            const minDate = dbRes.rows[0].min;
+            console.log(`~~~~~ MIN DATE: ${minDate} ~~~~~`)
+            Trip.getMaxDate(tripId)
+                .then(dbRes => {
+                    const maxDate = dbRes.rows[0].max
+                    console.log(`~~~~~ MAX DATE: ${maxDate} ~~~~~`)
+                        Trip.postTrip(tripId, minDate, maxDate)
+                            .then(() => response.json(`Trip Id posted: ${tripId}`))
+                            .catch(() => response.json(`Trip could not be posted`))                
+                })
+        })
+        .catch(() => console.log('CRASH DETECTED WHEN SAVING DATA - CHECK LINE ABOVE'))
+})
 
 router.put('/:userId', (request, response) => {
     const userId = request.params.userId;

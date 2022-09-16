@@ -217,8 +217,9 @@ const createContainer = (data, parentClass) => {
 
             wrappedElement.addEventListener('click', () => {
                 const tripId = pageContainer.name;
-                // axios.get('user/trips')
-                console.log('click')
+                axios.get(`user/trips/status/${tripId}`)
+                    .then(() => console.log('trip POSTED'))
+                    .catch(() => console.log('Trip could not be posted'))
             })
         }
 
