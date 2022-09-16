@@ -49,7 +49,6 @@ export const layout = {
         page.style.display = 'flex';
         badges.innerHTML = '';
         sidePanel.innerHTML = '';
-        pageContainer.innerHTML = 'PROFILE VIEW / LOGGED IN'; //delete once functional
     },
     publicHomepage: () => {
         worldMap.style.display = 'flex';

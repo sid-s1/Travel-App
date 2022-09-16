@@ -152,7 +152,7 @@ const Trip = {
         .catch(err => err)
     },
     deleteLocation: (itineraryId) => {
-        const sql = 'DELETE FROM trip_locations WHERE (SELECT COUNT(*) FROM itinerary_items WHERE trip_location_id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)) = 1 AND id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)';        
+        const sql = 'DELETE FROM trip_locations WHERE (SELECT COUNT(*) FROM itinerary_items WHERE trip_location_id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)) = 1 AND id = (SELECT trip_location_id FROM itinerary_items WHERE id = $1)';
         return db.query(sql, [itineraryId])
         .then(res => res)
         .catch(err => err)
@@ -182,7 +182,7 @@ const Trip = {
         .catch(err => err)
     },
     deleteItinItem: (itineraryId) => {
-        const sql = 'DELETE FROM itinerary_items WHERE id = $1';        
+        const sql = 'DELETE FROM itinerary_items WHERE id = $1';
         return db.query(sql, [itineraryId])
         .then(res => res)
         .catch(err => err)
@@ -223,20 +223,20 @@ const Trip = {
         .then(res => res)
         .catch(err => err)
     },
-    postTrip: (tripId, minDate, maxDate) => { 
-        const sql = `UPDATE trips SET trip_status='posted', trip_start_date=$1, trip_end_date=$2 WHERE id=$1`;
+    postTrip: (tripId, minDate, maxDate) => {
+        const sql = `UPDATE trips SET trip_status='posted', trip_start_date=$1, trip_end_date=$2 WHERE id=$3`;
         return db.query(sql, [minDate, maxDate, tripId])
         .then(res => res)
         .catch(err => err)
     },
     getMinDate: (tripId) => {
-        const sql = `SELECT MIN (activity_end_date) FROM itinerary_items WHERE trip_location_id= ANY (SELECT id FROM trip_locations WHERE trip_id=$1)`;
+        const sql = `SELECT MAX (activity_start_date) FROM itinerary_items WHERE trip_location_id= ANY (SELECT id FROM trip_locations WHERE trip_id=$1)`;
         return db.query(sql, [tripId])
         .then(res => res)
         .catch(err => err)
     },
     getMaxDate: (tripId) => {
-        const sql = `SELECT MAX (activity_end_date) FROM itinerary_items WHERE trip_location_id= ANY (SELECT id FROM trip_locations WHERE trip_id=$1)`;
+        const sql = `SELECT MIN (activity_end_date) FROM itinerary_items WHERE trip_location_id= ANY (SELECT id FROM trip_locations WHERE trip_id=$1)`;
         return db.query(sql, [tripId])
         .then(res => res)
         .catch(err => err)
