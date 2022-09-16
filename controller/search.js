@@ -8,7 +8,7 @@ router.post('/', (request, response) => {
     const searchString = request.body.searchString;
     const searchLowerCase = searchString.toLowerCase();
     const searchType = request.body.searchType;
-    results = {
+    const results = {
         users: [],
         trips: [],
         activities: []
@@ -104,7 +104,18 @@ router.post('/', (request, response) => {
                 resolve();
             })
         });
-        Promise.all([p1, p2, p3, p4]).then(() => {
+        let p5 = new Promise((resolve, reject) => {
+            Search.searchTrips(searchLowerCase)
+            .then(dbRes => {
+                for (let i=0; i < dbRes.rowCount; i++) {
+                    tripIds.push(dbRes.rows[i].id);
+                }
+                resolve();
+            })
+        }
+
+        )
+        Promise.all([p1, p2, p3, p4, p5]).then(() => {
             Trip.detailsMultiple(tripIds)
             .then(dbRes => {
                 if (dbRes.rowCount > 0) {
