@@ -5,107 +5,122 @@ export const renderAdminPanel = () => {
     const adminPanel = document.createElement('div');
     adminPanel.id = 'admin-panel';
 
-    const adminPanelHeader = document.createElement('div');
-    adminPanelHeader.id = 'admin-panel-header';
-
-    const headerContents = [
-        'Email Address', 'Username', 'New Password', 'Security Question', 'Security Answer', 'Admin Privelege'
-    ];
-
-    for (let i = 0; i < 6; i++) {
-        const adminPanelHeaderItem = document.createElement('p');
-        adminPanelHeaderItem.classList.add('admin-panel-items');
-        adminPanelHeaderItem.textContent = headerContents[i];
-        adminPanelHeader.appendChild(adminPanelHeaderItem);
-    }
-
-    adminPanel.appendChild(adminPanelHeader);
+    adminPanel.innerHTML = '<p id="admin-panel-header">Admin Panel</p>';
 
     axios.get('/user/session/allUsers')
         .then(response => {
+            const users = response.data;
+            for (const user of users) {
+                const userRow = document.createElement('div');
+                userRow.classList.add('user-details-row');
 
-            let p = new Promise((resolve, reject) => {
-                const users = response.data;
-                for (const user of users) {
-                    const userRow = document.createElement('div');
-                    userRow.classList.add('user-details-row');
+                const emailField = document.createElement('input');
+                emailField.value = user.email;
+                emailField.classList.add('user-details');
+                emailField.required = true;
 
-                    const emailField = document.createElement('input');
-                    emailField.value = user.email;
-                    emailField.classList.add('user-details');
+                const securityQuestionField = document.createElement('input');
+                securityQuestionField.value = user.security_qn;
+                securityQuestionField.classList.add('user-details');
+                securityQuestionField.required = true;
+                securityQuestionField.setAttribute('type', 'text');
 
-                    const securityQuestionField = document.createElement('input');
-                    securityQuestionField.value = user.security_qn;
-                    securityQuestionField.classList.add('user-details');
+                const securityAnswerField = document.createElement('input');
+                securityAnswerField.classList.add('user-details');
+                securityAnswerField.placeholder = 'Enter new security answer';
+                securityAnswerField.setAttribute('type', 'text');
 
-                    const securityAnswerField = document.createElement('input');
-                    securityAnswerField.value = user.security_ans;
-                    securityAnswerField.classList.add('user-details');
+                const usernameField = document.createElement('input');
+                usernameField.value = user.username;
+                usernameField.classList.add('user-details');
+                usernameField.required = true;
+                usernameField.setAttribute('type', 'text');
 
-                    const usernameField = document.createElement('input');
-                    usernameField.value = user.username;
-                    usernameField.classList.add('user-details');
+                const newPasswordField = document.createElement('input');
+                newPasswordField.classList.add('user-details');
+                newPasswordField.placeholder = 'Enter new password';
+                newPasswordField.setAttribute('type', 'password');
 
-                    const newPasswordField = document.createElement('input');
-                    newPasswordField.classList.add('user-details');
-                    newPasswordField.placeholder = 'Enter new password';
+                const adminInputTrue = document.createElement('input');
+                adminInputTrue.setAttribute('type', 'radio');
+                adminInputTrue.setAttribute('name', `admin-status-${user.id}`);
+                const adminInputFalse = document.createElement('input');
+                adminInputFalse.setAttribute('type', 'radio');
+                adminInputFalse.setAttribute('name', `admin-status-${user.id}`);
 
-                    const adminInputTrue = document.createElement('input');
-                    adminInputTrue.setAttribute('type', 'radio');
-                    const adminInputFalse = document.createElement('input');
-                    adminInputFalse.setAttribute('type', 'radio');
+                adminInputTrue.classList.add('user-admin-radio');
+                adminInputFalse.classList.add('user-admin-radio');
 
-                    adminInputTrue.classList.add('user-details');
-                    adminInputFalse.classList.add('user-details');
+                if (user.admin) adminInputTrue.checked = true;
+                else adminInputFalse.checked = true;
 
-                    if (user.admin) adminInputTrue.checked = true;
-                    else adminInputFalse.checked = true;
+                const userEditActionList = document.createElement('ul');
+                userEditActionList.classList.add('user-edit-action-options');
 
-                    const updateUserDetails = document.createElement('button');
-                    updateUserDetails.textContent = 'Update';
+                const updateUserDetails = document.createElement('li');
+                updateUserDetails.textContent = 'Update';
+                updateUserDetails.classList.add('user-edit-action-btn');
 
-                    updateUserDetails.addEventListener('click', () => {
-                        const checkNewAdminStatus = (adminInputTrue) ? adminInputTrue : adminInputFalse;
+                updateUserDetails.addEventListener('click', () => {
+                    let checkNewAdminStatus;
+                    if (adminInputTrue.checked) {
+                        checkNewAdminStatus = true;
+                    }
+                    else if (adminInputFalse.checked) {
+                        checkNewAdminStatus = false;
+                    }
 
-                        const form = document.createElement('form');
-                        form.innerHTML = `
+                    let newSecurityAnswer;
+                    if (securityAnswerField.value) {
+                        newSecurityAnswer = securityAnswerField.value;
+                    }
+
+                    let newPassword;
+                    if (newPasswordField.value) {
+                        newPassword = newPasswordField.value;
+                    }
+
+                    const username = usernameField.value;
+                    const email = emailField.value;
+                    const securityQn = securityQuestionField.value;
+
+                    const form = document.createElement('form');
+                    form.innerHTML = `
                         <input name="id" value=${user.id}>
-                        <input name="email" value=${emailField.value}>
-                        <input name="username" value=${usernameField.value}>
-                        <input name="password" value=${newPasswordField.value}>
-                        <input name="secQns" value=${securityQuestionField.value}>
-                        <input name="secAns" value=${securityAnswerField.value}>
+                        <input name="email" value="${email}">
+                        <input name="username" value="${username}">
+                        <input name="password" value="${newPassword}">
+                        <input name="secQns" value="${securityQn}">
+                        <input name="secAns" value="${newSecurityAnswer}">
                         <input name="admin" value=${checkNewAdminStatus}>
                         `;
 
-                        const formdata = new FormData(form);
-                        const data = {
-                            id: formdata.get('id'),
-                            email: formdata.get('email'),
-                            username: formdata.get('username'),
-                            password: formdata.get('password'),
-                            secQns: formdata.get('secQns'),
-                            secAns: formdata.get('secAns'),
-                            admin: formdata.get('admin')
-                        };
+                    const formdata = new FormData(form);
+                    const data = {
+                        id: formdata.get('id'),
+                        email: formdata.get('email'),
+                        username: formdata.get('username'),
+                        password: formdata.get('password'),
+                        secQns: formdata.get('secQns'),
+                        secAns: formdata.get('secAns'),
+                        admin: formdata.get('admin')
+                    };
 
-                        axios.put('/user/session/updateUser', data)
-                            .then(response => console.log(response.data))
-                            .catch(err => console.log(err))
-                    });
+                    axios.put('/user/session/updateUser', data)
+                        .then(response => console.log(response.data))
+                        .catch(err => console.log(err))
+                });
 
-                    const deleteUser = document.createElement('button');
-                    deleteUser.textContent = 'Delete';
+                const deleteUser = document.createElement('li');
+                deleteUser.textContent = 'Delete';
+                deleteUser.classList.add('user-edit-action-btn');
 
-                    userRow.append(emailField, usernameField, newPasswordField, securityQuestionField, securityAnswerField, adminInputTrue, adminInputFalse, updateUserDetails, deleteUser);
-                    adminPanel.appendChild(userRow);
-                }
-                pageContainer.appendChild(adminPanel);
-            });
+                userEditActionList.append(updateUserDetails, deleteUser);
 
-            p.then(() => {
-
-            });
+                userRow.append(emailField, usernameField, newPasswordField, securityQuestionField, securityAnswerField, adminInputTrue, adminInputFalse, userEditActionList);
+                adminPanel.appendChild(userRow);
+            }
+            pageContainer.appendChild(adminPanel);
 
         })
         .catch(err => console.log(err))

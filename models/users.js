@@ -32,7 +32,25 @@ const User = {
   },
   updateUser: (id, email, username, password, secQns, secAns, admin) => {
     const sql = 'UPDATE users SET username=$1,email=$2,password=$3,security_qn=$4,security_ans=$5,admin=$6 WHERE id=$7';
-    return db.query(sql, [username, email, password, secQns, secAns, admin])
+    return db.query(sql, [username, email, password, secQns, secAns, admin, id])
+      .then(dbRes => dbRes)
+      .catch(err => err)
+  },
+  updateUserWithoutPassword: (id, email, username, secQns, secAns, admin) => {
+    const sql = 'UPDATE users SET username=$1,email=$2,security_qn=$3,security_ans=$4,admin=$5 WHERE id=$6';
+    return db.query(sql, [username, email, secQns, secAns, admin, id])
+      .then(dbRes => dbRes)
+      .catch(err => err)
+  },
+  updateUserWithoutSecAnswer: (id, email, username, password, secQns, admin) => {
+    const sql = 'UPDATE users SET username=$1,email=$2,password=$3,security_qn=$4,admin=$5 WHERE id=$6';
+    return db.query(sql, [username, email, password, secQns, admin, id])
+      .then(dbRes => dbRes)
+      .catch(err => err)
+  },
+  updateUserWithoutPasswordOrSecAnswer: (id, email, username, secQns, admin) => {
+    const sql = 'UPDATE users SET username=$1,email=$2,security_qn=$3,admin=$4 WHERE id=$5';
+    return db.query(sql, [username, email, secQns, admin, id])
       .then(dbRes => dbRes)
       .catch(err => err)
   }
