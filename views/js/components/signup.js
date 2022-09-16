@@ -1,7 +1,7 @@
 import { layout } from "./layout.js";
 import { renderLogin } from "./login.js";
 
-const securityQuestions = {
+export const securityQuestions = {
     1: 'What city were you born in?',
     2: 'What is the name of your first pet?',
     3: 'What is your oldest sibling\'s middle name?',
@@ -25,7 +25,7 @@ export const renderSignup = () => {
     signupForm.id = 'signup-form';
 
     const usernameLabel = document.createElement('label');
-    usernameLabel.setAttribute('for','username');
+    usernameLabel.setAttribute('for', 'username');
     usernameLabel.innerHTML = 'Username';
     usernameLabel.className = 'signup-label';
     const usernameInput = document.createElement('input');
@@ -73,7 +73,7 @@ export const renderSignup = () => {
     securityQuestionInput.name = 'security-question';
     securityQuestionInput.className = 'signup-input';
 
-    for(const [key, question] of Object.entries(securityQuestions)) {
+    for (const [key, question] of Object.entries(securityQuestions)) {
         const option = document.createElement('option');
         option.value = key;
         option.innerHTML = question;
@@ -124,17 +124,17 @@ export const renderSignup = () => {
             alert('Passwords do not match');
         } else {
             axios.post('/user/session/signup', data)
-            .then(() => {
-                console.log('signup successful');
-                renderLogin();
-            })
-            .catch((err) => {
-                if(err.response.status === 500) {
-                    alert('Sign up failed. Please try again.');
-                } else {
-                    alert(err.response.data.message);
-                }
-            })
+                .then(() => {
+                    console.log('signup successful');
+                    renderLogin();
+                })
+                .catch((err) => {
+                    if (err.response.status === 500) {
+                        alert('Sign up failed. Please try again.');
+                    } else {
+                        alert(err.response.data.message);
+                    }
+                })
         }
     })
 

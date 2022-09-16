@@ -29,6 +29,9 @@
     width: 8rem;
     height: 35%;
 }
+.security-qn-dropdown {
+    width: fit-content;
+}
 .user-admin-radio {
     width: 0.75rem;
 }

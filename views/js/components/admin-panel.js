@@ -1,3 +1,5 @@
+import { securityQuestions } from './signup.js';
+
 export const renderAdminPanel = () => {
     const pageContainer = document.getElementById('page-container');
     pageContainer.innerHTML = '';
@@ -19,11 +21,21 @@ export const renderAdminPanel = () => {
                 emailField.classList.add('user-details');
                 emailField.required = true;
 
-                const securityQuestionField = document.createElement('input');
-                securityQuestionField.value = user.security_qn;
+                const securityQuestionField = document.createElement('select');
+                console.log(securityQuestions[user.security_qn]);
                 securityQuestionField.classList.add('user-details');
+                securityQuestionField.classList.add('security-qn-dropdown');
                 securityQuestionField.required = true;
-                securityQuestionField.setAttribute('type', 'text');
+
+                for (const key in securityQuestions) {
+                    const securityQuestionOption = document.createElement('option');
+                    securityQuestionOption.text = securityQuestions[key];
+                    securityQuestionOption.value = key;
+                    if (key == user.security_qn) {
+                        securityQuestionOption.setAttribute('selected', '')
+                    }
+                    securityQuestionField.appendChild(securityQuestionOption);
+                }
 
                 const securityAnswerField = document.createElement('input');
                 securityAnswerField.classList.add('user-details');
@@ -105,6 +117,8 @@ export const renderAdminPanel = () => {
                         secAns: formdata.get('secAns'),
                         admin: formdata.get('admin')
                     };
+
+                    console.log(data);
 
                     axios.put('/user/session/updateUser', data)
                         .then(response => console.log(response.data))
