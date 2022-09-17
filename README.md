@@ -25,13 +25,13 @@ Some of our original designs are below:
 ![Wireframe 1](/views/assets/Wireframe_1.png "Wireframe 1")
 
 
-![Wireframe 2](/views/assets/Wireframe_2.png "Wireframe 2")
+![Wireframe 2](views/assets/Wireframes_2.png "Wireframe 2")
 
 
 And here is our database design:
 
 
-![Database design](/views/assets/Database_design.png "Database design")
+![Database design](views/assets/Database_design.png "Database design")
 
 
 ## Google API
