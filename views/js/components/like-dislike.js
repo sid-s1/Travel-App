@@ -32,7 +32,7 @@ export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) =
     const updateVoteCountOnPress = () => {
         const likeCount = document.getElementById('like-count');
         const dislikeCount = document.getElementById('dislike-count');
-        countVotes(tripId)
+        return countVotes(tripId)
             .then(voteCount => {
                 likeCount.textContent = `+ ${voteCount.likes}`;
                 dislikeCount.textContent = `- ${voteCount.dislikes}`;
@@ -82,16 +82,16 @@ export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) =
                         callApiToChangeLike(true, originalLikeState)
                             .then(() => {
                                 originalLikeState = true;
-                                updateVoteCountOnPress();
-                                switchToLike();
+                                updateVoteCountOnPress()
+                                    .then(() => switchToLike())
                             })
                     }
                     else {
                         callApiToChangeLike(null, originalLikeState)
                             .then(() => {
                                 originalLikeState = null;
-                                updateVoteCountOnPress();
-                                resetLikeAndDislike();
+                                updateVoteCountOnPress()
+                                    .then(() => resetLikeAndDislike())
                             })
                     }
                 }
@@ -104,8 +104,8 @@ export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) =
                         callApiToChangeLike(false, originalLikeState)
                             .then(() => {
                                 originalLikeState = false;
-                                updateVoteCountOnPress();
-                                switchToDislike();
+                                updateVoteCountOnPress()
+                                    .then(() => switchToDislike())
                             })
                             .catch(err => console.log(err))
                     }
@@ -113,8 +113,8 @@ export const likeDislikeAction = (likeBtn, dislikeBtn, loggedInUserId, tripId) =
                         callApiToChangeLike(null, originalLikeState)
                             .then(() => {
                                 originalLikeState = null;
-                                updateVoteCountOnPress();
-                                resetLikeAndDislike();
+                                updateVoteCountOnPress()
+                                    .then(() => resetLikeAndDislike())
                             })
                             .catch(err => console.log(err))
 
