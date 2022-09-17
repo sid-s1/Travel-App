@@ -38,7 +38,6 @@ router.delete('/', (request, response) => {
 // Get session data to confirm if user is logged in
 router.get('/', (request, response) => {
     const email = request.session.email;
-    console.log(`email being checked before going into model is - ${email}`);
     if (!email) {
         return response.status(401).json({ message: 'Please login to access this page' });
     } else {
