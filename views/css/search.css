@@ -27,10 +27,17 @@ border-radius: 10px;
     grid-column: 2/3;
     border: 2px solid black;
     border-radius: 8px;
+    max-height: 250px;
+    background-size: contain;
 }
 
 #search-form {
     display: flex;
     justify-content: space-between;
     column-gap: 20px;
+}
+.preview-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
