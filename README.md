@@ -21,3 +21,19 @@ We built our wireframes on [figma.com](https://www.figma.com/) and our database 
 ## Wireframes
 
 Some of our original designs are below:
+
+![Wireframe 1](/views/assets/Wireframe_1.png "Wireframe 1")
+
+
+![Wireframe 2](/views/assets/Wireframe_2.png "Wireframe 2")
+
+
+And here is our database design:
+
+
+![Database design](/views/assets/Wireframe_2.png "Database design")
+
+## Future features
+
+
+![Future features](/views/assets/Future_features.png "Future features")
