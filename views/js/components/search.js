@@ -352,7 +352,6 @@ const renderUsers = (data) => {
         <h2><i class="fa-light fa-user"></i>  ${row.username}</h2>
         <p>Trips: ${row.trip_count}</p>
         <p>Countries: ${row.country_count}</p>
-        <p>Achievements: ${row.achievement_count}</p>
         `
         userContainer.addEventListener('click', () => {
             console.log(`${row.username} clicked`);
