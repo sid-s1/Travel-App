@@ -4,9 +4,11 @@ import { renderProfile } from './profile.js';
 import { logout } from './logout.js';
 import { renderPublicHomepage } from './public-homepage.js';
 import { renderAdminPanel } from './admin-panel.js';
+import { layout } from './layout.js';
 
 // Render top navigation bar
 export const renderNavBar = () => {
+    layout.reset();
     const navBar = document.getElementById('nav-bar');
     navBar.innerHTML = '';
     const h1 = document.createElement('h1');
