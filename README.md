@@ -31,7 +31,12 @@ Some of our original designs are below:
 And here is our database design:
 
 
-![Database design](/views/assets/Wireframe_2.png "Database design")
+![Database design](/views/assets/Database_design.png "Database design")
+
+
+## Google API
+
+We used two sets of Google APIs, Google Place Autocomplete and Google Places. The autocomplete api allows us to search for all activities & businesses around the world, and the Places API allows us to get the details of the places to store within our databases. More information on those APIs here: [https://developers.google.com/maps](https://developers.google.com/maps)
 
 ## Future features
 
